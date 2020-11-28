@@ -102,9 +102,38 @@ function usuarios(param = "") {
     function modelo_usuarios() {
         var self = this;
         self.usuarios = ko.observableArray();
+        self.d = ko.observableArray();
 
-        self.agregar = function () {
+        self.nuevo = function () {
             location.href = '#usuarios/nuevo';
+        }
+
+        self.guardar = function () {
+            request('usuarios', 'post', {
+                usuario: self.d.usuario || null,
+                nombre: self.d.nombre || null,
+                admin: self.d.admin || false,
+                id_local: self.d.id_local || null
+            }).done(function () {
+                location.href = '#usuarios';
+            }).fail(function () {
+                alert('No se pudo agregar el usuario: '+self.d.usuario+'.');
+            });
+            return false;
+        }
+
+        self.modificar = function () {
+            request('usuarios/'+self.usuarios()[0].id(), 'put', {
+                usuario: self.usuarios()[0].usuario() || null,
+                nombre: self.usuarios()[0].nombre() || null,
+                admin: self.usuarios()[0].admin() || false,
+                id_local: self.usuarios()[0].id_local() || null
+            }).done(function () {
+                location.href = '#usuarios';
+            }).fail(function () {
+                alert('No se pudo modificar el usuario: '+self.usuarios()[0].usuario()+'.');
+            });
+            return false;
         }
 
         self.editar = function (u) {
@@ -151,7 +180,7 @@ function usuarios(param = "") {
     var u = new modelo_usuarios();
 
     if (param === "nuevo") {
-        return new Router.Page('Usuarios', 'pg-nuevo-usuario', { u: u.usuarios() });
+        return new Router.Page('Usuarios', 'pg-nuevo-usuario', { u: u });
     } else if (param !== "") {
         u.cargar(param);
         return new Router.Page('Usuarios', 'pg-editar-usuario', { u: u });

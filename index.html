@@ -368,14 +368,13 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="header">
-                                <button class="btn btn-default pull-right" data-bind="click: u.agregar">Agregar</button>
+                                <button class="btn btn-default pull-right" data-bind="click: u.nuevo">Agregar</button>
                                 <h4 class="title"><i class="ti-user"></i>&nbsp;Usuarios</h4>
                                 <p class="category">Lista de usuarios registrados bajo su dominio.</p>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table class="table table-striped">
                                     <thead>
-                                        <th>ID</th>
                                     	<th>Usuario</th>
                                     	<th>Nombre</th>
                                     	<th>Administrador</th>
@@ -385,7 +384,6 @@
                                     <tbody>
                                         <!-- ko foreach: u.usuarios -->
                                         <tr>
-                                        	<td data-bind="text: id"></td>
                                         	<td data-bind="text: usuario"></td>
                                         	<td data-bind="text: nombre"></td> 
                                         	<td data-bind="text: admin"></td>
@@ -421,32 +419,26 @@
                                 <h4 class="title">Editar usuario</h4>
                             </div>
                             <div class="content">
-                                <form>
+                                <form data-bind="submit: $parent.u.modificar">
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Id</label>
-                                                <input type="number" class="form-control border-input" disabled placeholder="Id" data-bind="value: id">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-8">
+                                        <div class="col-md-7">
                                             <div class="form-group">
                                                 <label>Nombre</label>
-                                                <input type="text" class="form-control border-input" placeholder="Nombre" data-bind="value: nombre">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Nombre de usuario</label>
-                                                <input type="text" class="form-control border-input" placeholder="Nombre de usuario" data-bind="value: usuario">
+                                                <input type="text" class="form-control border-input" placeholder="Nombre" data-bind="value: nombre" required>
                                             </div>
                                         </div>
                                         <div class="col-md-5">
                                             <div class="form-group">
+                                                <label>Nombre de usuario</label>
+                                                <input type="text" class="form-control border-input" placeholder="Nombre de usuario" data-bind="value: usuario" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-9">
+                                            <div class="form-group">
                                                 <label>Local</label>
-                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: id_local">
+                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: id_local" required>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -470,24 +462,24 @@
 
             <script id="pg-nuevo-usuario" type="text/html">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-9">
                         <div class="card">
                             <div class="header">
                                 <h4 class="title">Agregar usuario</h4>
                             </div>
                             <div class="content">
-                                <form>
+                                <form data-bind="submit: u.guardar">
                                     <div class="row">
                                         <div class="col-md-7">
                                             <div class="form-group">
                                                 <label>Nombre</label>
-                                                <input type="text" class="form-control border-input" placeholder="Nombre" data-bind="value: u.nombre">
+                                                <input type="text" class="form-control border-input" placeholder="Nombre" data-bind="value: u.d.nombre" required>
                                             </div>
                                         </div>
                                         <div class="col-md-5">
                                             <div class="form-group">
                                                 <label>Nombre de usuario</label>
-                                                <input type="text" class="form-control border-input" placeholder="Nombre de usuario" data-bind="value: u.usuario">
+                                                <input type="text" class="form-control border-input" placeholder="Nombre de usuario" data-bind="value: u.d.usuario" required>
                                             </div>
                                         </div>
                                     </div>
@@ -495,13 +487,13 @@
                                         <div class="col-md-9">
                                             <div class="form-group">
                                                 <label>Local</label>
-                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: u.id_local">
+                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: u.d.id_local" required>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>Administrador
-                                                <input type="checkbox" class="form-control border-input" placeholder="Administrador" data-bind="checked: u.admin"></label>
+                                                <input type="checkbox" class="form-control border-input" placeholder="Administrador" data-bind="checked: u.d.admin"></label>
                                             </div>
                                         </div>
                                     </div>
