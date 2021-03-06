@@ -39,7 +39,16 @@ function request(ep, verb, data) {
             xhr.setRequestHeader("Authorization", "Basic " + aut);
         },
         error: function (xhr) {
-            if (xhr.status == 401) {
+            if (xhr.status == 0) {
+                $.notify({
+                    icon: 'ti-signal',
+                    message: "Se ha perdido la conexión con los servidores."
+    
+                },{
+                    type: 'danger',
+                    timer: 4000
+                });
+            } else if (xhr.status == 401) {
                 var aut = getCookie("_aut");
                 if (aut !== "") {
                     setCookie("_aut", "", 365);
@@ -48,14 +57,20 @@ function request(ep, verb, data) {
             }
         }
     };
-    return $.ajax(r);
-};
+    var a = $.ajax(r);
+    a.done(function () {
+        $("#loader").fadeOut();
+        $("#body").fadeIn();
+    });
+    return a;
+}
 
 var urlMapping = {
     home: { match: /^$/, page: dashboard },
     usuarios: { match: /^usuarios$/, page: usuarios },
     usuarios_p: { match: /^usuarios\/(.+)$/, page: usuarios },
     login: { match: /^login$/, page: login },
+    logoff: { match: /^logoff$/, page: logoff },
     config: { match: /^config$/, page: config },
     fail: { match: /^fail$/, page: failPage }
 }
@@ -199,7 +214,7 @@ function login() {
         location.href = "/";
     }
     $('body').empty();
-    $('body').append("<div class=\"content\"><div class=\"container-fluid\"><div class=\"row\"><div class=\"offset-md-4 col-lg-4 col-md-5\"><div class=\"card\"><div class=\"header\"><h4 class=\"title\">Autenticación</h4></div><div class=\"content\"><form id=\"frm-login\"><div class=\"row\"><div class=\"form-group\"><label>Usuario</label><input id=\"usr\" type=\"text\" class=\"form-control border-input\" placeholder=\"Usuario\"></div></div><div class=\"row\"><div class=\"form-group\"><label>Clave</label><input id=\"pass\" type=\"password\" class=\"form-control border-input\" placeholder=\"Clave\"></div></div><div class=\"text-center\"><button type=\"submit\" class=\"btn btn-info btn-fill btn-wd\">Entrar</button></div><div class=\"clearfix\"></div></form></div></div></div></div></div></div>");
+    $('body').append("<div class=\"content container\"><div class=\"row\"><div class=\"col-lg-12\"><div id=\"login-form\" class=\"center-block d-block mx-auto col-lg-4 col-md-5\"><div class=\"card\"><div class=\"header\"><h4 class=\"title\">Autenticación</h4></div><div class=\"content\"><form id=\"frm-login\"><div class=\"row\"><div class=\"form-group\"><label>Usuario</label><input id=\"usr\" type=\"text\" class=\"form-control border-input\" placeholder=\"Usuario\"></div></div><div class=\"row\"><div class=\"form-group\"><label>Clave</label><input id=\"pass\" type=\"password\" class=\"form-control border-input\" placeholder=\"Clave\"></div></div><div class=\"text-center\"><button type=\"submit\" class=\"btn btn-info btn-fill btn-wd\">Entrar</button></div><div class=\"clearfix\"></div></form></div></div></div></div></div></div>");
     $("#frm-login").submit(function () {
         var u = $('#usr').val();
         var p = $('#pass').val();
@@ -207,12 +222,19 @@ function login() {
         if (u !== "" || p !== "") {
             aut = btoa(u + ":" + p);
             setCookie("_aut", aut, 365);
-            location.href = "/";
-            return false;
+            request('dashboard').done(function () {
+                location.href = "/";
+            });
         }
-
+        return false;
     });
     return new Router.Page('Login', null, {});
+}
+
+function logoff() {
+    setCookie("_aut", "", 365);
+    location.href = "/";
+    return new Router.Page('Logoff', null, {});
 }
 
 function config() {

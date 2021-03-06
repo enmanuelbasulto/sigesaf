@@ -3212,6 +3212,7 @@ textarea.form-control {
   }
 
   .navbar-fixed-top {
+    backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
 
@@ -3315,3 +3316,21 @@ textarea.form-control {
 }
 
 /* Particular */
+#loader{
+  position: absolute;
+  background:#fff;
+  display:-ms-flexbox;
+  display:flex;
+  -ms-flex-pack:center;
+  justify-content:center;
+  -ms-flex-align:center;
+  align-items:center;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0
+}
+#login-form{
+  float:none;
+  margin-top: 25px;
+}
