@@ -393,7 +393,7 @@
                                         	
                                             <td><span data-bind="text: usuario"></span>&nbsp;<span data-bind="visible: admin"><i class="ti-crown"></i></span></td>
                                         	<td data-bind="text: nombre"></td> 
-                                        	<td data-bind="text: id_local"></td>
+                                        	<td data-bind="text: local"></td>
                                             <td>
                                                 <button class="btn btn-default" data-bind="click: $parent.u.editar">
                                                     <i class="ti-pencil"></i>
@@ -444,7 +444,7 @@
                                         <div class="col-md-9">
                                             <div class="form-group">
                                                 <label>Local</label>
-                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: id_local" required>
+                                                <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "local", optionsValue: "id", value: id_local' required></select>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -493,7 +493,7 @@
                                         <div class="col-md-9">
                                             <div class="form-group">
                                                 <label>Local</label>
-                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: u.d.id_local" required>
+                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "local", optionsValue: "id", value: u.d.id_local' required></select>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
