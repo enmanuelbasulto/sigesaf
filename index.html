@@ -37,21 +37,20 @@
                     SIGESAF
                 </a>
             </div>
-
             <ul class="nav">
-                <li id="nav-dashboard" class="active">
+                <li class="nav-dashboard" class="active">
                     <a href="#">
                         <i class="ti-panel"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
-                <li id="nav-usuarios">
+                <li class="nav-usuarios">
                     <a href="#usuarios">
                         <i class="ti-user"></i>
                         <p>Usuarios</p>
                     </a>
                 </li>
-                <li id="nav-locales">
+                <li class="nav-locales">
                     <a href="#locales">
                         <i class="ti-view-list-alt"></i>
                         <p>Locales</p>
@@ -370,7 +369,7 @@
                     </div>
                 </div>
             </script>
-            
+            <!--usuarios-->
             <script id="pg-usuarios" type="text/html">
                 <div class="row">
                     <div class="col-md-12">
@@ -515,7 +514,124 @@
                     </div>
                 </div>
             </script>
+            <!--/usuarios-->
+            <!--locales-->
+            <script id="pg-locales" type="text/html">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="header">
+                                <button class="btn btn-default pull-right" data-bind="click: l.nuevo">Agregar</button>
+                                <h4 class="title"><i class="ti-user"></i>&nbsp;Locales</h4>
+                                <p class="category">Lista de locales registrados bajo su dominio.</p>
+                            </div>
+                            <div class="content table-responsive table-full-width">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <th>Id</th>
+                                        <th>Local</th>
+                                        <th>Local padre</th>
+                                    </thead>
+                                    <tbody>
+                                        <!-- ko foreach: l.locales -->
+                                        <tr>
+                                                        
+                                            <td data-bind="text: id"></td>
+                                            <td data-bind="text: local"></td> 
+                                            <td data-bind="text: id_padre"></td>
+                                            <td>
+                                                <button class="btn btn-default" data-bind="click: $parent.l.editar">
+                                                    <i class="ti-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-default" data-bind="click: $parent.l.eliminar">
+                                                    <i class="ti-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <!-- /ko -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
             
+            <script id="pg-editar-local" type="text/html">
+                <div class="row" data-bind="visible: ((!l.locales().length))">
+                    <div class="col-md-9">
+                        <h3>El local solicitado no existe.</h3>
+                    </div>
+                </div>
+                <div class="row" data-bind="visible: (l.locales().length), foreach: l.locales">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">Editar local</h4>
+                            </div>
+                            <div class="content">
+                                <form data-bind="submit: $parent.l.modificar">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Local</label>
+                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: local" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Local padre</label>
+                                                <input type="text" class="form-control border-input" placeholder="Local padre" data-bind="value: id_padre" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Guardar cambios</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+            
+            <script id="pg-nuevo-local" type="text/html">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">Agregar local</h4>
+                            </div>
+                            <div class="content">
+                                <form data-bind="submit: l.guardar">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Local</label>
+                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: l.d.local" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Local padre</label>
+                                                <input type="text" class="form-control border-input" placeholder="Local padre" data-bind="value: l.d.id_padre" required>
+                                            </div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Agregar</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+            <!--/locales-->
               <script id="fail-template" type="text/html">
                 <h2>Fail</h2>
                 <p>You will never see this, because the router shows the error page instead.</p>

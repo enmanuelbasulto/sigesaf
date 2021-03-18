@@ -69,6 +69,8 @@ var urlMapping = {
     home: { match: /^$/, page: dashboard },
     usuarios: { match: /^usuarios$/, page: usuarios },
     usuarios_p: { match: /^usuarios\/(.+)$/, page: usuarios },
+    locales: { match: /^locales$/, page: locales },
+    locales_p: { match: /^locales\/(.+)$/, page: locales },
     login: { match: /^login$/, page: login },
     logoff: { match: /^logoff$/, page: logoff },
     config: { match: /^config$/, page: config },
@@ -77,9 +79,9 @@ var urlMapping = {
 
 function dashboard() {
     window.clearInterval(int);
-    $('#nav-dashboard').addClass('active');
-    $('#nav-usuarios').removeClass('active');
-    $('#nav-locales').removeClass('active');
+    $('.nav-dashboard').addClass('active');
+    $('.nav-usuarios').removeClass('active');
+    $('.nav-locales').removeClass('active');
 
     function modelo_dashboard() {
         var self = this;
@@ -108,11 +110,103 @@ function dashboard() {
     return new Router.Page('Dashboard', 'home-template', { d: new modelo_dashboard });
 }
 
+function locales(param = "") {
+    window.clearInterval(int);
+    $('.nav-locales').addClass('active');
+    $('.nav-dashboard').removeClass('active');
+    $('.nav-usuarios').removeClass('active');
+
+    function modelo_locales() {
+        var self = this;
+        self.locales = ko.observableArray();
+        self.d = ko.observableArray();
+
+        self.nuevo = function () {
+            location.href = '#locales/nuevo';
+        }
+
+        self.guardar = function () {
+            request('locales', 'post', {
+                local: self.d.local || null,
+                id_padre: self.d.id_padre || null
+            }).done(function () {
+                location.href = '#locales';
+            }).fail(function () {
+                alert('No se pudo agregar el local: '+self.d.local+'.');
+            });
+            return false;
+        }
+
+        self.modificar = function () {
+            request('locales/'+self.locales()[0].id(), 'put', {
+                local: self.locales()[0].local() || null,
+                id_padre: self.locales()[0].id_padre() || null
+            }).done(function () {
+                location.href = '#locales';
+            }).fail(function () {
+                alert('No se pudo modificar el local: '+self.locales()[0].local()+'.');
+            });
+            return false;
+        }
+
+        self.editar = function (l) {
+            location.href = '#locales/' + l.id();
+        }
+
+        self.eliminar = function (l) {
+            request('locales/' + l.id(), 'DELETE').done(function () {
+                self.cargar();
+            }).fail(function () {
+                alert('No se pudo eliminar el local: ' + l.local() + '.');
+            });
+        }
+
+        self.cargar = function (l = "") {
+            p = 'locales';
+            if (l !== "") {
+                p += '/' + l;
+            }
+            request(p).done(function (d) {
+                self.locales.removeAll();
+                if (d.length === undefined) {
+                    self.locales.push({
+                        id: ko.observable(d.id),
+                        local: ko.observable(d.local),
+                        id_padre: ko.observable(d.id_padre)
+                    });
+                } else {
+                    for (var i = 0; i < d.length; i++) {
+                        self.locales.push({
+                            id: ko.observable(d[i].id),
+                            local: ko.observable(d[i].local),
+                            id_padre: ko.observable(d[i].id_padre)
+                        });
+                    }
+                }
+            });
+        }
+    }
+    var l = new modelo_locales();
+
+    if (param === "nuevo") {
+        return new Router.Page('Locales', 'pg-nuevo-local', { l: l });
+    } else if (param !== "") {
+        l.cargar(param);
+        return new Router.Page('Locales', 'pg-editar-local', { l: l });
+    } else {
+        l.cargar();
+        int = window.setInterval(() => {
+            l.cargar();
+        }, 10000);
+        return new Router.Page('Locales', 'pg-locales', { l: l });
+    }
+}
+
 function usuarios(param = "") {
     window.clearInterval(int);
-    $('#nav-usuarios').addClass('active');
-    $('#nav-dashboard').removeClass('active');
-    $('#nav-locales').removeClass('active');
+    $('.nav-usuarios').addClass('active');
+    $('.nav-dashboard').removeClass('active');
+    $('.nav-locales').removeClass('active');
 
     function modelo_usuarios() {
         var self = this;
