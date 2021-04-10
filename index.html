@@ -24,6 +24,9 @@
     <!--  Fonts and icons     -->
     <link href="assets/css/themify-icons.css" rel="stylesheet">
 
+    <!--  Tablas...     -->
+    <link href="assets/css/jquery.dataTables.min.css" rel="stylesheet">
+
 </head>
 <body>
 <div id="loader">
@@ -185,7 +188,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="footer">
+                                <div cid="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" lass="footer">
                                     <hr />
                                     <div class="stats">
                                         <i class="ti-reload"></i> Updated now
@@ -526,19 +529,19 @@
                                 <p class="category">Lista de locales registrados bajo su dominio.</p>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table table-striped">
+                                <table id="tbl-locales" class="table table-striped">
                                     <thead>
                                         <th>Id</th>
                                         <th>Local</th>
                                         <th>Local padre</th>
+                                        <th></th>
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: l.locales -->
                                         <tr>
-                                                        
                                             <td data-bind="text: id"></td>
                                             <td data-bind="text: local"></td> 
-                                            <td data-bind="text: id_padre"></td>
+                                            <td data-bind="text: padre"></td>
                                             <td>
                                                 <button class="btn btn-default" data-bind="click: $parent.l.editar">
                                                     <i class="ti-pencil"></i>
@@ -581,7 +584,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Local padre</label>
-                                                <input type="text" class="form-control border-input" placeholder="Local padre" data-bind="value: id_padre" required>
+                                                <select class="form-control border-input" data-bind='options: $parent.l2.locales, optionsText: "local", optionsValue: "id", value: id_padre' required></select>
                                             </div>
                                         </div>
                                     </div>
@@ -616,7 +619,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Local padre</label>
-                                                <input type="text" class="form-control border-input" placeholder="Local padre" data-bind="value: l.d.id_padre" required>
+                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "local", optionsValue: "id", value: l.d.id_padre' required></select>
                                             </div>
                                         </div>
                                     </div>
@@ -705,10 +708,18 @@
     <!-- Paper Dashboard Core javascript and methods for Demo purpose -->
 	<script src="assets/js/paper-dashboard.js"></script>
 
+    <!-- tablas... -->
+    <script src="assets/js/jquery.dataTables.min.js"></script>
+
 	<!-- Código -->
 	<script src="assets/js/app.js"></script>
 
 	<script type="text/javascript">
+    /*
+    $(document).ready(function () {
+        $('table').DataTable();
+        $('.dataTables_length').addClass('bs-select');
+    });
     	/*$(document).ready(function(){
             $.notify({
             	icon: 'ti-gift',

@@ -1,4 +1,5 @@
 var int = null;
+var table = null;
 
 function getCookie(cname) {
     var name = cname + "=";
@@ -90,7 +91,7 @@ function modelo_dashboard() {
     }, 10000);
 }
 
-function modelo_locales() {
+function modelo_locales(l) {
     var self = this;
     self.locales = ko.observableArray();
     self.d = ko.observableArray();
@@ -146,20 +147,32 @@ function modelo_locales() {
                 self.locales.push({
                     id: ko.observable(d.id),
                     local: ko.observable(d.local),
-                    id_padre: ko.observable(d.id_padre)
+                    id_padre: ko.observable(d.id_padre),
+                    padre: ko.observable("(-)")
                 });
             } else {
                 for (var i = 0; i < d.length; i++) {
                     self.locales.push({
                         id: ko.observable(d[i].id),
                         local: ko.observable(d[i].local),
-                        id_padre: ko.observable(d[i].id_padre)
+                        id_padre: ko.observable(d[i].id_padre),
+                        padre: ko.observable("(-)")
                     });
                 }
             }
+
+            self.locales().forEach(l => {
+                self.locales().forEach(l_p => {
+                    if (l.id_padre() == l_p.id()) {
+                        l.padre(l_p.local());
+                    }
+                });
+            });
         });
+        table = null;
+        table = $('#tbl-locales').DataTable();
     }
-    self.cargar();
+    self.cargar(l);
 }
 
 function modelo_usuarios(u) {
@@ -278,7 +291,8 @@ function locales(param = "") {
         return new Router.Page('Locales', 'pg-nuevo-local', { l: l });
     } else if (param !== "") {
         l.cargar(param);
-        return new Router.Page('Locales', 'pg-editar-local', { l: l });
+        var l2 = new modelo_locales();
+        return new Router.Page('Locales', 'pg-editar-local', { l: l, l2: l2 });
     } else {
         int = window.setInterval(() => {
             l.cargar();
@@ -304,6 +318,7 @@ function usuarios(param = "") {
         int = window.setInterval(() => {
             u.cargar();
         }, 10000);
+
         return new Router.Page('Usuarios', 'pg-usuarios', { u: u });
     }
 }
