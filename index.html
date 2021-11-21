@@ -656,16 +656,18 @@
                                     <thead>
                                         <th>Id</th>
                                         <th>Inv</th>
-                                        <th>Local</th>
                                         <th>Tipo</th>
+                                        <th>Estado</th>
+                                        <th>Local</th>
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: e.equipos -->
                                         <tr>
                                             <td data-bind="text: id"></td>
-                                            <td data-bind="text: no_inv"></td> 
-                                            <td data-bind="text: local"></td>
+                                            <td data-bind="text: no_inv"></td>
                                             <td data-bind="text: tipo"></td>
+                                            <td data-bind="text: estado"></td>
+                                            <td data-bind="text: local"></td>
                                             <td>
                                                 <button class="btn btn-default" data-bind="click: $parent.e.editar">
                                                     <i class="ti-pencil"></i>

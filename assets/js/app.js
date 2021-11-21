@@ -324,6 +324,7 @@ function modelo_equipos(e) {
                     self.equipos.push({
                         id: ko.observable(d[i].id),
                         id_estado: ko.observable(d[i].id_estado),
+                        estado: ko.observable(d[i].estado),
                         id_local: ko.observable(d[i].id_local),
                         local: ko.observable(d[i].local),
                         id_marca: ko.observable(d[i].id_marca),
