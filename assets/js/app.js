@@ -27,7 +27,7 @@ function setCookie(cname, cvalue, exdays) {
 function request(ep, verb, data) {
     var r = {
         type: verb,
-        url: 'https://api.sigesaf.com/v1/' + ep,
+        url: 'https://sigesaf.kboom.nat.cu/api/' + ep,
         contentType: 'application/json',
         accepts: 'application/json',
         dataType: 'json',
@@ -88,7 +88,7 @@ function modelo_dashboard() {
     self.cargar();
     int = window.setInterval(() => {
         self.cargar();
-    }, 10000);
+    }, 30000);
 }
 
 function modelo_locales(l) {
@@ -169,9 +169,8 @@ function modelo_locales(l) {
                 });
             });
         });
-        table = null;
-        table = $('#tbl-locales').DataTable();
     }
+
     self.cargar(l);
 }
 
@@ -256,6 +255,91 @@ function modelo_usuarios(u) {
     }
     self.cargar(u);
 }
+
+function modelo_equipos(e) {
+    var self = this;
+    self.equipos = ko.observableArray();
+    self.d = ko.observableArray();
+
+    self.nuevo = function () {
+        location.href = '#equipos/nuevo';
+    }
+
+    self.guardar = function () {
+        request('equipos', 'post', {
+            equipo: self.d.equipo || null,
+            local: self.d.local || null
+        }).done(function () {
+            location.href = '#equipos';
+        }).fail(function () {
+            alert('No se pudo agregar el equipo: '+self.d.equipo+'.');
+        });
+        return false;
+    }
+
+    self.modificar = function () {
+        request('equipos/'+self.equipos()[0].id(), 'put', {
+            equipo: self.equipos()[0].equipo() || null,
+            local: self.equipos()[0].local() || null
+        }).done(function () {
+            location.href = '#equipos';
+        }).fail(function () {
+            alert('No se pudo modificar el equipo: '+self.equipos()[0].equipo()+'.');
+        });
+        return false;
+    }
+
+    self.editar = function (e) {
+        location.href = '#equipos/' + e.id();
+    }
+
+    self.eliminar = function (e) {
+        request('equipos/' + e.id(), 'DELETE').done(function () {
+            self.cargar();
+        }).fail(function () {
+            alert('No se pudo eliminar el equipo: ' + e.equipo() + '.');
+        });
+    }
+
+    self.cargar = function (e = "") {
+        p = 'equipos';
+        if (e !== "") {
+            p += '/' + e;
+        }
+        request(p).done(function (d) {
+            self.equipos.removeAll();
+            if (d.length === undefined) {
+                self.equipos.push({
+                    id: ko.observable(d.id),
+                    id_estado: ko.observable(d.id_estado),
+                    id_local: ko.observable(d.id_local),
+                    id_marca: ko.observable(d.id_marca),
+                    id_tipo: ko.observable(d.id_tipo),
+                    no_inv: ko.observable(d.no_inv),
+                    observaciones: ko.observable(d.observaciones),
+                    sello: ko.observable(d.sello)
+                });
+            } else {
+                for (var i = 0; i < d.length; i++) {
+                    self.equipos.push({
+                        id: ko.observable(d[i].id),
+                        id_estado: ko.observable(d[i].id_estado),
+                        id_local: ko.observable(d[i].id_local),
+                        local: ko.observable(d[i].local),
+                        id_marca: ko.observable(d[i].id_marca),
+                        id_tipo: ko.observable(d[i].id_tipo),
+                        tipo: ko.observable(d[i].tipo),
+                        no_inv: ko.observable(d[i].no_inv),
+                        observaciones: ko.observable(d[i].observaciones),
+                        sello: ko.observable(d[i].sello)
+                    });
+                }
+            }
+        });
+    }
+
+    self.cargar(e);
+}
 ////////
 
 var urlMapping = {
@@ -264,6 +348,8 @@ var urlMapping = {
     usuarios_p: { match: /^usuarios\/(.+)$/, page: usuarios },
     locales: { match: /^locales$/, page: locales },
     locales_p: { match: /^locales\/(.+)$/, page: locales },
+    equipos: { match: /^equipos$/, page: equipos },
+    equipos_p: { match: /^equipos\/(.+)$/, page: equipos },
     login: { match: /^login$/, page: login },
     logoff: { match: /^logoff$/, page: logoff },
     config: { match: /^config$/, page: config },
@@ -275,6 +361,7 @@ function dashboard() {
     $('.nav-dashboard').addClass('active');
     $('.nav-usuarios').removeClass('active');
     $('.nav-locales').removeClass('active');
+    $('.nav-equipo').removeClass('active');
 
     return new Router.Page('Dashboard', 'home-template', { d: new modelo_dashboard });
 }
@@ -284,6 +371,7 @@ function locales(param = "") {
     $('.nav-locales').addClass('active');
     $('.nav-dashboard').removeClass('active');
     $('.nav-usuarios').removeClass('active');
+    $('.nav-equipo').removeClass('active');
 
     var l = new modelo_locales();
 
@@ -296,7 +384,7 @@ function locales(param = "") {
     } else {
         int = window.setInterval(() => {
             l.cargar();
-        }, 10000);
+        }, 30000);
         return new Router.Page('Locales', 'pg-locales', { l: l });
     }
 }
@@ -306,6 +394,7 @@ function usuarios(param = "") {
     $('.nav-usuarios').addClass('active');
     $('.nav-dashboard').removeClass('active');
     $('.nav-locales').removeClass('active');
+    $('.nav-equipo').removeClass('active');
 
     var u = new modelo_usuarios(param);
 
@@ -317,9 +406,31 @@ function usuarios(param = "") {
     } else {
         int = window.setInterval(() => {
             u.cargar();
-        }, 10000);
+        }, 30000);
 
         return new Router.Page('Usuarios', 'pg-usuarios', { u: u });
+    }
+}
+
+function equipos(param = "") {
+    window.clearInterval(int);
+    $('.nav-locales').removeClass('active');
+    $('.nav-dashboard').removeClass('active');
+    $('.nav-usuarios').removeClass('active');
+    $('.nav-equipo').addClass('active');
+
+    var e = new modelo_equipos();
+
+    if (param === "nuevo") {
+        return new Router.Page('Equipos', 'pg-nuevo-equipo', { e: e });
+    } else if (param !== "") {
+        e.cargar(param);
+        return new Router.Page('Equipos', 'pg-editar-equipo', { e: e });
+    } else {
+        int = window.setInterval(() => {
+            e.cargar();
+        }, 30000);
+        return new Router.Page('Equipos', 'pg-equipos', { e: e });
     }
 }
 
