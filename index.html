@@ -20,12 +20,12 @@
 
     <!--  Paper Dashboard core CSS    -->
     <link href="assets/css/paper-dashboard.css" rel="stylesheet"/>
+    <link href="assets/css/demo.css" rel="stylesheet" />
 
     <!--  Fonts and icons     -->
+    <link href="assets/fonts/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href='assets/fonts/muli/stylesheet.css' rel='stylesheet' type='text/css'>
     <link href="assets/css/themify-icons.css" rel="stylesheet">
-
-    <!--  Tablas...     -->
-    <link href="assets/css/jquery.dataTables.min.css" rel="stylesheet">
 
 </head>
 <body>
@@ -74,7 +74,7 @@
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle">
-                        <span class="sr-only">Alternar navegación</span>
+                        <span class="sr-only">Alternar navegaci&oacute;n</span>
                         <span class="icon-bar bar1"></span>
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
@@ -84,10 +84,25 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
 						<li>
-                            <a href="#config" title="Configuración">
+                            <a href="#config" title="Configuraci&oacute;n">
                                 <i class="ti-settings"></i>
-                                Configuración
+                                Configuraci&oacute;n
                             </a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="ti-bell"></i>
+                                <p class="notification">5</p>
+                                <p>Notifications</p>
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                              <li><a href="#">Notification 1</a></li>
+                              <li><a href="#">Notification 2</a></li>
+                              <li><a href="#">Notification 3</a></li>
+                              <li><a href="#">Notification 4</a></li>
+                              <li><a href="#">Another notification</a></li>
+                            </ul>
                         </li>
                         <li>
                             <a href="#logoff" title="Cerrar sesión">
@@ -648,13 +663,12 @@
                         <div class="card">
                             <div class="header">
                                 <button class="btn btn-default pull-right" data-bind="click: e.nuevo">Agregar</button>
-                                <h4 class="title"><i class="ti-user"></i>&nbsp;Equipos</h4>
+                                <h4 class="title"><i class="ti-desktop"></i>&nbsp;Equipos</h4>
                                 <p class="category">Lista de equipos registrados bajo su dominio.</p>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table id="tbl-locales" class="table table-striped">
                                     <thead>
-                                        <th>Id</th>
                                         <th>Inv</th>
                                         <th>Tipo</th>
                                         <th>Estado</th>
@@ -663,7 +677,6 @@
                                     <tbody>
                                         <!-- ko foreach: e.equipos -->
                                         <tr>
-                                            <td data-bind="text: id"></td>
                                             <td data-bind="text: no_inv"></td>
                                             <td data-bind="text: tipo"></td>
                                             <td data-bind="text: estado"></td>
@@ -674,6 +687,9 @@
                                                 </button>
                                                 <button class="btn btn-default" data-bind="click: $parent.e.eliminar">
                                                     <i class="ti-trash"></i>
+                                                </button>
+                                                <button title="Reportar" data-active-color="danger" class="btn btn-default" data-bind="click: $parent.e.reportar">
+                                                    <i class="ti-alert"></i>
                                                 </button>
                                             </td>
                                         </tr>
@@ -834,29 +850,22 @@
     <!-- Paper Dashboard Core javascript and methods for Demo purpose -->
 	<script src="assets/js/paper-dashboard.js"></script>
 
-    <!-- tablas... -->
-    <script src="assets/js/jquery.dataTables.min.js"></script>
-
 	<!-- Código -->
 	<script src="assets/js/app.js"></script>
 
 	<script type="text/javascript">
-    /*
-    $(document).ready(function () {
-        $('table').DataTable();
-        $('.dataTables_length').addClass('bs-select');
-    });
-    	/*$(document).ready(function(){
-            $.notify({
-            	icon: 'ti-gift',
-            	message: "Bienvenido a <b>SIGESAF</b> - El mejor sistema de gestión de activos fijos tangibles que han inventado."
+    
+    /*$(document).ready(function(){
+        $.notify({
+            icon: 'ti-gift',
+            message: "Bienvenido a <b>SIGESAF</b> - El mejor sistema de gestión de activos fijos tangibles que han inventado."
 
-            },{
-                type: 'info',
-                timer: 10000
-            });
+        },{
+            type: 'info',
+            timer: 10000
+        });
 
-    	});*/
+    });*/
 	</script>
 
 </html>
