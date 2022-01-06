@@ -159,15 +159,14 @@ function modelo_locales(l) {
                         padre: ko.observable("(-)")
                     });
                 }
-            }
-
-            self.locales().forEach(l => {
-                self.locales().forEach(l_p => {
-                    if (l.id_padre() == l_p.id()) {
-                        l.padre(l_p.local());
-                    }
+                self.locales().forEach(l => {
+                    self.locales().forEach(l_p => {
+                        if (l.id_padre() == l_p.id()) {
+                            l.padre(l_p.local());
+                        }
+                    });
                 });
-            });
+            }
         });
     }
 
@@ -380,8 +379,7 @@ function locales(param = "") {
         return new Router.Page('Locales', 'pg-nuevo-local', { l: l });
     } else if (param !== "") {
         l.cargar(param);
-        var l2 = new modelo_locales();
-        return new Router.Page('Locales', 'pg-editar-local', { l: l, l2: l2 });
+        return new Router.Page('Locales', 'pg-editar-local', { l: l, l2: new modelo_locales() });
     } else {
         int = window.setInterval(() => {
             l.cargar();
