@@ -27,7 +27,7 @@ function setCookie(cname, cvalue, exdays) {
 function request(ep, verb, data) {
     var r = {
         type: verb,
-        url: 'https://sigesaf.kboom.nat.cu/api/' + ep,
+        url: 'https://sigesaf.ksdsolutions.net/api/' + ep,
         contentType: 'application/json',
         accepts: 'application/json',
         dataType: 'json',
@@ -159,6 +159,9 @@ function modelo_locales(l) {
                         padre: ko.observable("(-)")
                     });
                 }
+            }
+
+            if (self.locales().length > 2) {
                 self.locales().forEach(l => {
                     self.locales().forEach(l_p => {
                         if (l.id_padre() == l_p.id()) {
@@ -377,9 +380,8 @@ function locales(param = "") {
 
     if (param === "nuevo") {
         return new Router.Page('Locales', 'pg-nuevo-local', { l: l });
-    } else if (param !== "") {
-        l.cargar(param);
-        return new Router.Page('Locales', 'pg-editar-local', { l: l, l2: new modelo_locales() });
+    } else if (param !== "" && !isNaN(param)) {
+        return new Router.Page('Locales', 'pg-editar-local', { l: l, l2: new modelo_locales(param) });
     } else {
         int = window.setInterval(() => {
             l.cargar();

@@ -582,19 +582,19 @@
             </script>
             
             <script id="pg-editar-local" type="text/html">
-                <div class="row" data-bind="visible: ((!l.locales().length))">
+                <div class="row" data-bind="visible: ((!l2.locales().length))">
                     <div class="col-md-9">
                         <h3>El local solicitado no existe.</h3>
                     </div>
                 </div>
-                <div class="row" data-bind="visible: (l.locales().length), foreach: l.locales">
+                <div class="row" data-bind="visible: (l2.locales().length), foreach: l2.locales">
                     <div class="col-md-9">
                         <div class="card">
                             <div class="header">
                                 <h4 class="title">Editar local</h4>
                             </div>
                             <div class="content">
-                                <form data-bind="submit: $parent.l.modificar">
+                                <form data-bind="submit: $parent.l2.modificar">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -604,8 +604,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label data-bind='value: id_padre'>Local padre</label>
-                                                <select class="form-control border-input" data-bind='options: $parent.l2.locales, optionsText: "local", optionsValue: "id", value: id_padre' required></select>
+                                                <label>Local padre</label>
+                                                <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "local", optionsValue: "id", value: id_padre' required></select>
                                             </div>
                                         </div>
                                     </div>
@@ -702,7 +702,7 @@
                 </div>
             </script>
                         
-            <script id="pg-editar-local" type="text/html">
+            <script id="pg-editar-equipo" type="text/html">
                 <div class="row" data-bind="visible: ((!l.locales().length))">
                     <div class="col-md-9">
                         <h3>El local solicitado no existe.</h3>
@@ -742,7 +742,7 @@
                 </div>
             </script>
                         
-            <script id="pg-nuevo-local" type="text/html">
+            <script id="pg-nuevo-equipo" type="text/html">
                 <div class="row">
                     <div class="col-md-9">
                         <div class="card">
