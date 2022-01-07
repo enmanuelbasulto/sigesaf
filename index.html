@@ -703,30 +703,30 @@
             </script>
                         
             <script id="pg-editar-equipo" type="text/html">
-                <div class="row" data-bind="visible: ((!l.locales().length))">
+                <div class="row" data-bind="visible: ((!e.equipos().length))">
                     <div class="col-md-9">
-                        <h3>El local solicitado no existe.</h3>
+                        <h3>El equipo solicitado no existe.</h3>
                     </div>
                 </div>
-                <div class="row" data-bind="visible: (l.locales().length), foreach: l.locales">
+                <div class="row" data-bind="visible: (e.equipos().length), foreach: e.equipos">
                     <div class="col-md-9">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Editar local</h4>
+                                <h4 class="title">Editar equipo</h4>
                             </div>
                             <div class="content">
-                                <form data-bind="submit: $parent.l.modificar">
+                                <form data-bind="submit: $parent.e.modificar">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Local</label>
-                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: local" required>
+                                                <label>Equipo</label>
+                                                <input type="text" class="form-control border-input" placeholder="Equipo" data-bind="value: id" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Local padre</label>
-                                                <select class="form-control border-input" data-bind='options: $parent.l2.locales, optionsText: "local", optionsValue: "id", value: id_padre' required></select>
+                                                <label>Local</label>
+                                                <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "local", optionsValue: "id", value: id_local' required></select>
                                             </div>
                                         </div>
                                     </div>

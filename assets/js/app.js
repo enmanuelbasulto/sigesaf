@@ -397,14 +397,13 @@ function usuarios(param = "") {
     $('.nav-locales').removeClass('active');
     $('.nav-equipo').removeClass('active');
 
-    var u = new modelo_usuarios(param);
-
     if (param === "nuevo") {
-        return new Router.Page('Usuarios', 'pg-nuevo-usuario', { u: u, l: new modelo_locales() });
+        return new Router.Page('Usuarios', 'pg-nuevo-usuario', { u: new modelo_usuarios(), l: new modelo_locales() });
     } else if (param !== "") {
         u.cargar(param);
-        return new Router.Page('Usuarios', 'pg-editar-usuario', { u: u, l: new modelo_locales() });
+        return new Router.Page('Usuarios', 'pg-editar-usuario', { u: new modelo_usuarios(param), l: new modelo_locales() });
     } else {
+        var u = new modelo_usuarios();
         int = window.setInterval(() => {
             u.cargar();
         }, 30000);
@@ -420,14 +419,12 @@ function equipos(param = "") {
     $('.nav-usuarios').removeClass('active');
     $('.nav-equipo').addClass('active');
 
-    var e = new modelo_equipos();
-
     if (param === "nuevo") {
-        return new Router.Page('Equipos', 'pg-nuevo-equipo', { e: e });
+        return new Router.Page('Equipos', 'pg-nuevo-equipo', { e: new modelo_equipos() });
     } else if (param !== "") {
-        e.cargar(param);
-        return new Router.Page('Equipos', 'pg-editar-equipo', { e: e });
+        return new Router.Page('Equipos', 'pg-editar-equipo', { e: new modelo_equipos(param), l: new modelo_locales() });
     } else {
+        var e = new modelo_equipos();
         int = window.setInterval(() => {
             e.cargar();
         }, 30000);
