@@ -25,7 +25,24 @@ function setCookie(cname, cvalue, exdays) {
 }
 
 function request(ep, verb, data) {
+    /*
+    var n = null;
+    if (verb == undefined) {
+        n = $.notify({
+            icon: 'ti-reload',
+            message: "Cargando datos..."
+        },{
+            type: 'info',
+            allow_dismiss: false,
+            allow_duplicates: false,
+            placement: {
+                from: 'top',
+                align: 'center'
+            }
+        });
+    }*/
     var r = {
+        async: false,
         type: verb,
         url: 'https://sigesaf.ksdsolutions.net/api/' + ep,
         contentType: 'application/json',
@@ -58,11 +75,33 @@ function request(ep, verb, data) {
             }
         }
     };
+
     var a = $.ajax(r);
+    
     a.done(function () {
+        /*
+        if (verb != undefined) {
+            if (n != null) {
+                n.close();
+            }
+            n = $.notify({
+                icon: 'ti-check',
+                message: "Guardado correctamente!!!"
+            },{
+                type: 'info',
+                allow_dismiss: false,
+                allow_duplicates: false,
+                placement: {
+                    from: 'top',
+                    align: 'center'
+                }
+            });
+        }
+*/
         $("#loader").fadeOut();
         $("#body").fadeIn();
     });
+
     return a;
 }
 
@@ -74,6 +113,7 @@ function modelo_dashboard() {
     self.c_r = ko.observable();
     self.c_p_h = ko.observable();
     self.c_p_r = ko.observable();
+    self.c_pc = ko.observable();
 
     self.cargar = function () {
         request('dashboard').done(function (d) {
@@ -82,6 +122,7 @@ function modelo_dashboard() {
             self.c_r(d.cantidadReportes),
             self.c_p_h(d.cantidadPrestamosHechos),
             self.c_p_r(d.cantidadPrestamosRecibidos)
+            self.c_pc(d.cantidadPC)
         });
     }
 
@@ -189,6 +230,7 @@ function modelo_usuarios(u) {
         request('usuarios', 'post', {
             usuario: self.d.usuario || null,
             nombre: self.d.nombre || null,
+            clave: self.d.clave || null,
             admin: self.d.admin || false,
             id_local: self.d.id_local || null
         }).done(function () {
@@ -279,6 +321,19 @@ function modelo_equipos(e) {
         return false;
     }
 
+    self.reportar = function () {
+        request('reportes', 'post', {
+            id_equipo: self.equipos()[0].id() || null,
+            id_estado: self.d.id_estado || null,
+            problema: self.d.problema || null
+        }).done(function () {
+            location.href = '#equipos';
+        }).fail(function () {
+            alert('No se pudo reportar el equipo: '+self.equipos()[0].no_inv()+'.');
+        });
+        return false;
+    }
+
     self.modificar = function () {
         request('equipos/'+self.equipos()[0].id(), 'put', {
             equipo: self.equipos()[0].equipo() || null,
@@ -343,6 +398,79 @@ function modelo_equipos(e) {
 
     self.cargar(e);
 }
+
+function modelo_estados_reportes(e_r) {
+    var self = this;
+    self.estados = ko.observableArray();
+    self.d = ko.observableArray();
+
+    self.nuevo = function () {
+        location.href = '#estadosReportes/nuevo';
+    }
+
+    self.guardar = function () {
+        request('estadosReportes', 'post', {
+            equipo: self.d.equipo || null,
+            local: self.d.local || null
+        }).done(function () {
+            location.href = '#estadosReportes';
+        }).fail(function () {
+            alert('No se pudo agregar el estado: '+self.d.equipo+'.');
+        });
+        return false;
+    }
+
+    self.modificar = function () {
+        request('estadosReportes/'+self.equipos()[0].id(), 'put', {
+            equipo: self.equipos()[0].equipo() || null,
+            local: self.equipos()[0].local() || null
+        }).done(function () {
+            location.href = '#estadosReportes';
+        }).fail(function () {
+            alert('No se pudo modificar el equipo: '+self.equipos()[0].equipo()+'.');
+        });
+        return false;
+    }
+
+    self.editar = function (e) {
+        location.href = '#estadosReportes/' + e.id();
+    }
+
+    self.eliminar = function (e) {
+        request('estadosReportes/' + e.id(), 'DELETE').done(function () {
+            self.cargar();
+        }).fail(function () {
+            alert('No se pudo eliminar el equipo: ' + e.equipo() + '.');
+        });
+    }
+
+    self.cargar = function (e = "") {
+        p = 'estadosReportes';
+        if (e !== "") {
+            p += '/' + e;
+        }
+        request(p).done(function (d) {
+            self.estados.removeAll();
+            if (d.length === undefined) {
+                self.estados.push({
+                    id: ko.observable(d.id),
+                    estado: ko.observable(d.estado),
+                    descripcion: ko.observable(d.descripcion)
+                });
+            } else {
+                for (var i = 0; i < d.length; i++) {
+                    self.estados.push({
+                        id: ko.observable(d[i].id),
+                        estado: ko.observable(d[i].estado),
+                        descripcion: ko.observable(d[i].descripcion)
+                    });
+                }
+            }
+        });
+    }
+
+    self.cargar(e_r);
+}
 ////////
 
 var urlMapping = {
@@ -400,7 +528,6 @@ function usuarios(param = "") {
     if (param === "nuevo") {
         return new Router.Page('Usuarios', 'pg-nuevo-usuario', { u: new modelo_usuarios(), l: new modelo_locales() });
     } else if (param !== "") {
-        u.cargar(param);
         return new Router.Page('Usuarios', 'pg-editar-usuario', { u: new modelo_usuarios(param), l: new modelo_locales() });
     } else {
         var u = new modelo_usuarios();
@@ -422,6 +549,10 @@ function equipos(param = "") {
     if (param === "nuevo") {
         return new Router.Page('Equipos', 'pg-nuevo-equipo', { e: new modelo_equipos() });
     } else if (param !== "") {
+        if (param.toLowerCase().endsWith("/reportar")) {
+            param = param.replace("/reportar", "").trim();
+            return new Router.Page('Equipos', 'pg-reportar-equipo', { e: new modelo_equipos(param), e_r: new modelo_estados_reportes() });
+        }
         return new Router.Page('Equipos', 'pg-editar-equipo', { e: new modelo_equipos(param), l: new modelo_locales() });
     } else {
         var e = new modelo_equipos();
