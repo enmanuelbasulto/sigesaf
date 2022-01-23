@@ -3335,3 +3335,14 @@ textarea.form-control {
   float:none;
   margin-top: 25px;
 }
+
+#dhtmltooltip{
+  position: absolute;
+  border: 0.5px solid #66615b;
+  padding: 2px 8px;
+  background-color: #FFFCF5;
+  visibility: hidden;
+  z-index: 100;
+  /*Remove below line to remove shadow. Below line should always appear last within this CSS*/
+  filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
+  }
