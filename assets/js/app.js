@@ -25,22 +25,6 @@ function setCookie(cname, cvalue, exdays) {
 }
 
 function request(ep, verb, data) {
-    /*
-    var n = null;
-    if (verb == undefined) {
-        n = $.notify({
-            icon: 'ti-reload',
-            message: "Cargando datos..."
-        },{
-            type: 'info',
-            allow_dismiss: false,
-            allow_duplicates: false,
-            placement: {
-                from: 'top',
-                align: 'center'
-            }
-        });
-    }*/
     var r = {
         async: true,
         type: verb,
@@ -79,29 +63,11 @@ function request(ep, verb, data) {
     var a = $.ajax(r);
     
     a.done(function () {
-        /*
-        if (verb != undefined) {
-            if (n != null) {
-                n.close();
-            }
-            n = $.notify({
-                icon: 'ti-check',
-                message: "Guardado correctamente!!!"
-            },{
-                type: 'info',
-                allow_dismiss: false,
-                allow_duplicates: false,
-                placement: {
-                    from: 'top',
-                    align: 'center'
-                }
-            });
-        }
-*/
         $("#loader").fadeOut();
         $("#body").fadeIn();
     });
 
+    hideddrivetip();
     return a;
 }
 
@@ -356,6 +322,10 @@ function modelo_equipos(e) {
         }).fail(function () {
             alert('No se pudo eliminar el equipo: ' + e.equipo() + '.');
         });
+    }
+
+    self.reporte = function (e) {
+        location.href = '#equipos/' + e.id() + '/reportar';
     }
 
     self.cargar = function (e = "") {
@@ -613,7 +583,7 @@ ko.applyBindings(topLevelModel, $('html').get(0));
 ***********************************************/
 
 var offsetxpoint=0 //Customize x offset of tooltip
-var offsetypoint=5 //Customize y offset of tooltip
+var offsetypoint=15 //Customize y offset of tooltip
 var ie=document.all
 var ns6=document.getElementById && !document.all
 var enabletip=false
