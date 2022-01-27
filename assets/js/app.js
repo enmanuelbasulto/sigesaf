@@ -48,6 +48,13 @@ function request(ep, verb = "get", data) {
                     type: 'info',
                     allow_dismiss: false
                 });
+            } else {
+                n = $.notify({
+                    icon: 'ti-save-alt',
+                    message: "Guardando...",
+                    type: 'info',
+                    allow_dismiss: false
+                });
             }
         },
         error: function (xhr) {
@@ -80,22 +87,12 @@ function request(ep, verb = "get", data) {
                 type: 'success',
                 allow_dismiss: true
             });
-        } else if (a.status == 201) {
-            $.notify({
+        } else if (a.status == 201 || a.status == 204) {
+            n.update({
                 icon: 'ti-save-alt',
-                message: "Agregado correctamente a la base de datos."
-            },{
+                message: "Guardado correctamente.",
                 type: 'success',
-                timer: 4000
-            });
-        } else if (a.status == 204) {
-            $.notify({
-                icon: 'ti-save-alt',
-                message: "Cambios aplicados correctamente."
-
-            },{
-                type: 'success',
-                timer: 4000
+                allow_dismiss: true
             });
         }
         $("#loader").fadeOut();
