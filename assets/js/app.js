@@ -62,10 +62,9 @@ function request(ep, verb = "get", data) {
         },
         error: function (xhr) {
             if (xhr.status == 0) {
-                $.notify({
+                n.notify({
                     icon: 'ti-signal',
                     message: "Se ha perdido la conexión con los servidores."
-    
                 },{
                     type: 'danger',
                     timer: 4000
@@ -100,6 +99,17 @@ function request(ep, verb = "get", data) {
         }
         $("#loader").fadeOut();
         $("#body").fadeIn();
+    });
+
+    a.fail(function () {
+        if (a.status == 500) {
+            n.update({
+                icon: 'ti-na',
+                message: "Error al guardar",
+                type: 'danger',
+                allow_dismiss: true
+            });
+        }
     });
 
     hideddrivetip();
@@ -148,8 +158,6 @@ function modelo_locales(l) {
             id_padre: self.d.id_padre || null
         }).done(function () {
             location.href = '#locales';
-        }).fail(function () {
-            alert('No se pudo agregar el local: '+self.d.local+'.');
         });
         return false;
     }
@@ -160,8 +168,6 @@ function modelo_locales(l) {
             id_padre: self.locales()[0].id_padre() || null
         }).done(function () {
             location.href = '#locales';
-        }).fail(function () {
-            alert('No se pudo modificar el local: '+self.locales()[0].local()+'.');
         });
         return false;
     }
@@ -173,8 +179,6 @@ function modelo_locales(l) {
     self.eliminar = function (l) {
         request('locales/' + l.id(), 'DELETE').done(function () {
             self.cargar();
-        }).fail(function () {
-            alert('No se pudo eliminar el local: ' + l.local() + '.');
         });
     }
 
@@ -236,8 +240,6 @@ function modelo_usuarios(u) {
             id_local: self.d.id_local || null
         }).done(function () {
             location.href = '#usuarios';
-        }).fail(function () {
-            alert('No se pudo agregar el usuario: '+self.d.usuario+'.');
         });
         return false;
     }
@@ -250,8 +252,6 @@ function modelo_usuarios(u) {
             id_local: self.usuarios()[0].id_local() || null
         }).done(function () {
             location.href = '#usuarios';
-        }).fail(function () {
-            alert('No se pudo modificar el usuario: '+self.usuarios()[0].usuario()+'.');
         });
         return false;
     }
@@ -263,8 +263,6 @@ function modelo_usuarios(u) {
     self.eliminar = function (u) {
         request('usuarios/' + u.usuario(), 'DELETE').done(function () {
             self.cargar();
-        }).fail(function () {
-            alert('No se pudo eliminar el usuario: ' + u.usuario() + '.');
         });
     }
 
@@ -316,8 +314,6 @@ function modelo_equipos(e) {
             local: self.d.local || null
         }).done(function () {
             location.href = '#equipos';
-        }).fail(function () {
-            alert('No se pudo agregar el equipo: '+self.d.equipo+'.');
         });
         return false;
     }
@@ -329,8 +325,6 @@ function modelo_equipos(e) {
             problema: self.d.problema || null
         }).done(function () {
             location.href = '#equipos';
-        }).fail(function () {
-            alert('No se pudo reportar el equipo: '+self.equipos()[0].no_inv()+'.');
         });
         return false;
     }
@@ -341,8 +335,6 @@ function modelo_equipos(e) {
             local: self.equipos()[0].local() || null
         }).done(function () {
             location.href = '#equipos';
-        }).fail(function () {
-            alert('No se pudo modificar el equipo: '+self.equipos()[0].equipo()+'.');
         });
         return false;
     }
@@ -354,8 +346,6 @@ function modelo_equipos(e) {
     self.eliminar = function (e) {
         request('equipos/' + e.id(), 'DELETE').done(function () {
             self.cargar();
-        }).fail(function () {
-            alert('No se pudo eliminar el equipo: ' + e.equipo() + '.');
         });
     }
 
@@ -420,8 +410,6 @@ function modelo_estados_reportes(e_r) {
             local: self.d.local || null
         }).done(function () {
             location.href = '#estadosReportes';
-        }).fail(function () {
-            alert('No se pudo agregar el estado: '+self.d.equipo+'.');
         });
         return false;
     }
@@ -432,8 +420,6 @@ function modelo_estados_reportes(e_r) {
             local: self.equipos()[0].local() || null
         }).done(function () {
             location.href = '#estadosReportes';
-        }).fail(function () {
-            alert('No se pudo modificar el equipo: '+self.equipos()[0].equipo()+'.');
         });
         return false;
     }
@@ -445,8 +431,6 @@ function modelo_estados_reportes(e_r) {
     self.eliminar = function (e) {
         request('estadosReportes/' + e.id(), 'DELETE').done(function () {
             self.cargar();
-        }).fail(function () {
-            alert('No se pudo eliminar el equipo: ' + e.equipo() + '.');
         });
     }
 
