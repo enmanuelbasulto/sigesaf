@@ -24,10 +24,11 @@ function setCookie(cname, cvalue, exdays) {
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
-function request(ep, verb, data) {
+var n = $;
+function request(ep, verb = "get", data) {
     var r = {
         async: true,
-        type: verb,
+        type: verb.toLowerCase(),
         url: 'https://sigesaf.ksdsolutions.net/api/' + ep,
         contentType: 'application/json',
         accepts: 'application/json',
@@ -39,6 +40,15 @@ function request(ep, verb, data) {
                 location.href = "#login";
             }
             xhr.setRequestHeader("Authorization", "Basic " + aut);
+
+            if (verb.toLowerCase() == 'get') {
+                n = $.notify({
+                    icon: 'ti-reload',
+                    message: "Cargando...",
+                    type: 'info',
+                    allow_dismiss: false
+                });
+            }
         },
         error: function (xhr) {
             if (xhr.status == 0) {
@@ -63,28 +73,25 @@ function request(ep, verb, data) {
     var a = $.ajax(r);
     
     a.done(function () {
-        if (a.status == 201) {
-            $.notify({
-                icon: 'ti-save',
-                message: "Agregado correctamente a la base de datos."
-
-            },{
+        if (a.status == 200) {
+            n.update({
+                icon: 'ti-check',
+                message: "Cargado",
                 type: 'success',
-                timer: 4000
+                allow_dismiss: true
             });
-        } else if (a.status == 202) {
+        } else if (a.status == 201) {
             $.notify({
                 icon: 'ti-save-alt',
-                message: "Modificado correctamente."
-
+                message: "Agregado correctamente a la base de datos."
             },{
                 type: 'success',
                 timer: 4000
             });
         } else if (a.status == 204) {
             $.notify({
-                icon: 'ti-na',
-                message: "Eliminado correctamente."
+                icon: 'ti-save-alt',
+                message: "Cambios aplicados correctamente."
 
             },{
                 type: 'success',
@@ -123,7 +130,7 @@ function modelo_dashboard() {
     self.cargar();
     int = window.setInterval(() => {
         self.cargar();
-    }, 30000);
+    }, 60000);
 }
 
 function modelo_locales(l) {
@@ -512,7 +519,7 @@ function locales(param = "") {
     } else {
         int = window.setInterval(() => {
             l.cargar();
-        }, 30000);
+        }, 60000);
         return new Router.Page('Locales', 'pg-locales', { l: l });
     }
 }
@@ -532,7 +539,7 @@ function usuarios(param = "") {
         var u = new modelo_usuarios();
         int = window.setInterval(() => {
             u.cargar();
-        }, 30000);
+        }, 60000);
 
         return new Router.Page('Usuarios', 'pg-usuarios', { u: u });
     }
@@ -557,7 +564,7 @@ function equipos(param = "") {
         var e = new modelo_equipos();
         int = window.setInterval(() => {
             e.cargar();
-        }, 30000);
+        }, 60000);
         return new Router.Page('Equipos', 'pg-equipos', { e: e });
     }
 }
