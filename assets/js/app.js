@@ -44,14 +44,17 @@ function request(ep, verb = "get", data) {
             if (verb.toLowerCase() == 'get') {
                 n = $.notify({
                     icon: 'ti-reload',
-                    message: "Cargando...",
+                    message: "Cargando datos..."
+                    
+                }, {
                     type: 'info',
                     allow_dismiss: false
                 });
             } else {
                 n = $.notify({
                     icon: 'ti-save-alt',
-                    message: "Guardando...",
+                    message: "Guardando datos..."
+                }, {
                     type: 'info',
                     allow_dismiss: false
                 });
@@ -83,7 +86,7 @@ function request(ep, verb = "get", data) {
         if (a.status == 200) {
             n.update({
                 icon: 'ti-check',
-                message: "Cargado",
+                message: "Cargado correctamente",
                 type: 'success',
                 allow_dismiss: true
             });
