@@ -63,6 +63,34 @@ function request(ep, verb, data) {
     var a = $.ajax(r);
     
     a.done(function () {
+        if (a.status == 201) {
+            $.notify({
+                icon: 'ti-save',
+                message: "Agregado correctamente a la base de datos."
+
+            },{
+                type: 'success',
+                timer: 4000
+            });
+        } else if (a.status == 202) {
+            $.notify({
+                icon: 'ti-save-alt',
+                message: "Modificado correctamente."
+
+            },{
+                type: 'success',
+                timer: 4000
+            });
+        } else if (a.status == 204) {
+            $.notify({
+                icon: 'ti-na',
+                message: "Eliminado correctamente."
+
+            },{
+                type: 'success',
+                timer: 4000
+            });
+        }
         $("#loader").fadeOut();
         $("#body").fadeIn();
     });
@@ -463,7 +491,7 @@ function dashboard() {
     $('.nav-dashboard').addClass('active');
     $('.nav-usuarios').removeClass('active');
     $('.nav-locales').removeClass('active');
-    $('.nav-equipo').removeClass('active');
+    $('.nav-equipos').removeClass('active');
 
     return new Router.Page('Dashboard', 'home-template', { d: new modelo_dashboard });
 }
@@ -473,7 +501,7 @@ function locales(param = "") {
     $('.nav-locales').addClass('active');
     $('.nav-dashboard').removeClass('active');
     $('.nav-usuarios').removeClass('active');
-    $('.nav-equipo').removeClass('active');
+    $('.nav-equipos').removeClass('active');
 
     var l = new modelo_locales();
 
@@ -494,7 +522,7 @@ function usuarios(param = "") {
     $('.nav-usuarios').addClass('active');
     $('.nav-dashboard').removeClass('active');
     $('.nav-locales').removeClass('active');
-    $('.nav-equipo').removeClass('active');
+    $('.nav-equipos').removeClass('active');
 
     if (param === "nuevo") {
         return new Router.Page('Usuarios', 'pg-nuevo-usuario', { u: new modelo_usuarios(), l: new modelo_locales() });
@@ -515,7 +543,7 @@ function equipos(param = "") {
     $('.nav-locales').removeClass('active');
     $('.nav-dashboard').removeClass('active');
     $('.nav-usuarios').removeClass('active');
-    $('.nav-equipo').addClass('active');
+    $('.nav-equipos').addClass('active');
 
     if (param === "nuevo") {
         return new Router.Page('Equipos', 'pg-nuevo-equipo', { e: new modelo_equipos() });
