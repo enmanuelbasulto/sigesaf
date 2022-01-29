@@ -662,20 +662,53 @@
                             <div class="content">
                                 <form data-bind="submit: $parent.e.modificar">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Equipo</label>
-                                                <input type="text" class="form-control border-input" placeholder="Equipo" data-bind="value: id" required>
+                                                <label>No. Inventario</label>
+                                                <input type="number" class="form-control border-input" placeholder="No. de inventario" data-bind="value: no_inv" required readonly>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-5">
                                             <div class="form-group">
                                                 <label>Local</label>
                                                 <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "local", optionsValue: "id", value: id_local' required></select>
                                             </div>
                                         </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Estado t&eacute;cnico</label>
+                                                <select class="form-control border-input" data-bind='options: $parent.e_e.estados, optionsText: "estado", optionsValue: "id", value: id_estado' required></select>
+                                            </div>
+                                        </div>
                                     </div>
-                                                
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Tipo de equipo</label>
+                                                <select class="form-control border-input" data-bind='options: $parent.t_e.tipos, optionsText: "tipo", optionsValue: "id", value: id_tipo' required></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Marca</label>
+                                                <select class="form-control border-input" data-bind='options: $parent.m.marcas, optionsText: "marca", optionsValue: "id", value: id_marca' required></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Sello</label>
+                                                <input type="text" class="form-control border-input" placeholder="Sello" data-bind="value: sello">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Observaciones</label>
+                                                <textarea rows="5" class="form-control border-input" placeholder="Observaciones" data-bind="value: observaciones"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>                                               
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-info btn-fill btn-wd">Guardar cambios</button>
                                     </div>
@@ -692,25 +725,58 @@
                     <div class="col-md-9">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title"><i class="ti-layout-list-thumb"></i>&nbsp;Agregar local</h4>
+                                <h4 class="title"><i class="ti-layout-list-thumb"></i>&nbsp;Agregar equipo</h4>
                             </div>
                             <div class="content">
-                                <form data-bind="submit: l.guardar">
+                                <form data-bind="submit: e.guardar">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Local</label>
-                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: l.d.local" required>
+                                                <label>No. Inventario</label>
+                                                <input type="number" class="form-control border-input" placeholder="No. de inventario" data-bind="value: e.d.no_inv" required>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-5">
                                             <div class="form-group">
-                                                <label>Local padre</label>
-                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "local", optionsValue: "id", value: l.d.id_padre' required></select>
+                                                <label>Local</label>
+                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "local", optionsValue: "id", value: e.d.id_local' required></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Estado t&eacute;cnico</label>
+                                                <select class="form-control border-input" data-bind='options: e_e.estados, optionsText: "estado", optionsValue: "id", value: e.d.id_estado' required></select>
                                             </div>
                                         </div>
                                     </div>
-                        
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Tipo de equipo</label>
+                                                <select class="form-control border-input" data-bind='options: t_e.tipos, optionsText: "tipo", optionsValue: "id", value: e.d.id_tipo' required></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Marca</label>
+                                                <select class="form-control border-input" data-bind='options: m.marcas, optionsText: "marca", optionsValue: "id", value: e.d.id_marca' required></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Sello</label>
+                                                <input type="text" class="form-control border-input" placeholder="Sello" data-bind="value: e.d.sello">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Observaciones</label>
+                                                <textarea rows="5" class="form-control border-input" placeholder="Observaciones" data-bind="value: e.d.observaciones"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-info btn-fill btn-wd">Agregar</button>
                                     </div>

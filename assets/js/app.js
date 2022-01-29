@@ -339,8 +339,13 @@ function modelo_equipos(e) {
 
     self.guardar = function () {
         request('equipos', 'post', {
-            equipo: self.d.equipo || null,
-            local: self.d.local || null
+            id_estado: self.d.id_estado || null,
+            id_local: self.d.id_local || null,
+            id_marca: self.d.id_marca || null,
+            id_tipo: self.d.id_tipo || null,
+            no_inv: self.d.no_inv || null,
+            observaciones: self.d.observaciones || null,
+            sello: self.d.sello || null
         }).done(function () {
             location.href = '#equipos';
         });
@@ -360,8 +365,13 @@ function modelo_equipos(e) {
 
     self.modificar = function () {
         request('equipos/'+self.equipos()[0].id(), 'put', {
-            equipo: self.equipos()[0].equipo() || null,
-            local: self.equipos()[0].local() || null
+            id_estado: self.equipos()[0].id_estado() || null,
+            id_local: self.equipos()[0].id_local() || null,
+            id_marca: self.equipos()[0].id_marca() || null,
+            id_tipo: self.equipos()[0].id_tipo() || null,
+            no_inv: self.equipos()[0].no_inv() || null,
+            observaciones: self.equipos()[0].observaciones() || null,
+            sello: self.equipos()[0].sello() || null
         }).done(function () {
             location.href = '#equipos';
         });
@@ -435,8 +445,8 @@ function modelo_estados_reportes(e_r) {
 
     self.guardar = function () {
         request('estadosReportes', 'post', {
-            equipo: self.d.equipo || null,
-            local: self.d.local || null
+            estado: self.d.estado || null,
+            descripcion: self.d.descripcion || null
         }).done(function () {
             location.href = '#estadosReportes';
         });
@@ -444,9 +454,9 @@ function modelo_estados_reportes(e_r) {
     }
 
     self.modificar = function () {
-        request('estadosReportes/'+self.equipos()[0].id(), 'put', {
-            equipo: self.equipos()[0].equipo() || null,
-            local: self.equipos()[0].local() || null
+        request('estadosReportes/'+self.estados()[0].id(), 'put', {
+            estado: self.estados()[0].estado() || null,
+            descripcion: self.estados()[0].descripcion() || null
         }).done(function () {
             location.href = '#estadosReportes';
         });
@@ -489,6 +499,203 @@ function modelo_estados_reportes(e_r) {
     }
 
     self.cargar(e_r);
+}
+
+function modelo_estados_equipos(e_e) {
+    var self = this;
+    self.estados = ko.observableArray();
+    self.d = ko.observableArray();
+
+    self.nuevo = function () {
+        location.href = '#estadosEquipos/nuevo';
+    }
+
+    self.guardar = function () {
+        request('estadosEquipos', 'post', {
+            estado: self.d.estado || null,
+            descripcion: self.d.descripcion || null
+        }).done(function () {
+            location.href = '#estadosEquipos';
+        });
+        return false;
+    }
+
+    self.modificar = function () {
+        request('estadosEquipos/'+self.estados()[0].id(), 'put', {
+            estado: self.estados()[0].estado() || null,
+            descripcion: self.estados()[0].descripcion() || null
+        }).done(function () {
+            location.href = '#estadosEquipos';
+        });
+        return false;
+    }
+
+    self.editar = function (e) {
+        location.href = '#estadosEquipos/' + e.id();
+    }
+
+    self.eliminar = function (e) {
+        request('estadosEquipos/' + e.id(), 'DELETE').done(function () {
+            self.cargar();
+        });
+    }
+
+    self.cargar = function (e = "") {
+        p = 'estadosEquipos';
+        if (e !== "") {
+            p += '/' + e;
+        }
+        request(p).done(function (d) {
+            self.estados.removeAll();
+            if (d.length === undefined) {
+                self.estados.push({
+                    id: ko.observable(d.id),
+                    estado: ko.observable(d.estado),
+                    descripcion: ko.observable(d.descripcion)
+                });
+            } else {
+                for (var i = 0; i < d.length; i++) {
+                    self.estados.push({
+                        id: ko.observable(d[i].id),
+                        estado: ko.observable(d[i].estado),
+                        descripcion: ko.observable(d[i].descripcion)
+                    });
+                }
+            }
+        });
+    }
+
+    self.cargar(e_e);
+}
+
+function modelo_tipos_equipos(t_e) {
+    var self = this;
+    self.tipos = ko.observableArray();
+    self.d = ko.observableArray();
+
+    self.nuevo = function () {
+        location.href = '#tiposEquipos/nuevo';
+    }
+
+    self.guardar = function () {
+        request('tiposEquipos', 'post', {
+            tipo: self.d.tipo || null,
+            descripcion: self.d.descripcion || null
+        }).done(function () {
+            location.href = '#tiposEquipos';
+        });
+        return false;
+    }
+
+    self.modificar = function () {
+        request('tiposEquipos/'+self.tipos()[0].id(), 'put', {
+            tipo: self.tipos()[0].tipo() || null,
+            descripcion: self.tipo()[0].descripcion() || null
+        }).done(function () {
+            location.href = '#tiposEquipos';
+        });
+        return false;
+    }
+
+    self.editar = function (e) {
+        location.href = '#tiposEquipos/' + e.id();
+    }
+
+    self.eliminar = function (e) {
+        request('tiposEquipos/' + e.id(), 'DELETE').done(function () {
+            self.cargar();
+        });
+    }
+
+    self.cargar = function (e = "") {
+        p = 'tiposEquipos';
+        if (e !== "") {
+            p += '/' + e;
+        }
+        request(p).done(function (d) {
+            self.tipos.removeAll();
+            if (d.length === undefined) {
+                self.tipos.push({
+                    id: ko.observable(d.id),
+                    tipo: ko.observable(d.tipo),
+                    descripcion: ko.observable(d.descripcion)
+                });
+            } else {
+                for (var i = 0; i < d.length; i++) {
+                    self.tipos.push({
+                        id: ko.observable(d[i].id),
+                        tipo: ko.observable(d[i].tipo),
+                        descripcion: ko.observable(d[i].descripcion)
+                    });
+                }
+            }
+        });
+    }
+
+    self.cargar(t_e);
+}
+
+function modelo_marcas(m) {
+    var self = this;
+    self.marcas = ko.observableArray();
+    self.d = ko.observableArray();
+
+    self.nuevo = function () {
+        location.href = '#marcas/nuevo';
+    }
+
+    self.guardar = function () {
+        request('marcas', 'post', {
+            marca: self.d.marca || null
+        }).done(function () {
+            location.href = '#marcas';
+        });
+        return false;
+    }
+
+    self.modificar = function () {
+        request('marcas/'+self.marcas()[0].id(), 'put', {
+            marca: self.marcas()[0].marca() || null
+        }).done(function () {
+            location.href = '#marcas';
+        });
+        return false;
+    }
+
+    self.editar = function (m) {
+        location.href = '#marcas/' + m.id();
+    }
+
+    self.eliminar = function (m) {
+        request('marcas/' + m.id(), 'DELETE').done(function () {
+            self.cargar();
+        });
+    }
+
+    self.cargar = function (m = "") {
+        p = 'marcas';
+        if (m !== "") {
+            p += '/' + m;
+        }
+        request(p).done(function (d) {
+            self.marcas.removeAll();
+            if (d.length === undefined) {
+                self.marcas.push({
+                    id: ko.observable(d.id),
+                    marca: ko.observable(d.marca)
+                });
+            } else {
+                for (var i = 0; i < d.length; i++) {
+                    self.marcas.push({
+                        id: ko.observable(d[i].id),
+                        marca: ko.observable(d[i].marca)
+                    });
+                }
+            }
+        });
+    }
+
+    self.cargar(m);
 }
 ////////
 
@@ -566,13 +773,13 @@ function equipos(param = "") {
     $('.nav-equipos').addClass('active');
 
     if (param === "nuevo") {
-        return new Router.Page('Equipos', 'pg-nuevo-equipo', { e: new modelo_equipos() });
+        return new Router.Page('Equipos', 'pg-nuevo-equipo', { e: new modelo_equipos(), l: new modelo_locales(), e_e : new modelo_estados_equipos(), t_e: new modelo_tipos_equipos(), m: new modelo_marcas()});
     } else if (param !== "") {
         if (param.toLowerCase().endsWith("/reportar")) {
             param = param.replace("/reportar", "").trim();
             return new Router.Page('Equipos', 'pg-reportar-equipo', { e: new modelo_equipos(param), e_r: new modelo_estados_reportes() });
         }
-        return new Router.Page('Equipos', 'pg-editar-equipo', { e: new modelo_equipos(param), l: new modelo_locales() });
+        return new Router.Page('Equipos', 'pg-editar-equipo', { e: new modelo_equipos(param), l: new modelo_locales(), e_e : new modelo_estados_equipos(), t_e: new modelo_tipos_equipos(), m: new modelo_marcas()});
     } else {
         var e = new modelo_equipos();
         int = window.setInterval(() => {
