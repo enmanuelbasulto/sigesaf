@@ -124,25 +124,45 @@ function request(ep, verb = "get", data) {
 ////////
 function modelo_dashboard() {
     var self = this;
-    self.c_u = ko.observable();
+    self.c_tv = ko.observable();
+    self.c_tv_r = ko.observable();
+    self.t_c_tv = ko.observable();
     self.c_c = ko.observable();
+    self.c_c_r = ko.observable();
+    self.t_c_c = ko.observable();
     self.c_r = ko.observable();
     self.c_p_h = ko.observable();
     self.c_p_r = ko.observable();
     self.c_pc = ko.observable();
+    self.c_pc_r = ko.observable();
+    self.t_c_pc = ko.observable();
     self.c_c_l = ko.observable();
+    self.c_c_l_r = ko.observable();
+    self.t_c_c_l = ko.observable();
     self.c_s = ko.observable();
+    self.c_s_r = ko.observable();
+    self.t_c_s = ko.observable();
 
     self.cargar = function () {
         request('dashboard').done(function (d) {
-            self.c_u(d.cantidadUsuarios),
+            self.c_tv(d.cantidadTV),
+            self.c_tv_r(d.totalCantidadTV - d.cantidadTV),
+            self.t_c_tv(d.totalCantidadTV),
             self.c_c(d.cantidadComputadoras),
+            self.c_c_r(d.totalCantidadComputadoras - d.cantidadComputadoras),
+            self.t_c_c(d.totalCantidadComputadoras),
             self.c_r(d.cantidadReportes),
             self.c_p_h(d.cantidadPrestamosHechos),
             self.c_p_r(d.cantidadPrestamosRecibidos),
             self.c_pc(d.cantidadPC),
+            self.c_pc_r(d.totalCantidadPC - d.cantidadPC),
+            self.t_c_pc(d.totalCantidadPC),
             self.c_c_l(d.cantidadClientesLigeros),
-            self.c_s(d.cantidadServidores)
+            self.c_c_l_r(d.totalCantidadClientesLigeros - d.cantidadClientesLigeros),
+            self.t_c_c_l(d.totalCantidadClientesLigeros),
+            self.c_s(d.cantidadServidores),
+            self.c_s_r(d.totalCantidadServidores - d.cantidadServidores),
+            self.t_c_s(d.totalCantidadServidores)
         });
     }
 
