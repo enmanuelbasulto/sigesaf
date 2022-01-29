@@ -130,6 +130,8 @@ function modelo_dashboard() {
     self.c_p_h = ko.observable();
     self.c_p_r = ko.observable();
     self.c_pc = ko.observable();
+    self.c_c_l = ko.observable();
+    self.c_s = ko.observable();
 
     self.cargar = function () {
         request('dashboard').done(function (d) {
@@ -137,8 +139,10 @@ function modelo_dashboard() {
             self.c_c(d.cantidadComputadoras),
             self.c_r(d.cantidadReportes),
             self.c_p_h(d.cantidadPrestamosHechos),
-            self.c_p_r(d.cantidadPrestamosRecibidos)
-            self.c_pc(d.cantidadPC)
+            self.c_p_r(d.cantidadPrestamosRecibidos),
+            self.c_pc(d.cantidadPC),
+            self.c_c_l(d.cantidadClientesLigeros),
+            self.c_s(d.cantidadServidores)
         });
     }
 
