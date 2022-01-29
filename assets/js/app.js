@@ -24,8 +24,8 @@ function setCookie(cname, cvalue, exdays) {
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
-var n = $;
 function request(ep, verb = "get", data) {
+    var n = null;
     var r = {
         async: true,
         type: verb.toLowerCase(),
@@ -45,10 +45,10 @@ function request(ep, verb = "get", data) {
                 n = $.notify({
                     icon: 'ti-reload',
                     message: "Cargando datos..."
-                    
                 }, {
                     type: 'info',
-                    allow_dismiss: false
+                    allow_dismiss: false,
+                    delay: 0
                 });
             } else {
                 n = $.notify({
@@ -56,19 +56,21 @@ function request(ep, verb = "get", data) {
                     message: "Guardando datos..."
                 }, {
                     type: 'info',
-                    allow_dismiss: false
+                    allow_dismiss: false,
+                    delay: 0
                 });
             }
         },
         error: function (xhr) {
             if (xhr.status == 0) {
-                n.notify({
+                n.update({
                     icon: 'ti-signal',
-                    message: "Se ha perdido la conexión con los servidores."
-                },{
-                    type: 'danger',
-                    timer: 4000
+                    message: "Se ha perdido la conexión con los servidores.",
+                    type: 'danger'
                 });
+                setTimeout(() => {
+                    n.close();
+                }, 10000);
             } else if (xhr.status == 401) {
                 var aut = getCookie("_aut");
                 if (aut !== "") {
@@ -86,19 +88,20 @@ function request(ep, verb = "get", data) {
             n.update({
                 icon: 'ti-check',
                 message: "Cargado correctamente",
-                type: 'success',
-                allow_dismiss: true
+                type: 'success'
             });
         } else if (a.status == 201 || a.status == 204) {
             n.update({
                 icon: 'ti-save-alt',
                 message: "Guardado correctamente.",
-                type: 'success',
-                allow_dismiss: true
+                type: 'success'
             });
         }
         $("#loader").fadeOut();
         $("#body").fadeIn();
+        setTimeout(() => {
+            n.close();
+        }, 5000);
     });
 
     a.fail(function () {
@@ -106,9 +109,11 @@ function request(ep, verb = "get", data) {
             n.update({
                 icon: 'ti-na',
                 message: "Error al guardar",
-                type: 'danger',
-                allow_dismiss: true
+                type: 'danger'
             });
+            setTimeout(() => {
+                n.close();
+            }, 10000);
         }
     });
 
