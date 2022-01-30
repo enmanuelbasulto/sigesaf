@@ -73,6 +73,7 @@ function request(ep, verb = "get", data) {
                 }, 10000);
             } else if (xhr.status == 401) {
                 var aut = getCookie("_aut");
+                n.close();
                 if (aut !== "") {
                     setCookie("_aut", "", 365);
                     location.reload();
@@ -124,6 +125,7 @@ function request(ep, verb = "get", data) {
 ////////
 function modelo_dashboard() {
     var self = this;
+    self.loading = ko.observable(true);
     self.c_tv = ko.observable();
     self.c_tv_r = ko.observable();
     self.t_c_tv = ko.observable();
@@ -144,25 +146,27 @@ function modelo_dashboard() {
     self.t_c_s = ko.observable();
 
     self.cargar = function () {
+        self.loading(true);
         request('dashboard').done(function (d) {
-            self.c_tv(d.cantidadTV),
-            self.c_tv_r(d.totalCantidadTV - d.cantidadTV),
-            self.t_c_tv(d.totalCantidadTV),
-            self.c_c(d.cantidadComputadoras),
-            self.c_c_r(d.totalCantidadComputadoras - d.cantidadComputadoras),
-            self.t_c_c(d.totalCantidadComputadoras),
-            self.c_r(d.cantidadReportes),
-            self.c_p_h(d.cantidadPrestamosHechos),
-            self.c_p_r(d.cantidadPrestamosRecibidos),
-            self.c_pc(d.cantidadPC),
-            self.c_pc_r(d.totalCantidadPC - d.cantidadPC),
-            self.t_c_pc(d.totalCantidadPC),
-            self.c_c_l(d.cantidadClientesLigeros),
-            self.c_c_l_r(d.totalCantidadClientesLigeros - d.cantidadClientesLigeros),
-            self.t_c_c_l(d.totalCantidadClientesLigeros),
-            self.c_s(d.cantidadServidores),
-            self.c_s_r(d.totalCantidadServidores - d.cantidadServidores),
-            self.t_c_s(d.totalCantidadServidores)
+            self.c_tv(d.cantidadTV);
+            self.c_tv_r(d.totalCantidadTV - d.cantidadTV);
+            self.t_c_tv(d.totalCantidadTV);
+            self.c_c(d.cantidadComputadoras);
+            self.c_c_r(d.totalCantidadComputadoras - d.cantidadComputadoras);
+            self.t_c_c(d.totalCantidadComputadoras);
+            self.c_r(d.cantidadReportes);
+            self.c_p_h(d.cantidadPrestamosHechos);
+            self.c_p_r(d.cantidadPrestamosRecibidos);
+            self.c_pc(d.cantidadPC);
+            self.c_pc_r(d.totalCantidadPC - d.cantidadPC);
+            self.t_c_pc(d.totalCantidadPC);
+            self.c_c_l(d.cantidadClientesLigeros);
+            self.c_c_l_r(d.totalCantidadClientesLigeros - d.cantidadClientesLigeros);
+            self.t_c_c_l(d.totalCantidadClientesLigeros);
+            self.c_s(d.cantidadServidores);
+            self.c_s_r(d.totalCantidadServidores - d.cantidadServidores);
+            self.t_c_s(d.totalCantidadServidores);
+            self.loading(false);
         });
     }
 
@@ -174,7 +178,9 @@ function modelo_dashboard() {
 
 function modelo_locales(l) {
     var self = this;
+    self.loading = ko.observable(true);
     self.locales = ko.observableArray();
+    self.locales.extend({ notify: 'always' });
     self.d = ko.observableArray();
 
     self.nuevo = function () {
@@ -212,6 +218,7 @@ function modelo_locales(l) {
     }
 
     self.cargar = function (l = "") {
+        self.loading(true);
         p = 'locales';
         if (l !== "") {
             p += '/' + l;
@@ -245,6 +252,7 @@ function modelo_locales(l) {
                     });
                 });
             }
+            self.loading(false);
         });
     }
 
@@ -253,7 +261,9 @@ function modelo_locales(l) {
 
 function modelo_usuarios(u) {
     var self = this;
+    self.loading = ko.observable(true);
     self.usuarios = ko.observableArray();
+    self.usuarios.extend({ notify: 'always' });
     self.d = ko.observableArray();
 
     self.nuevo = function () {
@@ -296,6 +306,7 @@ function modelo_usuarios(u) {
     }
 
     self.cargar = function (u = "") {
+        self.loading(true);
         p = 'usuarios';
         if (u !== "") {
             p += '/' + u;
@@ -323,6 +334,7 @@ function modelo_usuarios(u) {
                     });
                 }
             }
+            self.loading(false);
         });
     }
     self.cargar(u);
@@ -330,7 +342,9 @@ function modelo_usuarios(u) {
 
 function modelo_equipos(e) {
     var self = this;
+    self.loading = ko.observable(true);
     self.equipos = ko.observableArray();
+    self.equipos.extend({ notify: 'always' });
     self.d = ko.observableArray();
 
     self.nuevo = function () {
@@ -393,6 +407,7 @@ function modelo_equipos(e) {
     }
 
     self.cargar = function (e = "") {
+        self.loading(true);
         p = 'equipos';
         if (e !== "") {
             p += '/' + e;
@@ -428,6 +443,7 @@ function modelo_equipos(e) {
                     });
                 }
             }
+            self.loading(false);
         });
     }
 
@@ -436,6 +452,7 @@ function modelo_equipos(e) {
 
 function modelo_estados_reportes(e_r) {
     var self = this;
+    self.loading = ko.observable(true);
     self.estados = ko.observableArray();
     self.d = ko.observableArray();
 
@@ -474,6 +491,7 @@ function modelo_estados_reportes(e_r) {
     }
 
     self.cargar = function (e = "") {
+        self.loading(true);
         p = 'estadosReportes';
         if (e !== "") {
             p += '/' + e;
@@ -495,6 +513,7 @@ function modelo_estados_reportes(e_r) {
                     });
                 }
             }
+            self.loading(false);
         });
     }
 
@@ -503,6 +522,7 @@ function modelo_estados_reportes(e_r) {
 
 function modelo_estados_equipos(e_e) {
     var self = this;
+    self.loading = ko.observable(true);
     self.estados = ko.observableArray();
     self.d = ko.observableArray();
 
@@ -541,6 +561,7 @@ function modelo_estados_equipos(e_e) {
     }
 
     self.cargar = function (e = "") {
+        self.loading(true);
         p = 'estadosEquipos';
         if (e !== "") {
             p += '/' + e;
@@ -562,6 +583,7 @@ function modelo_estados_equipos(e_e) {
                     });
                 }
             }
+            self.loading(false);
         });
     }
 
@@ -570,6 +592,7 @@ function modelo_estados_equipos(e_e) {
 
 function modelo_tipos_equipos(t_e) {
     var self = this;
+    self.loading = ko.observable(true);
     self.tipos = ko.observableArray();
     self.d = ko.observableArray();
 
@@ -608,6 +631,7 @@ function modelo_tipos_equipos(t_e) {
     }
 
     self.cargar = function (e = "") {
+        self.loading(true);
         p = 'tiposEquipos';
         if (e !== "") {
             p += '/' + e;
@@ -629,6 +653,7 @@ function modelo_tipos_equipos(t_e) {
                     });
                 }
             }
+            self.loading(false);
         });
     }
 
@@ -637,6 +662,7 @@ function modelo_tipos_equipos(t_e) {
 
 function modelo_marcas(m) {
     var self = this;
+    self.loading = ko.observable(true);
     self.marcas = ko.observableArray();
     self.d = ko.observableArray();
 
@@ -673,6 +699,7 @@ function modelo_marcas(m) {
     }
 
     self.cargar = function (m = "") {
+        self.loading(true);
         p = 'marcas';
         if (m !== "") {
             p += '/' + m;
@@ -692,12 +719,14 @@ function modelo_marcas(m) {
                     });
                 }
             }
+            self.loading(false);
         });
     }
 
     self.cargar(m);
 }
 ////////
+var loading = ko.observable(true);
 
 var urlMapping = {
     home: { match: /^$/, page: dashboard },
@@ -735,7 +764,16 @@ function locales(param = "") {
     if (param === "nuevo") {
         return new Router.Page('Locales', 'pg-nuevo-local', { l: l });
     } else if (param !== "" && !isNaN(param)) {
-        return new Router.Page('Locales', 'pg-editar-local', { l: l, l2: new modelo_locales(param) });
+        loading(true);
+        var l2 = new modelo_locales(param);
+
+        ko.when(function () {
+            return l.loading() == false && l2.loading() == false;
+        }, function (result) {
+            l2.locales(l2.locales());
+            loading(false);
+        });
+        return new Router.Page('Locales', 'pg-editar-local', { loading: loading, l: l, l2: l2 });
     } else {
         int = window.setInterval(() => {
             l.cargar();
@@ -754,7 +792,17 @@ function usuarios(param = "") {
     if (param === "nuevo") {
         return new Router.Page('Usuarios', 'pg-nuevo-usuario', { u: new modelo_usuarios(), l: new modelo_locales() });
     } else if (param !== "") {
-        return new Router.Page('Usuarios', 'pg-editar-usuario', { u: new modelo_usuarios(param), l: new modelo_locales() });
+        loading(true);
+        var u = new modelo_usuarios(param);
+        var l = new modelo_locales();
+
+        ko.when(function () {
+            return l.loading() == false && u.loading() == false;
+        }, function (result) {
+            u.usuarios(u.usuarios());
+            loading(false);
+        });
+        return new Router.Page('Usuarios', 'pg-editar-usuario', { loading: loading, u: u, l: l });
     } else {
         var u = new modelo_usuarios();
         int = window.setInterval(() => {
@@ -779,7 +827,20 @@ function equipos(param = "") {
             param = param.replace("/reportar", "").trim();
             return new Router.Page('Equipos', 'pg-reportar-equipo', { e: new modelo_equipos(param), e_r: new modelo_estados_reportes() });
         }
-        return new Router.Page('Equipos', 'pg-editar-equipo', { e: new modelo_equipos(param), l: new modelo_locales(), e_e : new modelo_estados_equipos(), t_e: new modelo_tipos_equipos(), m: new modelo_marcas()});
+        loading(true);
+        var l = new modelo_locales();
+        var e_e = new modelo_estados_equipos();
+        var t_e = new modelo_tipos_equipos();
+        var m = new modelo_marcas();
+        var e = new modelo_equipos(param);
+
+        ko.when(function () {
+            return (l.loading() == false && e_e.loading() == false && t_e.loading() == false && m.loading() == false) && e.loading() == false;
+        }, function (result) {
+            e.equipos(e.equipos());
+            loading(false);
+        });
+        return new Router.Page('Equipos', 'pg-editar-equipo', { loading: loading, e: e, l: l, e_e : e_e, t_e: t_e, m: m});
     } else {
         var e = new modelo_equipos();
         int = window.setInterval(() => {
@@ -795,7 +856,7 @@ function login() {
         location.href = "/";
     }
     $('body').empty();
-    $('body').append("<div class=\"content container\"><div class=\"row\"><div class=\"col-lg-12\"><div id=\"login-form\" class=\"center-block d-block mx-auto col-lg-4 col-md-5\"><div class=\"card\"><div class=\"header\"><h4 class=\"title\">Autenticación</h4></div><div class=\"content\"><form id=\"frm-login\"><div class=\"row\"><div class=\"form-group\"><label>Usuario</label><input id=\"usr\" type=\"text\" class=\"form-control border-input\" placeholder=\"Usuario\"></div></div><div class=\"row\"><div class=\"form-group\"><label>Clave</label><input id=\"pass\" type=\"password\" class=\"form-control border-input\" placeholder=\"Clave\"></div></div><div class=\"text-center\"><button type=\"submit\" class=\"btn btn-info btn-fill btn-wd\">Entrar</button></div><div class=\"clearfix\"></div></form></div></div></div></div></div></div>");
+    $('body').append("<div class=\"content container\"><div class=\"row\"><div class=\"col-lg-12\"><div id=\"login-form\" class=\"center-block d-block mx-auto col-lg-4 col-md-5\"><div class=\"card\"><div class=\"header\"><h4 class=\"title\">Autenticación</h4></div><div class=\"content\"><form id=\"frm-login\"><div class=\"row\"><div class=\"form-group\"><label>Usuario</label><input id=\"usr\" type=\"text\" class=\"form-control border-input\" placeholder=\"Usuario\" autocomplete=\"username\"></div></div><div class=\"row\"><div class=\"form-group\"><label>Clave</label><input id=\"pass\" type=\"password\" class=\"form-control border-input\" placeholder=\"Clave\" autocomplete=\"current-password\"></div></div><div class=\"text-center\"><button type=\"submit\" class=\"btn btn-info btn-fill btn-wd\">Entrar</button></div><div class=\"clearfix\"></div></form></div></div></div></div></div></div>");
     $("#frm-login").submit(function () {
         var u = $('#usr').val();
         var p = $('#pass').val();
@@ -844,7 +905,9 @@ var ns6=document.getElementById && !document.all
 var enabletip=false
 if (ie||ns6)
 var tipobj=document.all? document.all["dhtmltooltip"] : document.getElementById? document.getElementById("dhtmltooltip") : ""
-document.body.appendChild(tipobj)
+try {
+    document.body.appendChild(tipobj);
+} catch {}
 
 function ietruebody(){
 return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body

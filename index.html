@@ -648,12 +648,14 @@
             </script>
                         
             <script id="pg-editar-equipo" type="text/html">
+                <!--
                 <div class="row" data-bind="visible: ((!e.equipos().length))">
                     <div class="col-md-9">
                         <h3>El equipo solicitado no existe.</h3>
                     </div>
                 </div>
-                <div class="row" data-bind="visible: (e.equipos().length), foreach: e.equipos">
+                -->
+                <div class="row" data-bind="visible: (e.equipos().length&&l.locales().length&&e_e.estados().length&&t_e.tipos().length&&m.marcas().length), foreach: e.equipos">
                     <div class="col-md-9">
                         <div class="card">
                             <div class="header">
@@ -880,28 +882,19 @@
                 </div>
             </script>
             <!--/config-->
-              <script id="fail-template" type="text/html">
-                <h2>Fail</h2>
-                <p>You will never see this, because the router shows the error page instead.</p>
-              </script>
-            
-              <script id="slow-template" type="text/html">
-                <h2>Slow</h2>
-                <p>This page only shows up after it has loaded, which takes a couple of seconds.</p>
-              </script>
             
               <!-- Templates used directly by the Router -->
               <script id="404-template" type="text/html">
-                <h2>404 - Page not found</h2>
+                <h4>404 - No se encuentra la página solicitada, intente usar los enlaces de la izquierda para encontrar lo que desea.</h4>
               </script>
             
               <script id="error-template" type="text/html">
-                <h2>Error</h2>
+                <h4>Error</h4>
                 <p data-bind="text: error"></p>
               </script>
             
               <script id="loading-template" type="text/html">
-                <h2><i class="ti-time"></i>&nbsp;&nbsp;Cargando...</h2>
+                <h4><i class="ti-time"></i>&nbsp;&nbsp;Cargando...</h4>
               </script>
             
             <div class="container-fluid" data-bind="template: { name: router.currentPage().view, data: router.currentPage().model }">
