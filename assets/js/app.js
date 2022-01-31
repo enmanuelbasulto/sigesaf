@@ -1,6 +1,78 @@
 var int = null;
 var table = null;
+//////////
+ko.bindingHandlers.datalist = (function () {
+    function getVal(rawItem, prop) {
+        var item = ko.unwrap(rawItem);
+        return item && prop ? ko.unwrap(item[prop]) : item;
+    }
 
+    function findItem(options, prop, ref) {
+        return ko.utils.arrayFirst(options, function (item) {
+            return ref === getVal(item, prop);
+        });
+    }
+    return {
+        init: function (element, valueAccessor, allBindingsAccessor) {
+            var setup = valueAccessor(),
+                textProperty = ko.unwrap(setup.optionsText),
+                valueProperty = ko.unwrap(setup.optionsValue),
+                dataItems = ko.unwrap(setup.options),
+                myValue = setup.value,
+                koValue = allBindingsAccessor().value,
+                datalist = document.createElement("DATALIST");
+
+            // create an associated <datalist> element
+            datalist.id = element.getAttribute("list");
+            document.body.appendChild(datalist);
+
+            // when the value is changed, write to the associated myValue observable
+            function onNewValue(newVal) {
+                var dataItems = ko.unwrap(setup.options),
+                    selectedItem = findItem(dataItems, textProperty, newVal),
+                    newValue = selectedItem ? getVal(selectedItem, valueProperty) : void 0;
+
+                if (ko.isWriteableObservable(myValue)) {
+                    myValue(newValue);
+                }
+            }
+
+            // listen for value changes
+            // - either via KO's value binding (preferred) or the change event
+            if (ko.isSubscribable(koValue)) {
+                koValue.subscribe(onNewValue);
+            } else {
+                ko.utils.registerEventHandler(element, "change", function () {
+                    onNewValue(this.value);
+                });
+            }
+
+            // init the element's value
+            // - either via the myValue observable (preferred) or KO's value binding
+            if (ko.isObservable(myValue) && myValue()) {
+                element.value = getVal(findItem(dataItems, valueProperty, myValue()), textProperty);
+            } else if (ko.isObservable(koValue) && koValue()) {
+                onNewValue(koValue());
+            }
+        },
+        update: function (element, valueAccessor) {
+            var setup = valueAccessor(),
+                datalist = element.list,
+                dataItems = ko.unwrap(setup.options),
+                textProperty = ko.unwrap(setup.optionsText);
+
+            // rebuild list of options when an underlying observable changes
+            datalist.innerHTML = "";
+            ko.utils.arrayForEach(dataItems, function (item) {
+                var option = document.createElement("OPTION");
+                option.value = getVal(item, textProperty);
+                datalist.appendChild(option);
+            });
+            ko.utils.triggerEvent(element, "change");
+        }
+    };
+})();
+//////////
 function getCookie(cname) {
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
@@ -346,6 +418,7 @@ function modelo_equipos(e) {
     self.equipos = ko.observableArray();
     self.equipos.extend({ notify: 'always' });
     self.d = ko.observableArray();
+    self.destino = ko.observable(null);
 
     self.nuevo = function () {
         location.href = '#equipos/nuevo';
@@ -371,6 +444,21 @@ function modelo_equipos(e) {
             id_equipo: self.equipos()[0].id() || null,
             id_estado: self.d.id_estado || null,
             problema: self.d.problema || null
+        }).done(function () {
+            location.href = '#equipos';
+        });
+        return false;
+    }
+
+    self.prestar = function () {
+        request('prestamos', 'post', {
+            fecha_fin: self.d.fecha_fin || null,
+            motivo: self.d.motivo || null,
+            recibe: self.d.recibe || null,
+            local_req: (isNaN(self.destino()) ? self.d.local_req : null),
+            id_equipo: self.equipos()[0].id() || null,
+            id_local_dest: (isNaN(self.destino()) ? 0 : self.destino()),
+            id_estado: self.d.id_estado || null
         }).done(function () {
             location.href = '#equipos';
         });
@@ -404,6 +492,10 @@ function modelo_equipos(e) {
 
     self.reporte = function (e) {
         location.href = '#equipos/' + e.id() + '/reportar';
+    }
+
+    self.prestamo = function (e) {
+        location.href = '#equipos/' + e.id() + '/prestar';
     }
 
     self.cargar = function (e = "") {
@@ -588,6 +680,76 @@ function modelo_estados_equipos(e_e) {
     }
 
     self.cargar(e_e);
+}
+
+function modelo_estados_prestamos(e_p) {
+    var self = this;
+    self.loading = ko.observable(true);
+    self.estados = ko.observableArray();
+    self.d = ko.observableArray();
+
+    self.nuevo = function () {
+        location.href = '#estadosPrestamos/nuevo';
+    }
+
+    self.guardar = function () {
+        request('estadosPrestamos', 'post', {
+            estado: self.d.estado || null,
+            descripcion: self.d.descripcion || null
+        }).done(function () {
+            location.href = '#estadosPrestamos';
+        });
+        return false;
+    }
+
+    self.modificar = function () {
+        request('estadosPrestamos/'+self.estados()[0].id(), 'put', {
+            estado: self.estados()[0].estado() || null,
+            descripcion: self.estados()[0].descripcion() || null
+        }).done(function () {
+            location.href = '#estadosPrestamos';
+        });
+        return false;
+    }
+
+    self.editar = function (e) {
+        location.href = '#estadosPrestamos/' + e.id();
+    }
+
+    self.eliminar = function (e) {
+        request('estadosPrestamos/' + e.id(), 'DELETE').done(function () {
+            self.cargar();
+        });
+    }
+
+    self.cargar = function (e = "") {
+        self.loading(true);
+        p = 'estadosPrestamos';
+        if (e !== "") {
+            p += '/' + e;
+        }
+        request(p).done(function (d) {
+            self.estados.removeAll();
+            if (d.length === undefined) {
+                self.estados.push({
+                    id: ko.observable(d.id),
+                    estado: ko.observable(d.estado),
+                    descripcion: ko.observable(d.descripcion)
+                });
+            } else {
+                for (var i = 0; i < d.length; i++) {
+                    self.estados.push({
+                        id: ko.observable(d[i].id),
+                        estado: ko.observable(d[i].estado),
+                        descripcion: ko.observable(d[i].descripcion)
+                    });
+                }
+            }
+            self.loading(false);
+        });
+    }
+
+    self.cargar(e_p);
 }
 
 function modelo_tipos_equipos(t_e) {
@@ -826,7 +988,11 @@ function equipos(param = "") {
         if (param.toLowerCase().endsWith("/reportar")) {
             param = param.replace("/reportar", "").trim();
             return new Router.Page('Equipos', 'pg-reportar-equipo', { e: new modelo_equipos(param), e_r: new modelo_estados_reportes() });
+        } else if (param.toLowerCase().endsWith("/prestar")) {
+            param = param.replace("/prestar", "").trim();
+            return new Router.Page('Equipos', 'pg-prestar-equipo', { e: new modelo_equipos(param), l: new modelo_locales(), e_p: new modelo_estados_prestamos() });
         }
+
         loading(true);
         var l = new modelo_locales();
         var e_e = new modelo_estados_equipos();
