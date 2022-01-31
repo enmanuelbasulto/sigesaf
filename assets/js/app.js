@@ -245,7 +245,7 @@ function modelo_dashboard() {
     self.cargar();
     int = window.setInterval(() => {
         self.cargar();
-    }, 60000);
+    }, 180000);
 }
 
 function modelo_locales(l) {
@@ -939,7 +939,7 @@ function locales(param = "") {
     } else {
         int = window.setInterval(() => {
             l.cargar();
-        }, 60000);
+        }, 180000);
         return new Router.Page('Locales', 'pg-locales', { l: l });
     }
 }
@@ -969,7 +969,7 @@ function usuarios(param = "") {
         var u = new modelo_usuarios();
         int = window.setInterval(() => {
             u.cargar();
-        }, 60000);
+        }, 180000);
 
         return new Router.Page('Usuarios', 'pg-usuarios', { u: u });
     }
@@ -1011,7 +1011,7 @@ function equipos(param = "") {
         var e = new modelo_equipos();
         int = window.setInterval(() => {
             e.cargar();
-        }, 60000);
+        }, 180000);
         return new Router.Page('Equipos', 'pg-equipos', { e: e });
     }
 }
