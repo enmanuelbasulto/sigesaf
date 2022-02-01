@@ -96,6 +96,7 @@ function setCookie(cname, cvalue, exdays) {
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
+var t = 0;
 function request(ep, verb = "get", data) {
     var n = null;
     var r = {
@@ -137,12 +138,34 @@ function request(ep, verb = "get", data) {
             if (xhr.status == 0) {
                 n.update({
                     icon: 'ti-signal',
-                    message: "Se ha perdido la conexión con los servidores.",
+                    message: "Se ha perdido la conexión con los servidores. Reintentando autom&aacute;ticamente en 30 segundos.",
                     type: 'danger'
                 });
+
                 setTimeout(() => {
                     n.close();
-                }, 10000);
+                }, 30000);
+
+                var hasta = 33000;
+                var x = setInterval(function() {
+                    hasta = hasta -1000;
+                    
+                    if (hasta >= 3000) {
+                        n.update({
+                            icon: 'ti-signal',
+                            message: "Se ha perdido la conexión con los servidores. Reintentando autom&aacute;ticamente en "+ (hasta -3000) / 1000 +" segundos. Intentos: "+ t+1 +".",
+                            type: 'danger'
+                        });
+                    } else if (hasta <= 0) {
+                        clearInterval(x);
+                        if (t < 3) {
+                            t++;
+                            request(ep, verb, data);
+                        }
+                    }
+
+                }, 1000);
+
             } else if (xhr.status == 401) {
                 var aut = getCookie("_aut");
                 n.close();
@@ -150,6 +173,15 @@ function request(ep, verb = "get", data) {
                     setCookie("_aut", "", 365);
                     location.reload();
                 }
+            } else if (xhr.status == 403) {
+                n.update({
+                    icon: 'ti-alert',
+                    message: "No tiene permiso para realizar esa operación, contacte con un administrador.",
+                    type: 'danger'
+                });
+                setTimeout(() => {
+                    n.close();
+                }, 10000);
             }
         }
     };
@@ -173,6 +205,7 @@ function request(ep, verb = "get", data) {
         $("#loader").fadeOut();
         $("#body").fadeIn();
         setTimeout(() => {
+            t = 0;
             n.close();
         }, 5000);
     });
@@ -1072,7 +1105,7 @@ if (ie||ns6)
 var tipobj=document.all? document.all["dhtmltooltip"] : document.getElementById? document.getElementById("dhtmltooltip") : ""
 try {
     document.body.appendChild(tipobj);
-} catch {}
+} catch (error) {}
 
 function ietruebody(){
 return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body

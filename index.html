@@ -342,6 +342,7 @@
                             <div class="content table-responsive table-full-width">
                                 <table class="table table-striped">
                                     <thead>
+                                        <th></th>
                                         <th>Usuario</th>
                                     	<th>Nombre</th>
                                         <th>Local</th>
@@ -350,8 +351,8 @@
                                     <tbody>
                                         <!-- ko foreach: u.usuarios -->
                                         <tr>
-                                        	
-                                            <td><span data-bind="text: usuario"></span>&nbsp;<span data-bind="visible: admin"><i class="ti-crown"></i></span></td>
+                                        	<td><span data-bind="visible: admin"><i class="ti-crown"></i></span></td>
+                                            <td><span data-bind="text: usuario"></span></td>
                                         	<td data-bind="text: nombre"></td> 
                                         	<td data-bind="text: local"></td>
                                             <td>
