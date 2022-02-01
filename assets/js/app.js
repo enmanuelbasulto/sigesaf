@@ -457,8 +457,7 @@ function modelo_equipos(e) {
             recibe: self.d.recibe || null,
             local_req: (isNaN(self.destino()) ? self.d.local_req : null),
             id_equipo: self.equipos()[0].id() || null,
-            id_local_dest: (isNaN(self.destino()) ? 0 : self.destino()),
-            id_estado: self.d.id_estado || null
+            id_local_dest: (isNaN(self.destino()) ? 0 : self.destino())
         }).done(function () {
             location.href = '#equipos';
         });
@@ -990,7 +989,7 @@ function equipos(param = "") {
             return new Router.Page('Equipos', 'pg-reportar-equipo', { e: new modelo_equipos(param), e_r: new modelo_estados_reportes() });
         } else if (param.toLowerCase().endsWith("/prestar")) {
             param = param.replace("/prestar", "").trim();
-            return new Router.Page('Equipos', 'pg-prestar-equipo', { e: new modelo_equipos(param), l: new modelo_locales(), e_p: new modelo_estados_prestamos() });
+            return new Router.Page('Equipos', 'pg-prestar-equipo', { e: new modelo_equipos(param), l: new modelo_locales() });
         }
 
         loading(true);

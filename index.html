@@ -220,6 +220,8 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="row">                    
                     <div class="col-lg-3 col-sm-4">
                         <div class="card">
                             <div class="content">
@@ -851,33 +853,28 @@
                             <div class="content">
                                 <form data-bind="submit: $parent.e.prestar">
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Equipo</label>
                                                 <input type="text" class="form-control border-input" placeholder="Equipo" data-bind="value: no_inv" required readonly>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Fecha fin</label>
                                                 <input type="date" class="form-control border-input" placeholder="Fecha fin" data-bind="value: $parent.e.d.fecha_fin" required>
                                             </div>
                                         </div>
-                                        <div class="col-md-5">
-                                            <div class="form-group">
-                                                <label>Estado</label>
-                                                <select class="form-control border-input" data-bind='options: $parent.e_p.estados, optionsText: "estado", optionsValue: "id", value: $parent.e.d.id_estado' required></select>
-                                            </div>
-                                        </div>
+                                        
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-5">
                                             <div class="form-group">
                                                 <label>Recibe</label>
                                                 <input type="text" class="form-control border-input" placeholder="Recibe" data-bind="value: $parent.e.d.recibe" required>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-7">
                                             <div class="form-group">
                                                 <label>Destino</label>
                                                 <input type="text" list="listaLocales" class="form-control border-input" placeholder="Destino" data-bind='datalist: { options: $parent.l.locales, optionsText: "local", optionsValue: "id", value: $parent.e.destino }, value: $parent.e.d.local_req' required>
