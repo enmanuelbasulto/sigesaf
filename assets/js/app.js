@@ -574,6 +574,83 @@ function modelo_equipos(e) {
     self.cargar(e);
 }
 
+function modelo_reportes(r) {
+    var self = this;
+    self.loading = ko.observable(true);
+    self.reportes = ko.observableArray();
+    self.d = ko.observableArray();
+
+    self.nuevo = function () {
+        location.href = '#reportes/nuevo';
+    }
+
+    self.guardar = function () {
+        request('reportes', 'post', {
+            marca: self.d.marca || null
+        }).done(function () {
+            location.href = '#reportes';
+        });
+        return false;
+    }
+
+    self.modificar = function () {
+        request('reportes/'+self.reportes()[0].id(), 'put', {
+            marca: self.reportes()[0].marca() || null
+        }).done(function () {
+            location.href = '#reportes';
+        });
+        return false;
+    }
+
+    self.editar = function (r) {
+        location.href = '#reportes/' + r.id();
+    }
+
+    self.eliminar = function (r) {
+        request('reportes/' + r.id(), 'DELETE').done(function () {
+            self.cargar();
+        });
+    }
+
+    self.cargar = function (r = "") {
+        self.loading(true);
+        p = 'reportes';
+        if (r !== "") {
+            p += '/' + r;
+        }
+        request(p).done(function (d) {
+            self.reportes.removeAll();
+            if (d.length === undefined) {
+                self.reportes.push({
+                    id: ko.observable(d.id),
+                    fecha: ko.observable(d.fecha),
+                    problema: ko.observable(d.problema),
+                    id_usuario: ko.observable(d.id_usuario),
+                    id_equipo: ko.observable(d.id_equipo),
+                    id_estado: ko.observable(d.id_estado)
+                });
+            } else {
+                for (var i = 0; i < d.length; i++) {
+                    self.reportes.push({
+                        id: ko.observable(d[i].id),
+                        fecha: ko.observable(d[i].fecha),
+                        problema: ko.observable(d[i].problema),
+                        id_usuario: ko.observable(d[i].id_usuario),
+                        id_equipo: ko.observable(d[i].id_equipo),
+                        id_estado: ko.observable(d[i].id_estado),
+                        usuario: ko.observable(d[i].usuario),
+                        equipo: ko.observable(d[i].equipo),
+                        estado: ko.observable(d[i].estado)
+                    });
+                }
+            }
+            self.loading(false);
+        });
+    }
+
+    self.cargar(r);
+}
+
 function modelo_estados_reportes(e_r) {
     var self = this;
     self.loading = ko.observable(true);
@@ -930,6 +1007,8 @@ var urlMapping = {
     locales_p: { match: /^locales\/(.+)$/, page: locales },
     equipos: { match: /^equipos$/, page: equipos },
     equipos_p: { match: /^equipos\/(.+)$/, page: equipos },
+    reportes: { match: /^reportes$/, page: reportes },
+    reportes_p: { match: /^reportes\/(.+)$/, page: reportes },
     login: { match: /^login$/, page: login },
     logoff: { match: /^logoff$/, page: logoff },
     config: { match: /^config$/, page: config },
@@ -942,38 +1021,9 @@ function dashboard() {
     $('.nav-usuarios').removeClass('active');
     $('.nav-locales').removeClass('active');
     $('.nav-equipos').removeClass('active');
+    $('.nav-reportes').removeClass('active');
 
     return new Router.Page('Dashboard', 'home-template', { d: new modelo_dashboard });
-}
-
-function locales(param = "") {
-    window.clearInterval(int);
-    $('.nav-locales').addClass('active');
-    $('.nav-dashboard').removeClass('active');
-    $('.nav-usuarios').removeClass('active');
-    $('.nav-equipos').removeClass('active');
-
-    var l = new modelo_locales();
-
-    if (param === "nuevo") {
-        return new Router.Page('Locales', 'pg-nuevo-local', { l: l });
-    } else if (param !== "" && !isNaN(param)) {
-        loading(true);
-        var l2 = new modelo_locales(param);
-
-        ko.when(function () {
-            return l.loading() == false && l2.loading() == false;
-        }, function (result) {
-            l2.locales(l2.locales());
-            loading(false);
-        });
-        return new Router.Page('Locales', 'pg-editar-local', { loading: loading, l: l, l2: l2 });
-    } else {
-        int = window.setInterval(() => {
-            l.cargar();
-        }, 180000);
-        return new Router.Page('Locales', 'pg-locales', { l: l });
-    }
 }
 
 function usuarios(param = "") {
@@ -982,6 +1032,7 @@ function usuarios(param = "") {
     $('.nav-dashboard').removeClass('active');
     $('.nav-locales').removeClass('active');
     $('.nav-equipos').removeClass('active');
+    $('.nav-reportes').removeClass('active');
 
     if (param === "nuevo") {
         return new Router.Page('Usuarios', 'pg-nuevo-usuario', { u: new modelo_usuarios(), l: new modelo_locales() });
@@ -1007,12 +1058,44 @@ function usuarios(param = "") {
     }
 }
 
+function locales(param = "") {
+    window.clearInterval(int);
+    $('.nav-locales').addClass('active');
+    $('.nav-dashboard').removeClass('active');
+    $('.nav-usuarios').removeClass('active');
+    $('.nav-equipos').removeClass('active');
+    $('.nav-reportes').removeClass('active');
+
+    var l = new modelo_locales();
+
+    if (param === "nuevo") {
+        return new Router.Page('Locales', 'pg-nuevo-local', { l: l });
+    } else if (param !== "" && !isNaN(param)) {
+        loading(true);
+        var l2 = new modelo_locales(param);
+
+        ko.when(function () {
+            return l.loading() == false && l2.loading() == false;
+        }, function (result) {
+            l2.locales(l2.locales());
+            loading(false);
+        });
+        return new Router.Page('Locales', 'pg-editar-local', { loading: loading, l: l, l2: l2 });
+    } else {
+        int = window.setInterval(() => {
+            l.cargar();
+        }, 180000);
+        return new Router.Page('Locales', 'pg-locales', { l: l });
+    }
+}
+
 function equipos(param = "") {
     window.clearInterval(int);
     $('.nav-locales').removeClass('active');
     $('.nav-dashboard').removeClass('active');
     $('.nav-usuarios').removeClass('active');
     $('.nav-equipos').addClass('active');
+    $('.nav-reportes').removeClass('active');
 
     if (param === "nuevo") {
         return new Router.Page('Equipos', 'pg-nuevo-equipo', { e: new modelo_equipos(), l: new modelo_locales(), e_e : new modelo_estados_equipos(), t_e: new modelo_tipos_equipos(), m: new modelo_marcas()});
@@ -1045,6 +1128,35 @@ function equipos(param = "") {
             e.cargar();
         }, 180000);
         return new Router.Page('Equipos', 'pg-equipos', { e: e });
+    }
+}
+
+function reportes(param = "") {
+    window.clearInterval(int);
+    $('.nav-usuarios').removeClass('active');
+    $('.nav-dashboard').removeClass('active');
+    $('.nav-locales').removeClass('active');
+    $('.nav-equipos').removeClass('active');
+    $('.nav-reportes').addClass('active');
+
+    if (param !== "") {
+        loading(true);
+        var r = new modelo_reportes(param);
+
+        ko.when(function () {
+            return r.loading() == false;
+        }, function (result) {
+            r.reportes(r.reportes());
+            loading(false);
+        });
+        return new Router.Page('Reportes', 'pg-editar-reporte', { loading: loading, r: r });
+    } else {
+        var r = new modelo_reportes();
+        int = window.setInterval(() => {
+            r.cargar();
+        }, 180000);
+
+        return new Router.Page('Reportes', 'pg-reportes', { r: r });
     }
 }
 

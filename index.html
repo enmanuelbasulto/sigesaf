@@ -66,6 +66,12 @@
                         <p>Equipos</p>
                     </a>
                 </li>
+                <li class="nav-reportes">
+                    <a href="#reportes">
+                        <i class="ti-alert"></i>
+                        <p>Reportes</p>
+                    </a>
+                </li>
             </ul>
     	</div>
     </div>
@@ -340,7 +346,7 @@
                                 <p class="category">Lista de usuarios registrados bajo su dominio.</p>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table table-striped">
+                                <table id="tbl-usuarios" class="table table-striped">
                                     <thead>
                                         <th></th>
                                         <th>Usuario</th>
@@ -610,7 +616,7 @@
                                 <p class="category">Lista de equipos registrados bajo su dominio.</p>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table id="tbl-locales" class="table table-striped">
+                                <table id="tbl-equipos" class="table table-striped">
                                     <thead>
                                         <th>Inv</th>
                                         <th>Tipo</th>
@@ -902,6 +908,123 @@
                 </div>
             </script>
             <!--/equipos-->
+            <!--reportes-->
+            <script id="pg-reportes" type="text/html">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title"><i class="ti-alert"></i>&nbsp;Reportes</h4>
+                                <p class="category">Lista de reportes bajo su dominio.</p>
+                            </div>
+                            <div class="content table-responsive table-full-width">
+                                <table id="tbl-reportes" class="table table-striped">
+                                    <thead>
+                                        <th>Fecha</th>
+                                        <th>Problema</th>
+                                        <th>Estado</th>
+                                        <th></th>
+                                    </thead>
+                                    <tbody>
+                                        <!-- ko foreach: r.reportes -->
+                                        <tr data-bind="event: { mouseover: ddrivetip('<strong>reportado por:</strong> '+usuario() +'<br/><strong>equipo:</strong> '+equipo()+'<br/>') }";
+                                        onMouseout="hideddrivetip()">
+                                            <td data-bind="text: fecha"></td> 
+                                            <td data-bind="text: problema"></td>
+                                            <td data-bind="text: estado"></td>
+                                            <td>
+                                                <button class="btn btn-default" data-bind="click: $parent.r.editar">
+                                                    <i class="ti-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-default" data-bind="click: $parent.r.eliminar">
+                                                    <i class="ti-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <!-- /ko -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+            
+            <script id="pg-editar-reporte" type="text/html">
+                <div class="row" data-bind="visible: ((!l2.locales().length))">
+                    <div class="col-md-9">
+                        <h3>El local solicitado no existe.</h3>
+                    </div>
+                </div>
+                <div class="row" data-bind="visible: (l2.locales().length), foreach: l2.locales">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title"><i class="ti-layout"></i>&nbsp;Editar local</h4>
+                            </div>
+                            <div class="content">
+                                <form data-bind="submit: $parent.l2.modificar">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Local</label>
+                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: local" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Local padre</label>
+                                                <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "local", optionsValue: "id", value: id_padre' required></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Guardar cambios</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+            
+            <script id="pg-nuevo-reporte" type="text/html">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title"><i class="ti-layout"></i>&nbsp;Agregar local</h4>
+                            </div>
+                            <div class="content">
+                                <form data-bind="submit: l.guardar">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Local</label>
+                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: l.d.local" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Local padre</label>
+                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "local", optionsValue: "id", value: l.d.id_padre' required></select>
+                                            </div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Agregar</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+            <!--/reportes-->
             <!--config-->
             <script id="pg-config" type="text/html">
                 <div class="row">
