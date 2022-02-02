@@ -927,7 +927,7 @@
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: r.reportes -->
-                                        <tr data-bind="event: { mouseover: ddrivetip('<strong>reportado por:</strong> '+usuario() +'<br/><strong>equipo:</strong> '+equipo()+'<br/>') }";
+                                        <tr data-bind="event: { mouseover: ddrivetip('<strong>reportado por:</strong> '+usuario() +'<br/><strong>local:</strong> '+local()+'<br/><strong>equipo:</strong> '+equipo()+'<br/><strong>tipo:</strong> '+tipo()+'<br/><strong>marca:</strong> '+marca()) }";
                                         onMouseout="hideddrivetip()">
                                             <td data-bind="text: fecha"></td> 
                                             <td data-bind="text: problema"></td>

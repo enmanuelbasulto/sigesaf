@@ -640,6 +640,9 @@ function modelo_reportes(r) {
                         id_estado: ko.observable(d[i].id_estado),
                         usuario: ko.observable(d[i].usuario),
                         equipo: ko.observable(d[i].equipo),
+                        local: ko.observable(d[i].local),
+                        marca: ko.observable(d[i].marca),
+                        tipo: ko.observable(d[i].tipo),
                         estado: ko.observable(d[i].estado)
                     });
                 }
