@@ -623,7 +623,7 @@ function modelo_reportes(r) {
             if (d.length === undefined) {
                 self.reportes.push({
                     id: ko.observable(d.id),
-                    fecha: ko.observable(d.fecha),
+                    fecha: ko.observable(new Date(d.fecha['date']).toLocaleDateString()),
                     problema: ko.observable(d.problema),
                     id_usuario: ko.observable(d.id_usuario),
                     id_equipo: ko.observable(d.id_equipo),
@@ -633,7 +633,7 @@ function modelo_reportes(r) {
                 for (var i = 0; i < d.length; i++) {
                     self.reportes.push({
                         id: ko.observable(d[i].id),
-                        fecha: ko.observable(d[i].fecha),
+                        fecha: ko.observable(new Date(d[i].fecha['date']).toLocaleDateString()),
                         problema: ko.observable(d[i].problema),
                         id_usuario: ko.observable(d[i].id_usuario),
                         id_equipo: ko.observable(d[i].id_equipo),
