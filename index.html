@@ -951,71 +951,44 @@
             </script>
             
             <script id="pg-editar-reporte" type="text/html">
-                <div class="row" data-bind="visible: ((!l2.locales().length))">
+                <div class="row" data-bind="visible: ((!r.reportes().length))">
                     <div class="col-md-9">
-                        <h3>El local solicitado no existe.</h3>
+                        <h3>El reporte solicitado no existe.</h3>
                     </div>
                 </div>
-                <div class="row" data-bind="visible: (l2.locales().length), foreach: l2.locales">
+                <div class="row" data-bind="visible: (r.reportes().length), foreach: r.reportes">
                     <div class="col-md-9">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title"><i class="ti-layout"></i>&nbsp;Editar local</h4>
+                                <h4 class="title"><i class="ti-alert"></i>&nbsp;Editar reporte</h4>
                             </div>
                             <div class="content">
-                                <form data-bind="submit: $parent.l2.modificar">
+                                <form data-bind="submit: $parent.r.modificar">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Local</label>
-                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: local" required>
+                                                <label>Equipo</label>
+                                                <input type="text" class="form-control border-input" placeholder="Equipo" data-bind="value: equipo" required readonly>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Local padre</label>
-                                                <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "local", optionsValue: "id", value: id_padre' required></select>
+                                                <label>Estado a reportar</label>
+                                                <select class="form-control border-input" data-bind='options: $parent.e_r.estados, optionsText: "estado", optionsValue: "id", value: id_estado' required></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Descripci&oacute;n del problema</label>
+                                                <textarea rows="5" class="form-control border-input" placeholder="Descripci&oacute;n detallada del problema" data-bind="value: problema" required></textarea>
                                             </div>
                                         </div>
                                     </div>
                                     
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-info btn-fill btn-wd">Guardar cambios</button>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </script>
-            
-            <script id="pg-nuevo-reporte" type="text/html">
-                <div class="row">
-                    <div class="col-md-9">
-                        <div class="card">
-                            <div class="header">
-                                <h4 class="title"><i class="ti-layout"></i>&nbsp;Agregar local</h4>
-                            </div>
-                            <div class="content">
-                                <form data-bind="submit: l.guardar">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Local</label>
-                                                <input type="text" class="form-control border-input" placeholder="Local" data-bind="value: l.d.local" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Local padre</label>
-                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "local", optionsValue: "id", value: l.d.id_padre' required></select>
-                                            </div>
-                                        </div>
-                                    </div>
-            
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Agregar</button>
                                     </div>
                                     <div class="clearfix"></div>
                                 </form>

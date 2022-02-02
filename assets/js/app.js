@@ -580,22 +580,10 @@ function modelo_reportes(r) {
     self.reportes = ko.observableArray();
     self.d = ko.observableArray();
 
-    self.nuevo = function () {
-        location.href = '#reportes/nuevo';
-    }
-
-    self.guardar = function () {
-        request('reportes', 'post', {
-            marca: self.d.marca || null
-        }).done(function () {
-            location.href = '#reportes';
-        });
-        return false;
-    }
-
     self.modificar = function () {
         request('reportes/'+self.reportes()[0].id(), 'put', {
-            marca: self.reportes()[0].marca() || null
+            problema: self.reportes()[0].problema() || null,
+            id_estado: self.reportes()[0].id_estado()
         }).done(function () {
             location.href = '#reportes';
         });
@@ -625,6 +613,7 @@ function modelo_reportes(r) {
                     id: ko.observable(d.id),
                     fecha: ko.observable(new Date(d.fecha['date']).toLocaleDateString()),
                     problema: ko.observable(d.problema),
+                    equipo: ko.observable(d.equipo),
                     id_usuario: ko.observable(d.id_usuario),
                     id_equipo: ko.observable(d.id_equipo),
                     id_estado: ko.observable(d.id_estado)
@@ -1103,20 +1092,35 @@ function equipos(param = "") {
     if (param === "nuevo") {
         return new Router.Page('Equipos', 'pg-nuevo-equipo', { e: new modelo_equipos(), l: new modelo_locales(), e_e : new modelo_estados_equipos(), t_e: new modelo_tipos_equipos(), m: new modelo_marcas()});
     } else if (param !== "") {
+        loading(true);
+        var e = new modelo_equipos(param);
         if (param.toLowerCase().endsWith("/reportar")) {
             param = param.replace("/reportar", "").trim();
-            return new Router.Page('Equipos', 'pg-reportar-equipo', { e: new modelo_equipos(param), e_r: new modelo_estados_reportes() });
+            var e_r = new modelo_estados_reportes();
+            ko.when(function () {
+                return e_r.loading() == false && e.loading() == false;
+            }, function (result) {
+                e.equipos(e.equipos());
+                loading(false);
+            });
+            return new Router.Page('Equipos', 'pg-reportar-equipo', { loading: loading, e: e, e_r: e_r });
         } else if (param.toLowerCase().endsWith("/prestar")) {
             param = param.replace("/prestar", "").trim();
-            return new Router.Page('Equipos', 'pg-prestar-equipo', { e: new modelo_equipos(param), l: new modelo_locales() });
+            loading(true);
+            var l = new modelo_locales();
+            ko.when(function () {
+                return l.loading() == false && e.loading() == false;
+            }, function (result) {
+                e.equipos(e.equipos());
+                loading(false);
+            });
+            return new Router.Page('Equipos', 'pg-prestar-equipo', { loading: loading, e: e, l: l });
         }
 
-        loading(true);
         var l = new modelo_locales();
         var e_e = new modelo_estados_equipos();
         var t_e = new modelo_tipos_equipos();
         var m = new modelo_marcas();
-        var e = new modelo_equipos(param);
 
         ko.when(function () {
             return (l.loading() == false && e_e.loading() == false && t_e.loading() == false && m.loading() == false) && e.loading() == false;
@@ -1145,14 +1149,15 @@ function reportes(param = "") {
     if (param !== "") {
         loading(true);
         var r = new modelo_reportes(param);
+        var e_r = new modelo_estados_reportes();
 
         ko.when(function () {
-            return r.loading() == false;
+            return e_r.loading() == false && r.loading() == false;
         }, function (result) {
             r.reportes(r.reportes());
             loading(false);
         });
-        return new Router.Page('Reportes', 'pg-editar-reporte', { loading: loading, r: r });
+        return new Router.Page('Reportes', 'pg-editar-reporte', { loading: loading, r: r, e_r: e_r });
     } else {
         var r = new modelo_reportes();
         int = window.setInterval(() => {
