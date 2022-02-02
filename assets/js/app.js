@@ -153,14 +153,14 @@ function request(ep, verb = "get", data) {
                     if (hasta >= 3000) {
                         n.update({
                             icon: 'ti-signal',
-                            message: "Se ha perdido la conexión con los servidores. Reintentando autom&aacute;ticamente en "+ (hasta -3000) / 1000 +" segundos. Intentos: "+ t+1 +".",
+                            message: "Se ha perdido la conexión con los servidores. Reintentando autom&aacute;ticamente en "+ (hasta -3000) / 1000 +" segundos. Intentos: "+ (t+1) +".",
                             type: 'danger'
                         });
                     } else if (hasta <= 0) {
                         clearInterval(x);
                         if (t < 3) {
                             t++;
-                            request(ep, verb, data);
+                            request('dashboard');
                         }
                     }
 
