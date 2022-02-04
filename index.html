@@ -72,6 +72,12 @@
                         <p>Reportes</p>
                     </a>
                 </li>
+                <li class="nav-prestamos">
+                    <a href="#prestamos">
+                        <i class="ti-exchange-vertical"></i>
+                        <p>Pr&eacute;stamos</p>
+                    </a>
+                </li>
             </ul>
     	</div>
     </div>
@@ -182,7 +188,7 @@
                                 <div class="row">
                                     <div class="col-xs-5">
                                         <div class="icon-big icon-danger text-center">
-                                            <i class="ti-receipt"></i>
+                                            <i class="ti-exchange-vertical"></i>
                                         </div>
                                     </div>
                                     <div class="col-xs-7">
@@ -207,7 +213,7 @@
                                 <div class="row">
                                     <div class="col-xs-5">
                                         <div class="icon-big icon-info text-center">
-                                            <i class="ti-receipt"></i>
+                                            <i class="ti-exchange-vertical"></i>
                                         </div>
                                     </div>
                                     <div class="col-xs-7">
@@ -998,6 +1004,106 @@
                 </div>
             </script>
             <!--/reportes-->
+            <!--prestamos-->
+            <script id="pg-prestamos" type="text/html">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title"><i class="ti-exchange-vertical"></i>&nbsp;Pr&eacute;stamos</h4>
+                                <p class="category">Lista de pr&eacute;stamos bajo su dominio.</p>
+                            </div>
+                            <div class="content table-responsive table-full-width">
+                                <table id="tbl-reportes" class="table table-striped">
+                                    <thead>
+                                        <th>Fecha</th>
+                                        <th>Fecha fin</th>
+                                        <th>Equipo</th>
+                                        <th>Solicitante</th>
+                                        <th>Estado</th>
+                                        <th></th>
+                                    </thead>
+                                    <tbody>
+                                        <!-- ko foreach: p.prestamos -->
+                                        <tr data-bind="event: { mouseover: ddrivetip('<strong>recibe:</strong> '+recibe() +'<br/><strong>autorizado por:</strong> '+autoriza()+'<br/><strong>or&iacute;gen:</strong> '+local()+'<br/><strong>destino:</strong> '+local_destino()+'<br/><strong>equipo:</strong> '+equipo()+'<br/><strong>tipo:</strong> '+tipo()+'<br/><strong>marca:</strong> '+marca()+'<br/><strong>motivo:</strong> '+motivo()) }";
+                                        onmouseout="hideddrivetip()">
+                                            <td data-bind="text: fecha"></td>
+                                            <td data-bind="text: fecha_fin"></td>
+                                            <td data-bind="text: equipo"></td>
+                                            <td data-bind="text: usuario_req"></td>
+                                            <td data-bind="text: estado"></td>
+                                            <td>
+                                                <button class="btn btn-default" data-bind="click: $parent.p.editar">
+                                                    <i class="ti-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-default" data-bind="click: $parent.p.eliminar">
+                                                    <i class="ti-trash"></i>
+                                                </button>
+                                                <button class="btn btn-default" data-bind="click: $parent.p.aprobar">
+                                                    <i class="ti-check"></i>
+                                                </button>
+                                                <button class="btn btn-default" data-bind="click: $parent.p.denegar">
+                                                    <i class="ti-na"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <!-- /ko -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+            
+            <script id="pg-editar-prestamo" type="text/html">
+                <div class="row" data-bind="visible: ((!p.prestamos().length))">
+                    <div class="col-md-9">
+                        <h3>El pr&eacute;stamo solicitado no existe.</h3>
+                    </div>
+                </div>
+                <div class="row" data-bind="visible: (p.prestamos().length), foreach: p.prestamos">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title"><i class="ti-exchange-vertical"></i>&nbsp;Editar pr&eacute;stamo</h4>
+                            </div>
+                            <div class="content">
+                                <form data-bind="submit: $parent.p.modificar">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Equipo</label>
+                                                <input type="text" class="form-control border-input" placeholder="Equipo" data-bind="value: equipo" required readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Estado a reportar</label>
+                                                <select class="form-control border-input" data-bind='options: $parent.e_r.estados, optionsText: "estado", optionsValue: "id", value: id_estado' required></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Descripci&oacute;n del problema</label>
+                                                <textarea rows="5" class="form-control border-input" placeholder="Descripci&oacute;n detallada del problema" data-bind="value: problema" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Guardar cambios</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+            <!--/prestamos-->
             <!--config-->
             <script id="pg-config" type="text/html">
                 <div class="row">

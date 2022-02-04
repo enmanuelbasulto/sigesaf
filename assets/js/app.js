@@ -138,14 +138,13 @@ function request(ep, verb = "get", data) {
             if (xhr.status == 0) {
                 n.update({
                     icon: 'ti-signal',
-                    message: "Se ha perdido la conexión con los servidores. Reintentando autom&aacute;ticamente en 30 segundos.",
+                    message: "Se ha perdido la conexión con los servidores.",
                     type: 'danger'
                 });
-
                 setTimeout(() => {
                     n.close();
-                }, 30000);
-
+                }, 10000);
+                /*
                 var hasta = 33000;
                 var x = setInterval(function() {
                     hasta = hasta -1000;
@@ -165,7 +164,7 @@ function request(ep, verb = "get", data) {
                     }
 
                 }, 1000);
-
+                */
             } else if (xhr.status == 401) {
                 var aut = getCookie("_aut");
                 n.close();
@@ -643,6 +642,86 @@ function modelo_reportes(r) {
     self.cargar(r);
 }
 
+function modelo_prestamos(p) {
+    var self = this;
+    self.loading = ko.observable(true);
+    self.prestamos = ko.observableArray();
+    self.d = ko.observableArray();
+
+    self.modificar = function () {
+        request('prestamos/'+self.prestamos()[0].id(), 'put', {
+            problema: self.prestamos()[0].problema() || null,
+            id_estado: self.prestamos()[0].id_estado()
+        }).done(function () {
+            location.href = '#prestamos';
+        });
+        return false;
+    }
+
+    self.editar = function (p) {
+        location.href = '#prestamos/' + p.id();
+    }
+
+    self.eliminar = function (p) {
+        request('prestamos/' + p.id(), 'DELETE').done(function () {
+            self.cargar();
+        });
+    }
+
+    self.cargar = function (p = "") {
+        self.loading(true);
+        ep = 'prestamos';
+        if (p !== "") {
+            ep += '/' + p;
+        }
+        request(ep).done(function (d) {
+            self.prestamos.removeAll();
+            if (d.length === undefined) {
+                self.prestamos.push({
+                    id: ko.observable(d.id),
+                    fecha: ko.observable(new Date(d.fecha['date']).toLocaleDateString()),
+                    fecha_fin: ko.observable(new Date(d.fecha_fin['date']).toLocaleDateString()),
+                    motivo: ko.observable(d.motivo),
+                    recibe: ko.observable(d.recibe),
+                    local_req: ko.observable(d.local_req),
+                    id_equipo: ko.observable(d.id_equipo),
+                    id_local_dest: ko.observable(d.id_local_dest),
+                    id_estado: ko.observable(d.id_estado),
+                    id_usuario_req: ko.observable(d.id_usuario_req),
+                    id_usuario_aut: ko.observable(d.id_usuario_aut)
+                });
+            } else {
+                for (var i = 0; i < d.length; i++) {
+                    self.prestamos.push({
+                        id: ko.observable(d[i].id),
+                        fecha: ko.observable(new Date(d[i].fecha['date']).toLocaleDateString()),
+                        fecha_fin: ko.observable(new Date(d[i].fecha_fin['date']).toLocaleDateString()),
+                        motivo: ko.observable(d[i].motivo),
+                        recibe: ko.observable(d[i].recibe),
+                        local_req: ko.observable(d[i].local_req),
+                        id_equipo: ko.observable(d[i].id_equipo),
+                        id_local_dest: ko.observable(d[i].id_local_dest),
+                        id_estado: ko.observable(d[i].id_estado),
+                        id_usuario_req: ko.observable(d[i].id_usuario_req),
+                        id_usuario_aut: ko.observable(d[i].id_usuario_aut),
+                        usuario_req: ko.observable(d[i].usuario_req),
+                        equipo: ko.observable(d[i].equipo),
+                        local: ko.observable(d[i].local),
+                        marca: ko.observable(d[i].marca),
+                        tipo: ko.observable(d[i].tipo),
+                        estado: ko.observable(d[i].estado),
+                        local_destino: ko.observable(d[i].local_destino),
+                        autoriza: ko.observable(d[i].autoriza)
+                    });
+                }
+            }
+            self.loading(false);
+        });
+    }
+
+    self.cargar(p);
+}
+
 function modelo_estados_reportes(e_r) {
     var self = this;
     self.loading = ko.observable(true);
@@ -1001,6 +1080,8 @@ var urlMapping = {
     equipos_p: { match: /^equipos\/(.+)$/, page: equipos },
     reportes: { match: /^reportes$/, page: reportes },
     reportes_p: { match: /^reportes\/(.+)$/, page: reportes },
+    prestamos: { match: /^prestamos$/, page: prestamos },
+    prestamos_p: { match: /^prestamos\/(.+)$/, page: prestamos },
     login: { match: /^login$/, page: login },
     logoff: { match: /^logoff$/, page: logoff },
     config: { match: /^config$/, page: config },
@@ -1014,6 +1095,7 @@ function dashboard() {
     $('.nav-locales').removeClass('active');
     $('.nav-equipos').removeClass('active');
     $('.nav-reportes').removeClass('active');
+    $('.nav-prestamos').removeClass('active');
 
     return new Router.Page('Dashboard', 'home-template', { d: new modelo_dashboard });
 }
@@ -1025,6 +1107,7 @@ function usuarios(param = "") {
     $('.nav-locales').removeClass('active');
     $('.nav-equipos').removeClass('active');
     $('.nav-reportes').removeClass('active');
+    $('.nav-prestamos').removeClass('active');
 
     if (param === "nuevo") {
         return new Router.Page('Usuarios', 'pg-nuevo-usuario', { u: new modelo_usuarios(), l: new modelo_locales() });
@@ -1057,6 +1140,7 @@ function locales(param = "") {
     $('.nav-usuarios').removeClass('active');
     $('.nav-equipos').removeClass('active');
     $('.nav-reportes').removeClass('active');
+    $('.nav-prestamos').removeClass('active');
 
     var l = new modelo_locales();
 
@@ -1088,6 +1172,7 @@ function equipos(param = "") {
     $('.nav-usuarios').removeClass('active');
     $('.nav-equipos').addClass('active');
     $('.nav-reportes').removeClass('active');
+    $('.nav-prestamos').removeClass('active');
 
     if (param === "nuevo") {
         return new Router.Page('Equipos', 'pg-nuevo-equipo', { e: new modelo_equipos(), l: new modelo_locales(), e_e : new modelo_estados_equipos(), t_e: new modelo_tipos_equipos(), m: new modelo_marcas()});
@@ -1145,6 +1230,7 @@ function reportes(param = "") {
     $('.nav-locales').removeClass('active');
     $('.nav-equipos').removeClass('active');
     $('.nav-reportes').addClass('active');
+    $('.nav-prestamos').removeClass('active');
 
     if (param !== "") {
         loading(true);
@@ -1165,6 +1251,37 @@ function reportes(param = "") {
         }, 180000);
 
         return new Router.Page('Reportes', 'pg-reportes', { r: r });
+    }
+}
+
+function prestamos(param = "") {
+    window.clearInterval(int);
+    $('.nav-usuarios').removeClass('active');
+    $('.nav-dashboard').removeClass('active');
+    $('.nav-locales').removeClass('active');
+    $('.nav-equipos').removeClass('active');
+    $('.nav-reportes').removeClass('active');
+    $('.nav-prestamos').addClass('active');
+
+    if (param !== "") {
+        loading(true);
+        var p = new modelo_prestamos(param);
+        var e_r = new modelo_estados_reportes();
+
+        ko.when(function () {
+            return e_r.loading() == false && p.loading() == false;
+        }, function (result) {
+            p.prestamos(p.prestamos());
+            loading(false);
+        });
+        return new Router.Page('Préstamos', 'pg-editar-prestamo', { loading: loading, p: p, e_r: e_r });
+    } else {
+        var p = new modelo_prestamos();
+        int = window.setInterval(() => {
+            p.cargar();
+        }, 180000);
+
+        return new Router.Page('Préstamos', 'pg-prestamos', { p: p });
     }
 }
 
