@@ -102,7 +102,7 @@ function request(ep, verb = "get", data) {
     var r = {
         async: true,
         type: verb.toLowerCase(),
-        url: 'https://sigesaf.ksdsolutions.net/api/v1/' + ep,
+        url: 'https://sigesaf.kboom.nat.cu/api/v1/' + ep,
         contentType: 'application/json',
         accepts: 'application/json',
         dataType: 'json',
