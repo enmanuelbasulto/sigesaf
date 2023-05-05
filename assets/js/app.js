@@ -102,7 +102,7 @@ function request(ep, verb = "get", data) {
     var r = {
         async: true,
         type: verb.toLowerCase(),
-        url: 'https://sigesaf.ipi.cm.rimed.cu/api/v1/' + ep,
+        url: `https://sigesaf.ipi.cm.rimed.cu/api/${ep}`,
         contentType: 'application/json',
         accepts: 'application/json',
         dataType: 'json',
@@ -201,12 +201,10 @@ function request(ep, verb = "get", data) {
                 type: 'success'
             });
         }
+        n.close();
+        t = 0;
         $("#loader").fadeOut();
         $("#body").fadeIn();
-        setTimeout(() => {
-            t = 0;
-            n.close();
-        }, 5000);
     });
 
     a.fail(function () {
@@ -647,6 +645,24 @@ function modelo_prestamos(p) {
     self.loading = ko.observable(true);
     self.prestamos = ko.observableArray();
     self.d = ko.observableArray();
+
+    self.aprobar = function () {
+        request('prestamos/'+self.prestamos()[0].id(), 'put', {
+            id_estado: 2
+        }).done(function () {
+            self.cargar();
+        });
+        return false;
+    }
+
+    self.denegar = function (p) {
+        request('prestamos/'+self.prestamos()[0].id(), 'put', {
+            id_estado: 3
+        }).done(function () {
+            self.cargar();
+        });
+        return false;
+    }
 
     self.modificar = function () {
         request('prestamos/'+self.prestamos()[0].id(), 'put', {

@@ -30,9 +30,6 @@ final class Reporte {
     }
 
     public static function fromArray(array $data): Reporte {
-        if ($data['fecha'] == null){
-            $data['fecha'] = new DateTime();
-        }
         $fecha = new DateTime($data['fecha']);
         return new Reporte($data['id'], $fecha, $data['problema'], (int)$data['id_usuario'], (int)$data['id_equipo'], (int)$data['id_estado'], $data['usuario'], $data['equipo'], $data['local'], $data['marca'], $data['tipo'], $data['estado']);
     }

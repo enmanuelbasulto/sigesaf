@@ -74,9 +74,18 @@ final class prestamos {
             if ($d != null) {
                 $p = Prestamo::fromArray($data);
                 if (Local::esHijoDe(Prestamo::getLocal($d->id), $this->Raiz)) {
-                    if($p->id_local_dest != null && Local::esHijoDe(Equipo::getLocal($p->id_local_dest), $this->Raiz)){
+                    if ($p->id_estado > 1) {
+                        $l = Usuario::getLocal($_SERVER['PHP_AUTH_USER']);
+                        if ($l == 1 || $l != Usuario::getLocal($d->id_usuario_req)) {
+                            if($this->Bd->actualizar("prestamos", "id_estado = $p->id_estado, id_usuario_aut = $this->u_actual", "id = $d->id")){
+                                $this->Bd->insertar("logs", "'prestamos', '2', $this->u_actual, $d->id", "tabla, tipo_cambio, id_usuario, objeto");
+                                return true;
+                            }
+                        }
+                    } else if($p->id_local_dest != null && Local::esHijoDe(Equipo::getLocal($p->id_equipo), $this->Raiz)){
                         $fecha = date_format($p->fecha, "y/m/d H:i:s");
                         $fecha_fin = date_format($p->fecha_fin, "y/m/d H:i:s");
+
                         if($this->Bd->actualizar("prestamos", "fecha = '$fecha', fecha_fin = '$fecha_fin', motivo = '$p->motivo', recibe = '$p->recibe', local_req = '$p->local_req', id_equipo = $p->id_equipo, id_local_dest = $p->id_local_dest, id_estado = $p->id_estado", "id = $d->id")){
                             $this->Bd->insertar("logs", "'prestamos', '2', $this->u_actual, $p->id", "tabla, tipo_cambio, id_usuario, objeto");
                             return true;
