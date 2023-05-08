@@ -54,7 +54,7 @@ final class equipos {
             if (Local::esHijoDe($e->id_local, $this->Raiz)) {
                 $sello = is_numeric($e->sello) ? $e->sello : "NULL";
                 $observaciones = ($e->observaciones == null) ? "NULL" : $e->observaciones;
-                if($this->Bd->insertar("equipos", "$e->id_local, $e->no_inv, '$observaciones', $e->id_marca, $e->id_tipo, $e->id_estado, '$sello'", "id_local, no_inv, observaciones, id_marca, id_tipo, id_estado, sello")){
+                if($this->Bd->insertar("equipos", "$e->id_local, $e->no_inv, '$observaciones', $e->id_marca, $e->id_tipo, $e->id_estado, $sello", "id_local, no_inv, observaciones, id_marca, id_tipo, id_estado, sello")){
                     $this->Bd->insertar("logs", "'equipos', '0', $this->u_actual, $e->no_inv", "tabla, tipo_cambio, id_usuario, objeto");
                     return $this->Bd->seleccionar("equipos", "1", "max(id) as id")->fetch()['id'];
                 }
@@ -73,12 +73,12 @@ final class equipos {
                     $sello = is_numeric($e->sello) ? $e->sello : "NULL";
                     $observaciones = ($e->observaciones == null) ? "NULL" : $e->observaciones;
                     if (Usuario::isAdmin($_SERVER['PHP_AUTH_USER'])) {
-                        if($this->Bd->actualizar("equipos", "id_local = $e->id_local, no_inv = $e->no_inv, observaciones = '$observaciones', id_marca = $e->id_marca, id_tipo = $e->id_tipo, id_estado = $e->id_estado, sello = '$sello'", "id = $d->id")){
+                        if($this->Bd->actualizar("equipos", "id_local = $e->id_local, no_inv = $e->no_inv, observaciones = '$observaciones', id_marca = $e->id_marca, id_tipo = $e->id_tipo, id_estado = $e->id_estado, sello = $sello", "id = $d->id")){
                             $this->Bd->insertar("logs", "'equipos', '2', $this->u_actual, $e->no_inv", "tabla, tipo_cambio, id_usuario, objeto");
                             return true;
                         }
                     }
-                    if($this->Bd->actualizar("equipos", "observaciones = '$observaciones', sello = '$sello'", "id = $d->id")){
+                    if($this->Bd->actualizar("equipos", "observaciones = '$observaciones', sello = $sello", "id = $d->id")){
                         $this->Bd->insertar("logs", "'equipos', '2', $this->u_actual, $e->no_inv", "tabla, tipo_cambio, id_usuario, objeto");
                         return true;
                     }
