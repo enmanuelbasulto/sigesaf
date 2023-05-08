@@ -56,7 +56,7 @@ final class equipos {
                 $observaciones = ($e->observaciones == null) ? "NULL" : $e->observaciones;
                 if($this->Bd->insertar("equipos", "$e->id_local, $e->no_inv, '$observaciones', $e->id_marca, $e->id_tipo, $e->id_estado, '$sello'", "id_local, no_inv, observaciones, id_marca, id_tipo, id_estado, sello")){
                     $this->Bd->insertar("logs", "'equipos', '0', $this->u_actual, $e->no_inv", "tabla, tipo_cambio, id_usuario, objeto");
-                    return $this->Bd->seleccionar("equipos", "1 ORDER BY id DESC LIMIT 1", "id")->fetch()['id'];
+                    return $this->Bd->seleccionar("equipos", "1", "max(id) as id")->fetch()['id'];
                 }
             }
         }

@@ -32,7 +32,7 @@ final class locales {
             if (Local::esHijoDe($l->id_padre, $this->Raiz)) {
                 if($this->Bd->insertar("locales", "'$l->local', $l->id_padre", "local, id_padre")){
                     $this->Bd->insertar("logs", "'locales', '0', $this->u_actual, '$l->local'", "tabla, tipo_cambio, id_usuario, objeto");
-                    return $this->Bd->seleccionar("locales", "1", "max(id)")->fetch()['id'];
+                    return $this->Bd->seleccionar("locales", "1", "max(id) as id")->fetch()['id'];
                 }
             }
         }
