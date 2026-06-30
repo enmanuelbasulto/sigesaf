@@ -1552,7 +1552,7 @@ function initDataTable(tableId, opts) {
     }
     $t.DataTable($.extend({
         language: {
-            url: '//cdn.datatables.net/plug-ins/2.2.3/i18n/es-ES.json'
+            url: 'assets/js/datatables/es-ES.json'
         },
         dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>rtip',
         buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
