@@ -97,12 +97,31 @@ function setCookie(cname, cvalue, exdays) {
 }
 
 var t = 0;
+var API_BASE = (function() {
+    var host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1' || host === '' || window.location.protocol === 'file:') {
+        return 'https://sigesaf.ipi.cm.rimed.cu/api/';
+    }
+    return window.location.protocol + '//' + host + '/api/';
+})();
+
+function mostrarError(mensaje) {
+    var $content = $('.content .container-fluid');
+    if (!$content.length) return;
+    $content.prepend(
+        '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+        '<i class="ti-alert"></i>&nbsp; ' + mensaje +
+        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+        '</div>'
+    );
+}
+
 function request(ep, verb = "get", data) {
     var n = null;
     var r = {
         async: true,
         type: verb.toLowerCase(),
-        url: `https://sigesaf.ipi.cm.rimed.cu/api/${ep}`,
+        url: API_BASE + ep,
         contentType: 'application/json',
         accepts: 'application/json',
         dataType: 'json',
@@ -144,27 +163,7 @@ function request(ep, verb = "get", data) {
                 setTimeout(() => {
                     n.close();
                 }, 10000);
-                /*
-                var hasta = 33000;
-                var x = setInterval(function() {
-                    hasta = hasta -1000;
-                    
-                    if (hasta >= 3000) {
-                        n.update({
-                            icon: 'ti-signal',
-                            message: "Se ha perdido la conexión con los servidores. Reintentando autom&aacute;ticamente en "+ (hasta -3000) / 1000 +" segundos. Intentos: "+ (t+1) +".",
-                            type: 'danger'
-                        });
-                    } else if (hasta <= 0) {
-                        clearInterval(x);
-                        if (t < 3) {
-                            t++;
-                            request('dashboard');
-                        }
-                    }
-
-                }, 1000);
-                */
+                mostrarError("Se ha perdido la conexión con los servidores. Verifique su conexión de red.");
             } else if (xhr.status == 401) {
                 var aut = getCookie("_aut");
                 n.close();
@@ -172,6 +171,7 @@ function request(ep, verb = "get", data) {
                     setCookie("_aut", "", 365);
                     location.reload();
                 }
+                mostrarError("Sesión expirada. Por favor, inicie sesión nuevamente.");
             } else if (xhr.status == 403) {
                 n.update({
                     icon: 'ti-alert',
@@ -181,7 +181,24 @@ function request(ep, verb = "get", data) {
                 setTimeout(() => {
                     n.close();
                 }, 10000);
+                mostrarError("No tiene permiso para realizar esa operación.");
+            } else {
+                if (n) {
+                    n.update({
+                        icon: 'ti-na',
+                        message: 'Error del servidor (' + xhr.status + '): ' + (xhr.statusText || 'Error desconocido'),
+                        type: 'danger'
+                    });
+                    setTimeout(() => { n.close(); }, 10000);
+                }
+                mostrarError('Error del servidor (' + xhr.status + '). Intente nuevamente más tarde.');
             }
+            if (n) {
+                try { n.close(); } catch(e) {}
+            }
+            $("#loader").fadeOut();
+            $("#body").fadeIn();
+            t = 0;
         }
     };
 
@@ -217,7 +234,20 @@ function request(ep, verb = "get", data) {
             setTimeout(() => {
                 n.close();
             }, 10000);
+            mostrarError("Error interno del servidor (500). Intente nuevamente.");
+        } else if (a.status == 404) {
+            mostrarError("Recurso no encontrado (404). Contacte al administrador.");
+        } else if (a.status == 0) {
+            mostrarError("No se pudo conectar con el servidor. Verifique su conexión.");
+        } else if (a.status >= 400) {
+            mostrarError("Error del servidor (" + a.status + "). Intente nuevamente.");
         }
+        if (n) {
+            try { n.close(); } catch(e) {}
+        }
+        $("#loader").fadeOut();
+        $("#body").fadeIn();
+        t = 0;
     });
 
     hideddrivetip();
