@@ -30,8 +30,8 @@ final class locales {
         if($data !== null){
             $l = Local::fromArray($data);
             if (Local::esHijoDe($l->id_padre, $this->Raiz)) {
-                if($this->Bd->insertar("locales", "'$l->local', $l->id_padre", "local, id_padre")){
-                    $this->Bd->insertar("logs", "'locales', '0', $this->u_actual, '$l->local'", "tabla, tipo_cambio, id_usuario, objeto");
+                if($this->Bd->insertar("locales", ['local' => $l->local, 'id_padre' => $l->id_padre])){
+                    $this->Bd->insertar("logs", ['tabla' => 'locales', 'tipo_cambio' => 0, 'id_usuario' => $this->u_actual, 'objeto' => $l->local]);
                     return $this->Bd->seleccionar("locales", "1", "max(id) as id")->fetch()['id'];
                 }
             }
@@ -50,8 +50,8 @@ final class locales {
                     if (Usuario::isAdmin($_SERVER['PHP_AUTH_USER'])) {
                         $id_padre = $l->id_padre;
                     }
-                    if($this->Bd->actualizar("locales", "local = '$l->local', id_padre = $id_padre", "id = $d->id")){
-                        $this->Bd->insertar("logs", "'locales', '2', $this->u_actual, '$l->local'", "tabla, tipo_cambio, id_usuario, objeto");
+                    if($this->Bd->actualizar("locales", ['local' => $l->local, 'id_padre' => $id_padre], "id = $d->id")){
+                        $this->Bd->insertar("logs", ['tabla' => 'locales', 'tipo_cambio' => 2, 'id_usuario' => $this->u_actual, 'objeto' => $l->local]);
                         return true;
                     }
                 }
@@ -68,8 +68,8 @@ final class locales {
                     throw new ForbiddenException("No se puede eliminar el local actual.", 1);
                 }
                 if (Local::esHijoDe($d->id, $this->Raiz)) {
-                    if($this->Bd->eliminar("locales", "id = $d->id")){
-                        $this->Bd->insertar("logs", "'locales', '3', $this->u_actual, '$d->local'", "tabla, tipo_cambio, id_usuario, objeto");
+                    if($this->Bd->eliminar("locales", "id = :id", ['id' => $d->id])){
+                        $this->Bd->insertar("logs", ['tabla' => 'locales', 'tipo_cambio' => 3, 'id_usuario' => $this->u_actual, 'objeto' => $d->local]);
                         return true;
                     }
                 }

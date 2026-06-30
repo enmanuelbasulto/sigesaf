@@ -34,7 +34,7 @@ final class marcas {
     public function post(array $data): int {
         if($data !== null){
             $m = Marca::fromArray($data);
-                if($this->Bd->insertar("marcas", "'$m->marca'", "marca")){
+                if($this->Bd->insertar("marcas", ['marca' => $m->marca])){
                     return $this->Bd->seleccionar("marcas", "1 ORDER BY id DESC LIMIT 1", "id")->fetch()['id'];
                 }
         }
@@ -46,7 +46,7 @@ final class marcas {
             $d = $this->get($marca);
             if ($d != null) {
                 $m = Marca::fromArray($data);
-                    if($this->Bd->actualizar("marcas", "marca = '$m->marca'", "id = $d->id")){
+                    if($this->Bd->actualizar("marcas", ['marca' => $m->marca], "id = $d->id")){
                         return true;
                     }
             }
@@ -61,7 +61,7 @@ final class marcas {
                 if($d->marca == $_SERVER['PHP_AUTH_USER']){
                     throw new ForbiddenException("No se puede eliminar la marca.", 1);
                 }
-                    if($this->Bd->eliminar("marcas", "marca = '$d->marca'")){
+                    if($this->Bd->eliminar("marcas", "marca = :m", ['m' => $d->marca])){
                         return true;
                     }
                 

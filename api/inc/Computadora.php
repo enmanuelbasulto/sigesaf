@@ -24,11 +24,11 @@ final class Computadora {
     }
 
     public static function fromArray(array $data): Computadora {
-        return new Computadora($data['id'], $data['id_local'], $data['id_pc'], $data['id_monitor'], $data['id_teclado'], $data['id_mouse'], $data['id_speaker'], $data['id_ups'], $data['nombre']);
+        return new Computadora($data['id'] ?? null, $data['id_local'] ?? 0, $data['id_pc'] ?? 0, $data['id_monitor'] ?? null, $data['id_teclado'] ?? null, $data['id_mouse'] ?? null, $data['id_speaker'] ?? null, $data['id_ups'] ?? null, $data['nombre'] ?? null);
     }
 
     public static function getLocal(int $id): int {
         $bd = new Bd();
-        return $bd->seleccionar("computadoras", "id = $id", "id_local")->fetch()['id_local'];
+        return $bd->seleccionar("computadoras", "id = :id", "id_local", ['id' => $id])->fetch()['id_local'];
     }
 }

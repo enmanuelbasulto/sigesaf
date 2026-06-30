@@ -14,7 +14,7 @@ final class equipos {
     public function get($equipo = null, $params = null) {
         if($equipo != null) {
             if(is_numeric($equipo)){
-                $d = $this->Bd->seleccionar("equipos", "id = $equipo")->fetch();
+                $d = $this->Bd->seleccionar("equipos", "id = :id", '*', ['id' => $equipo])->fetch();
             }
             
             if ($d != null) {
@@ -52,15 +52,23 @@ final class equipos {
         if($data !== null){
             $e = Equipo::fromArray($data);
             if (Local::esHijoDe($e->id_local, $this->Raiz)) {
-                $sello = !empty($e->sello) ? "'$e->sello'" : "NULL";
-                $modelo = !empty($e->modelo) ? "'$e->modelo'" : "NULL";
-                $numero_serie = !empty($e->numero_serie) ? "'$e->numero_serie'" : "NULL";
-                $fecha_compra = !empty($e->fecha_compra) ? "'$e->fecha_compra'" : "NULL";
-                $garantia = !empty($e->garantia) ? $e->garantia : "NULL";
-                $responsable = !empty($e->responsable) ? "'$e->responsable'" : "NULL";
-                $codigo_qr = !empty($e->codigo_qr) ? "'$e->codigo_qr'" : "NULL";
-                if($this->Bd->insertar("equipos", "$e->id_local, $e->no_inv, '$e->observaciones', $e->id_marca, $e->id_tipo, $e->id_estado, $sello, $modelo, $numero_serie, $fecha_compra, $garantia, $responsable, $codigo_qr", "id_local, no_inv, observaciones, id_marca, id_tipo, id_estado, sello, modelo, numero_serie, fecha_compra, garantia, responsable, codigo_qr")){
-                    $this->Bd->insertar("logs", "'equipos', '0', $this->u_actual, $e->no_inv", "tabla, tipo_cambio, id_usuario, objeto");
+                $datos = [
+                    'id_local' => $e->id_local,
+                    'no_inv' => $e->no_inv,
+                    'observaciones' => $e->observaciones,
+                    'id_marca' => $e->id_marca,
+                    'id_tipo' => $e->id_tipo,
+                    'id_estado' => $e->id_estado,
+                    'sello' => !empty($e->sello) ? $e->sello : null,
+                    'modelo' => !empty($e->modelo) ? $e->modelo : null,
+                    'numero_serie' => !empty($e->numero_serie) ? $e->numero_serie : null,
+                    'fecha_compra' => !empty($e->fecha_compra) ? $e->fecha_compra : null,
+                    'garantia' => !empty($e->garantia) ? $e->garantia : null,
+                    'responsable' => !empty($e->responsable) ? $e->responsable : null,
+                    'codigo_qr' => !empty($e->codigo_qr) ? $e->codigo_qr : null,
+                ];
+                if($this->Bd->insertar("equipos", $datos)){
+                    $this->Bd->insertar("logs", ['tabla' => 'equipos', 'tipo_cambio' => 0, 'id_usuario' => $this->u_actual, 'objeto' => $e->no_inv]);
                     return $this->Bd->seleccionar("equipos", "1", "max(id) as id")->fetch()['id'];
                 }
             }
@@ -75,21 +83,36 @@ final class equipos {
             if ($d != null) {
                 $e = Equipo::fromArray($data);
                 if (Local::esHijoDe($e->id_local, $this->Raiz)) {
-                    $sello = !empty($e->sello) ? "'$e->sello'" : "NULL";
-                    $modelo = !empty($e->modelo) ? "'$e->modelo'" : "NULL";
-                    $numero_serie = !empty($e->numero_serie) ? "'$e->numero_serie'" : "NULL";
-                    $fecha_compra = !empty($e->fecha_compra) ? "'$e->fecha_compra'" : "NULL";
-                    $garantia = !empty($e->garantia) ? $e->garantia : "NULL";
-                    $responsable = !empty($e->responsable) ? "'$e->responsable'" : "NULL";
-                    $codigo_qr = !empty($e->codigo_qr) ? "'$e->codigo_qr'" : "NULL";
+                    $sello = !empty($e->sello) ? $e->sello : null;
+                    $modelo = !empty($e->modelo) ? $e->modelo : null;
+                    $numero_serie = !empty($e->numero_serie) ? $e->numero_serie : null;
+                    $fecha_compra = !empty($e->fecha_compra) ? $e->fecha_compra : null;
+                    $garantia = !empty($e->garantia) ? $e->garantia : null;
+                    $responsable = !empty($e->responsable) ? $e->responsable : null;
+                    $codigo_qr = !empty($e->codigo_qr) ? $e->codigo_qr : null;
                     if (Usuario::isAdmin($_SERVER['PHP_AUTH_USER'])) {
-                        if($this->Bd->actualizar("equipos", "id_local = $e->id_local, no_inv = $e->no_inv, observaciones = '$e->observaciones', id_marca = $e->id_marca, id_tipo = $e->id_tipo, id_estado = $e->id_estado, sello = $sello, modelo = $modelo, numero_serie = $numero_serie, fecha_compra = $fecha_compra, garantia = $garantia, responsable = $responsable, codigo_qr = $codigo_qr", "id = $d->id")){
-                            $this->Bd->insertar("logs", "'equipos', '2', $this->u_actual, $e->no_inv", "tabla, tipo_cambio, id_usuario, objeto");
+                        $datos = [
+                            'id_local' => $e->id_local,
+                            'no_inv' => $e->no_inv,
+                            'observaciones' => $e->observaciones,
+                            'id_marca' => $e->id_marca,
+                            'id_tipo' => $e->id_tipo,
+                            'id_estado' => $e->id_estado,
+                            'sello' => $sello,
+                            'modelo' => $modelo,
+                            'numero_serie' => $numero_serie,
+                            'fecha_compra' => $fecha_compra,
+                            'garantia' => $garantia,
+                            'responsable' => $responsable,
+                            'codigo_qr' => $codigo_qr,
+                        ];
+                        if($this->Bd->actualizar("equipos", $datos, "id = $d->id")){
+                            $this->Bd->insertar("logs", ['tabla' => 'equipos', 'tipo_cambio' => 2, 'id_usuario' => $this->u_actual, 'objeto' => $e->no_inv]);
                             return true;
                         }
                     }
-                    if($this->Bd->actualizar("equipos", "observaciones = '$e->observaciones', sello = $sello", "id = $d->id")){
-                        $this->Bd->insertar("logs", "'equipos', '2', $this->u_actual, $e->no_inv", "tabla, tipo_cambio, id_usuario, objeto");
+                    if($this->Bd->actualizar("equipos", ['observaciones' => $e->observaciones, 'sello' => $sello], "id = $d->id")){
+                        $this->Bd->insertar("logs", ['tabla' => 'equipos', 'tipo_cambio' => 2, 'id_usuario' => $this->u_actual, 'objeto' => $e->no_inv]);
                         return true;
                     }
                 }
@@ -106,8 +129,8 @@ final class equipos {
                     throw new ForbiddenException("No se puede eliminar el equipo actual.", 1);
                 }
                 if (Local::esHijoDe($d->id_local, $this->Raiz)) {
-                    if($this->Bd->eliminar("equipos", "id = '$d->id'")){
-                        $this->Bd->insertar("logs", "'equipos', '3', $this->u_actual, $d->no_inv", "tabla, tipo_cambio, id_usuario, objeto");
+                    if($this->Bd->eliminar("equipos", "id = :id", ['id' => $d->id])){
+                        $this->Bd->insertar("logs", ['tabla' => 'equipos', 'tipo_cambio' => 3, 'id_usuario' => $this->u_actual, 'objeto' => $d->no_inv]);
                         return true;
                     }
                 }

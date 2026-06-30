@@ -14,7 +14,7 @@ final class reportes {
     public function get($reporte = null, $params = null) {
         if($reporte != null) {
             if(is_numeric($reporte)){
-                $d = $this->Bd->seleccionar("reportes inner join equipos on (reportes.id_equipo = equipos.id)", "reportes.id = $reporte", "reportes.*, equipos.no_inv as equipo")->fetch();
+                $d = $this->Bd->seleccionar("reportes inner join equipos on (reportes.id_equipo = equipos.id)", "reportes.id = :id", "reportes.*, equipos.no_inv as equipo", ['id' => $reporte])->fetch();
             }
             
             if ($d != null) {
@@ -53,21 +53,28 @@ final class reportes {
             $r = Reporte::fromArray($data);
             if (Local::esHijoDe(Equipo::getLocal($r->id_equipo), $this->Raiz)) {
                 $id_usuario = Usuario::getId($_SERVER['PHP_AUTH_USER']);
-                $tecnico_asignado = !empty($r->tecnico_asignado) ? "'$r->tecnico_asignado'" : "NULL";
-                $acciones_realizadas = !empty($r->acciones_realizadas) ? "'$r->acciones_realizadas'" : "NULL";
-                $repuestos_usados = !empty($r->repuestos_usados) ? "'$r->repuestos_usados'" : "NULL";
-                $tiempo_reparacion = !empty($r->tiempo_reparacion) ? $r->tiempo_reparacion : "NULL";
+                $datos = [
+                    'problema' => $r->problema,
+                    'id_usuario' => $id_usuario,
+                    'id_equipo' => $r->id_equipo,
+                    'id_estado' => $r->id_estado,
+                    'tecnico_asignado' => !empty($r->tecnico_asignado) ? $r->tecnico_asignado : null,
+                    'acciones_realizadas' => !empty($r->acciones_realizadas) ? $r->acciones_realizadas : null,
+                    'repuestos_usados' => !empty($r->repuestos_usados) ? $r->repuestos_usados : null,
+                    'tiempo_reparacion' => !empty($r->tiempo_reparacion) ? $r->tiempo_reparacion : null,
+                ];
                 
-                if($this->Bd->insertar("reportes", "'$r->problema', $id_usuario, $r->id_equipo, $r->id_estado, $tecnico_asignado, $acciones_realizadas, $repuestos_usados, $tiempo_reparacion", "problema, id_usuario, id_equipo, id_estado, tecnico_asignado, acciones_realizadas, repuestos_usados, tiempo_reparacion")){
+                if($this->Bd->insertar("reportes", $datos)){
+                    $id_equipo = (int) $r->id_equipo;
                     if ($r->id_estado == 1) {
-                        $this->Bd->actualizar("equipos", "id_estado = 2", "id = $r->id_equipo");
+                        $this->Bd->ejecutar("UPDATE equipos SET id_estado = 2 WHERE id = :id", ['id' => $id_equipo]);
                     } elseif ($r->id_estado == 2) {
-                        $this->Bd->actualizar("equipos", "id_estado = 4", "id = $r->id_equipo");
+                        $this->Bd->ejecutar("UPDATE equipos SET id_estado = 4 WHERE id = :id", ['id' => $id_equipo]);
                     } elseif ($r->id_estado == 3) {
-                        $this->Bd->actualizar("equipos", "id_estado = 1", "id = $r->id_equipo");
+                        $this->Bd->ejecutar("UPDATE equipos SET id_estado = 1 WHERE id = :id", ['id' => $id_equipo]);
                     }
                     $a = $this->Bd->seleccionar("reportes", "1 ORDER BY id DESC LIMIT 1", "id")->fetch()['id'];
-                    $this->Bd->insertar("logs", "'reportes', '0', $this->u_actual, $a", "tabla, tipo_cambio, id_usuario, objeto");
+                    $this->Bd->insertar("logs", ['tabla' => 'reportes', 'tipo_cambio' => 0, 'id_usuario' => $this->u_actual, 'objeto' => $a]);
                     return $a;
                 }
             }
@@ -82,12 +89,16 @@ final class reportes {
             if ($d != null) {
                 $r = Reporte::fromArray($data);
                 if (Local::esHijoDe(Reporte::getLocal($d->id), $this->Raiz)) {
-                    $tecnico_asignado = !empty($r->tecnico_asignado) ? "'$r->tecnico_asignado'" : "NULL";
-                    $acciones_realizadas = !empty($r->acciones_realizadas) ? "'$r->acciones_realizadas'" : "NULL";
-                    $repuestos_usados = !empty($r->repuestos_usados) ? "'$r->repuestos_usados'" : "NULL";
-                    $tiempo_reparacion = !empty($r->tiempo_reparacion) ? $r->tiempo_reparacion : "NULL";
-                    if($this->Bd->actualizar("reportes", "problema = '$r->problema', id_estado = $r->id_estado, tecnico_asignado = $tecnico_asignado, acciones_realizadas = $acciones_realizadas, repuestos_usados = $repuestos_usados, tiempo_reparacion = $tiempo_reparacion", "id = $d->id")){
-                        $this->Bd->insertar("logs", "'reportes', '2', $this->u_actual, $d->id", "tabla, tipo_cambio, id_usuario, objeto");
+                    $datos = [
+                        'problema' => $r->problema,
+                        'id_estado' => $r->id_estado,
+                        'tecnico_asignado' => !empty($r->tecnico_asignado) ? $r->tecnico_asignado : null,
+                        'acciones_realizadas' => !empty($r->acciones_realizadas) ? $r->acciones_realizadas : null,
+                        'repuestos_usados' => !empty($r->repuestos_usados) ? $r->repuestos_usados : null,
+                        'tiempo_reparacion' => !empty($r->tiempo_reparacion) ? $r->tiempo_reparacion : null,
+                    ];
+                    if($this->Bd->actualizar("reportes", $datos, "id = $d->id")){
+                        $this->Bd->insertar("logs", ['tabla' => 'reportes', 'tipo_cambio' => 2, 'id_usuario' => $this->u_actual, 'objeto' => $d->id]);
                         return true;
                     }
                 }
@@ -101,8 +112,8 @@ final class reportes {
             $d = $this->get($reporte);
             if ($d != null) {
                 if (Local::esHijoDe(Reporte::getLocal($d->id), $this->Raiz)) {
-                    if($this->Bd->eliminar("reportes", "id = '$d->id'")){
-                        $this->Bd->insertar("logs", "'reportes', '3', $this->u_actual, $d->id", "tabla, tipo_cambio, id_usuario, objeto");
+                    if($this->Bd->eliminar("reportes", "id = :id", ['id' => $d->id])){
+                        $this->Bd->insertar("logs", ['tabla' => 'reportes', 'tipo_cambio' => 3, 'id_usuario' => $this->u_actual, 'objeto' => $d->id]);
                         return true;
                     }
                 }

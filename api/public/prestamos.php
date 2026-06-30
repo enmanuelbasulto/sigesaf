@@ -14,7 +14,7 @@ final class prestamos {
     public function get($prestamo = null, $params = null) {
         if($prestamo != null) {
             if(is_numeric($prestamo)){
-                $d = $this->Bd->seleccionar("prestamos", "id = $prestamo")->fetch();
+                $d = $this->Bd->seleccionar("prestamos", "id = :id", '*', ['id' => $prestamo])->fetch();
             }
             
             if ($d != null) {
@@ -53,13 +53,22 @@ final class prestamos {
         if($data !== null){
             $p = Prestamo::fromArray($data);
             if (Local::esHijoDe(Equipo::getLocal($p->id_equipo), $this->Raiz)) {
-                $local_req = $p->local_req;
-                $id_local_dest = ($p->id_local_dest > 0) ? $p->id_local_dest : "NULL";
+                $id_local_dest = ($p->id_local_dest > 0) ? $p->id_local_dest : null;
                 $id_usuario = Usuario::getId($_SERVER['PHP_AUTH_USER']);
-                $fecha_fin = date_format($p->fecha_fin, "y/m/d H:i:s");
-                if($this->Bd->insertar("prestamos", "'$fecha_fin', '$p->motivo', '$p->recibe', '$local_req', $p->id_equipo, $id_local_dest, 1, $id_usuario", "fecha_fin, motivo, recibe, local_req, id_equipo, id_local_dest, id_estado, id_usuario_req")){
+                $fecha_fin_str = $p->fecha_fin ? date_format($p->fecha_fin, "y/m/d H:i:s") : null;
+                $datos = [
+                    'fecha_fin' => $fecha_fin_str,
+                    'motivo' => $p->motivo,
+                    'recibe' => $p->recibe,
+                    'local_req' => $p->local_req,
+                    'id_equipo' => $p->id_equipo,
+                    'id_local_dest' => $id_local_dest,
+                    'id_estado' => 1,
+                    'id_usuario_req' => $id_usuario,
+                ];
+                if($this->Bd->insertar("prestamos", $datos)){
                     $a = $this->Bd->seleccionar("prestamos", "1 ORDER BY id DESC LIMIT 1", "id")->fetch()['id'];
-                    $this->Bd->insertar("logs", "'prestamos', '0', $this->u_actual, $a", "tabla, tipo_cambio, id_usuario, objeto");
+                    $this->Bd->insertar("logs", ['tabla' => 'prestamos', 'tipo_cambio' => 0, 'id_usuario' => $this->u_actual, 'objeto' => $a]);
                     return $a;
                 }
             }
@@ -77,17 +86,26 @@ final class prestamos {
                     if ($p->id_estado > 1) {
                         $l = Usuario::getLocal($_SERVER['PHP_AUTH_USER']);
                         if ($l == 1 || $l != Usuario::getLocal($d->id_usuario_req)) {
-                            if($this->Bd->actualizar("prestamos", "id_estado = $p->id_estado, id_usuario_aut = $this->u_actual", "id = $d->id")){
-                                $this->Bd->insertar("logs", "'prestamos', '2', $this->u_actual, $d->id", "tabla, tipo_cambio, id_usuario, objeto");
+                            if($this->Bd->actualizar("prestamos", ['id_estado' => $p->id_estado, 'id_usuario_aut' => $this->u_actual], "id = $d->id")){
+                                $this->Bd->insertar("logs", ['tabla' => 'prestamos', 'tipo_cambio' => 2, 'id_usuario' => $this->u_actual, 'objeto' => $d->id]);
                                 return true;
                             }
                         }
                     } else if($p->id_local_dest != null && Local::esHijoDe(Equipo::getLocal($p->id_equipo), $this->Raiz)){
-                        $fecha = date_format($p->fecha, "y/m/d H:i:s");
-                        $fecha_fin = date_format($p->fecha_fin, "y/m/d H:i:s");
-
-                        if($this->Bd->actualizar("prestamos", "fecha = '$fecha', fecha_fin = '$fecha_fin', motivo = '$p->motivo', recibe = '$p->recibe', local_req = '$p->local_req', id_equipo = $p->id_equipo, id_local_dest = $p->id_local_dest, id_estado = $p->id_estado", "id = $d->id")){
-                            $this->Bd->insertar("logs", "'prestamos', '2', $this->u_actual, $p->id", "tabla, tipo_cambio, id_usuario, objeto");
+                        $fecha_str = $p->fecha ? date_format($p->fecha, "y/m/d H:i:s") : null;
+                        $fecha_fin_str = $p->fecha_fin ? date_format($p->fecha_fin, "y/m/d H:i:s") : null;
+                        $datos = [
+                            'fecha' => $fecha_str,
+                            'fecha_fin' => $fecha_fin_str,
+                            'motivo' => $p->motivo,
+                            'recibe' => $p->recibe,
+                            'local_req' => $p->local_req,
+                            'id_equipo' => $p->id_equipo,
+                            'id_local_dest' => $p->id_local_dest,
+                            'id_estado' => $p->id_estado,
+                        ];
+                        if($this->Bd->actualizar("prestamos", $datos, "id = $d->id")){
+                            $this->Bd->insertar("logs", ['tabla' => 'prestamos', 'tipo_cambio' => 2, 'id_usuario' => $this->u_actual, 'objeto' => $p->id]);
                             return true;
                         }
                     }
@@ -102,8 +120,8 @@ final class prestamos {
             $d = $this->get($prestamo);
             if ($d != null) {
                 if (Local::esHijoDe(Prestamo::getLocal($d->id), $this->Raiz)) {
-                    if($this->Bd->eliminar("prestamos", "id = '$d->id'")){
-                        $this->Bd->insertar("logs", "'prestamos', '3', $this->u_actual, $d->id", "tabla, tipo_cambio, id_usuario, objeto");
+                    if($this->Bd->eliminar("prestamos", "id = :id", ['id' => $d->id])){
+                        $this->Bd->insertar("logs", ['tabla' => 'prestamos', 'tipo_cambio' => 3, 'id_usuario' => $this->u_actual, 'objeto' => $d->id]);
                         return true;
                     }
                 }

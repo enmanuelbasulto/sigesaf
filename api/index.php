@@ -15,7 +15,6 @@ function addslashesRecursivo($var) {
 }
 
 $_GET = addslashesRecursivo($_GET);
-$_SERVER = addslashesRecursivo($_SERVER);
 
 final class index {
     private $Response = null;

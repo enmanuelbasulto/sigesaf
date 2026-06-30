@@ -12,6 +12,6 @@ final class EstadoEquipo {
     }
 
     public static function fromArray(array $data): EstadoEquipo {
-        return new EstadoEquipo($data['id'], $data['estado'], $data['descripcion']);
+        return new EstadoEquipo($data['id'] ?? null, $data['estado'] ?? null, $data['descripcion'] ?? null);
     }
 }

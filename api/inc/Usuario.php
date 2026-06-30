@@ -20,12 +20,12 @@ final class Usuario {
     }
 
     public static function fromArray(array $data): Usuario {
-        return new Usuario($data['id'], $data['usuario'], $data['nombre'], $data['clave'], $data['rol'], $data['id_local'], $data['local']);
+        return new Usuario($data['id'] ?? null, $data['usuario'] ?? null, $data['nombre'] ?? null, $data['clave'] ?? null, $data['rol'] ?? 'tecnico', $data['id_local'] ?? 0, $data['local'] ?? null);
     }
 
     public static function getId(string $usuario): int {
         $bd = new Bd();
-        return $bd->seleccionar("usuarios", "usuario = '$usuario'", "id")->fetch()['id'];
+        return $bd->seleccionar("usuarios", "usuario = :usr", "id", ['usr' => $usuario])->fetch()['id'];
     }
 
     public static function getLocal(string $usuario): int {
@@ -33,22 +33,23 @@ final class Usuario {
             return -1;
         }
         $bd = new Bd();
-        return $bd->seleccionar("usuarios", "usuario = '$usuario'", "id_local")->fetch()['id_local'];
+        return $bd->seleccionar("usuarios", "usuario = :usr", "id_local", ['usr' => $usuario])->fetch()['id_local'];
     }
 
     public static function getIdActual(): int {
-        return Usuario::getId($_SERVER['PHP_AUTH_USER']);
+        $user = $_SERVER['PHP_AUTH_USER'] ?? '';
+        return $user ? Usuario::getId($user) : 0;
     }
 
     public static function authenticate($usuario, $clave): bool {
         $bd = new Bd();
         $clave = sha1($clave);
-        return $bd->contarRegistros("usuarios", "usuario = '$usuario' and clave = '$clave'");
+        return $bd->contarRegistros("usuarios", "usuario = :usr and clave = :clv", ['usr' => $usuario, 'clv' => $clave]);
     }
 
     public static function getRol($usuario): string {
         $bd = new Bd();
-        return $bd->seleccionar("usuarios", "usuario = '$usuario'", "rol")->fetch()["rol"] ?? 'tecnico';
+        return $bd->seleccionar("usuarios", "usuario = :usr", "rol", ['usr' => $usuario])->fetch()["rol"] ?? 'tecnico';
     }
 
     public static function isAdmin($usuario): bool {
@@ -59,7 +60,7 @@ final class Usuario {
         if(Usuario::authenticate($usuario, $clave)) {
             $bd = new Bd();
             $clave_nueva = sha1($clave_nueva);
-            return $bd->actualizar("usuarios", "clave = '$clave_nueva'", "$usuario = '$usuario'");
+            return $bd->ejecutar("UPDATE usuarios SET clave = :clv WHERE usuario = :usr", ['clv' => $clave_nueva, 'usr' => $usuario])->rowCount() > 0;
         }
         return false;
     }

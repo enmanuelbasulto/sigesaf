@@ -44,19 +44,19 @@ final class Prestamo {
     }
     
     public static function fromArray(array $data): Prestamo {
-        $fecha = new DateTime($data['fecha']);
-        $fecha_fin = new DateTime($data['fecha_fin']);
-        return new Prestamo($data['id'], $fecha, $fecha_fin, $data['motivo'], $data['recibe'], $data['local_req'], (int)$data['id_equipo'], $data['id_local_dest'], ($data['id_estado'] != null ? $data['id_estado'] : 1), ($data['id_usuario_req'] != null ? $data['id_usuario_req'] : 0), $data['id_usuario_aut'], $data['usuario_req'], $data['equipo'], $data['local'], $data['marca'], $data['tipo'], $data['estado'], $data['local_destino'], $data['autoriza']);
+        $fecha = isset($data['fecha']) ? new DateTime($data['fecha']) : null;
+        $fecha_fin = isset($data['fecha_fin']) ? new DateTime($data['fecha_fin']) : null;
+        return new Prestamo($data['id'] ?? null, $fecha, $fecha_fin, $data['motivo'] ?? null, $data['recibe'] ?? null, $data['local_req'] ?? null, (int)($data['id_equipo'] ?? 0), $data['id_local_dest'] ?? null, ($data['id_estado'] ?? 1), ($data['id_usuario_req'] ?? 0), $data['id_usuario_aut'] ?? null, $data['usuario_req'] ?? null, $data['equipo'] ?? null, $data['local'] ?? null, $data['marca'] ?? null, $data['tipo'] ?? null, $data['estado'] ?? null, $data['local_destino'] ?? null, $data['autoriza'] ?? null);
     }
 
     public static function getLocal(int $id): int {
         $bd = new Bd();
-        $id_equipo = $bd->seleccionar("prestamos", "id = '$id'", "id_equipo")->fetch()['id_equipo'];
+        $id_equipo = $bd->seleccionar("prestamos", "id = :id", "id_equipo", ['id' => $id])->fetch()['id_equipo'];
         return Equipo::getLocal($id_equipo);
     }
 
     public static function getLocalDest(int $id): int {
         $bd = new Bd();
-        return $bd->seleccionar("prestamos", "id = '$id'", "id_local_dest")->fetch()['id_local_dest'];
+        return $bd->seleccionar("prestamos", "id = :id", "id_local_dest", ['id' => $id])->fetch()['id_local_dest'];
     }
 }

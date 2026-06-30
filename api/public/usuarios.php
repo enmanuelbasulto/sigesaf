@@ -14,11 +14,11 @@ final class usuarios {
     public function get($usuario = null, $params = null) {
         if($usuario != null) {
             if(is_numeric($usuario)){
-                $d = $this->Bd->seleccionar("usuarios left join locales on usuarios.id_local = locales.id", "usuarios.id = $usuario", "usuarios.*, locales.local")->fetch();
+                $d = $this->Bd->seleccionar("usuarios left join locales on usuarios.id_local = locales.id", "usuarios.id = :id", "usuarios.*, locales.local", ['id' => $usuario])->fetch();
 
             } else {
 
-                $d = $this->Bd->seleccionar("usuarios left join locales on usuarios.id_local = locales.id", "usuarios.usuario = '$usuario'", "usuarios.*, locales.local as local")->fetch();
+                $d = $this->Bd->seleccionar("usuarios left join locales on usuarios.id_local = locales.id", "usuarios.usuario = :usr", "usuarios.*, locales.local as `local`", ['usr' => $usuario])->fetch();
             }
             if ($d != null) {
                 $u = Usuario::fromArray($d);
@@ -55,12 +55,12 @@ final class usuarios {
         if($data !== null){
             $u = Usuario::fromArray($data);
             if (Local::esHijoDe($u->id_local, $this->Raiz)) {
-                $rol = !empty($u->rol) ? "'$u->rol'" : "'tecnico'";
                 $clave = sha1($u->clave);
+                $rol = $u->rol ?: 'tecnico';
 
-                if($this->Bd->insertar("usuarios", "'$u->usuario', '$u->nombre', '$clave', $rol, $u->id_local", "usuario, nombre, clave, rol, id_local")){
+                if($this->Bd->insertar("usuarios", ['usuario' => $u->usuario, 'nombre' => $u->nombre, 'clave' => $clave, 'rol' => $rol, 'id_local' => $u->id_local])){
                     
-                    $this->Bd->insertar("logs", "'usuarios', '0', $this->u_actual, '$u->usuario'", "tabla, tipo_cambio, id_usuario, objeto");
+                    $this->Bd->insertar("logs", ['tabla' => 'usuarios', 'tipo_cambio' => 0, 'id_usuario' => $this->u_actual, 'objeto' => $u->usuario]);
                     return $this->Bd->seleccionar("usuarios", "1 ORDER BY id DESC LIMIT 1", "id")->fetch()['id'];
                 }
             }
@@ -74,17 +74,17 @@ final class usuarios {
             if ($d != null) {
                 $u = Usuario::fromArray($data);
                 if (Local::esHijoDe($u->id_local, $this->Raiz)) {
-                    $rol = !empty($u->rol) ? "'$u->rol'" : "'tecnico'";
+                    $rol = $u->rol ?: 'tecnico';
                     $usuario_u = $u->usuario;
                     $id_local = $u->id_local;
 
                     if ($this->u_actual == $d->id || !Usuario::isAdmin($_SERVER['PHP_AUTH_USER'])) {
-                        $rol = "'$d->rol'";
+                        $rol = $d->rol;
                         $usuario_u = $d->usuario;
                         $id_local = $d->id_local;
                     }
-                    if($this->Bd->actualizar("usuarios", "usuario = '$usuario_u', nombre = '$u->nombre', rol = $rol, id_local = $id_local", "id = $d->id")){
-                        $this->Bd->insertar("logs", "'usuarios', '2', $this->u_actual, '$u->usuario'", "tabla, tipo_cambio, id_usuario, objeto");
+                    if($this->Bd->actualizar("usuarios", ['usuario' => $usuario_u, 'nombre' => $u->nombre, 'rol' => $rol, 'id_local' => $id_local], "id = $d->id")){
+                        $this->Bd->insertar("logs", ['tabla' => 'usuarios', 'tipo_cambio' => 2, 'id_usuario' => $this->u_actual, 'objeto' => $u->usuario]);
                         return true;
                     }
                 }
@@ -101,8 +101,8 @@ final class usuarios {
                     throw new ForbiddenException("No se puede eliminar el usuario actual.", 1);
                 }
                 if (Local::esHijoDe($d->id_local, $this->Raiz)) {
-                    if($this->Bd->eliminar("usuarios", "usuario = '$d->usuario'")){
-                        $this->Bd->insertar("logs", "'usuarios', '3', $this->u_actual, '$d->usuario'", "tabla, tipo_cambio, id_usuario, objeto");
+                    if($this->Bd->eliminar("usuarios", "usuario = :usr", ['usr' => $d->usuario])){
+                        $this->Bd->insertar("logs", ['tabla' => 'usuarios', 'tipo_cambio' => 3, 'id_usuario' => $this->u_actual, 'objeto' => $d->usuario]);
                         return true;
                     }
                 }

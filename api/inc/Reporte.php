@@ -38,13 +38,13 @@ final class Reporte {
     }
 
     public static function fromArray(array $data): Reporte {
-        $fecha = new DateTime($data['fecha']);
-        return new Reporte($data['id'], $fecha, $data['problema'], (int)$data['id_usuario'], (int)$data['id_equipo'], (int)$data['id_estado'], $data['usuario'], $data['equipo'], $data['local'], $data['marca'], $data['tipo'], $data['estado'], $data['tecnico_asignado'], $data['acciones_realizadas'], $data['repuestos_usados'], $data['tiempo_reparacion']);
+        $fecha = isset($data['fecha']) ? new DateTime($data['fecha']) : null;
+        return new Reporte($data['id'] ?? null, $fecha, $data['problema'] ?? null, (int)($data['id_usuario'] ?? 0), (int)($data['id_equipo'] ?? 0), (int)($data['id_estado'] ?? 0), $data['usuario'] ?? null, $data['equipo'] ?? null, $data['local'] ?? null, $data['marca'] ?? null, $data['tipo'] ?? null, $data['estado'] ?? null, $data['tecnico_asignado'] ?? null, $data['acciones_realizadas'] ?? null, $data['repuestos_usados'] ?? null, $data['tiempo_reparacion'] ?? null);
     }
 
     public static function getLocal(int $id): int {
         $bd = new Bd();
-        $id_equipo = $bd->seleccionar("reportes", "id = '$id'", "id_equipo")->fetch()['id_equipo'];
+        $id_equipo = $bd->seleccionar("reportes", "id = :id", "id_equipo", ['id' => $id])->fetch()['id_equipo'];
         return Equipo::getLocal($id_equipo);
     }
 }

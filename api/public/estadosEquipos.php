@@ -34,7 +34,7 @@ final class estadosEquipos {
     public function post(array $data): int {
         if($data !== null){
             $ee = EstadoEquipo::fromArray($data);
-                if($this->Bd->insertar("estados_equipos", "'$ee->estado', '$ee->descripcion'", "estado, descripcion")){
+                if($this->Bd->insertar("estados_equipos", ['estado' => $ee->estado, 'descripcion' => $ee->descripcion])){
                     return $this->Bd->seleccionar("estados_equipos", "1 ORDER BY id DESC LIMIT 1", "id")->fetch()['id'];
                 }
         }
@@ -46,7 +46,7 @@ final class estadosEquipos {
             $d = $this->get($id_eEquipo);
             if ($d != null) {
                 $ee = EstadoEquipo::fromArray($data);
-                    if($this->Bd->actualizar("estados_equipos", "estado = '$ee->estado', descripcion = '$ee->descripcion'", "id = $d->id")){
+                    if($this->Bd->actualizar("estados_equipos", ['estado' => $ee->estado, 'descripcion' => $ee->descripcion], "id = $d->id")){
                         return true;
                     }
             }
@@ -61,7 +61,7 @@ final class estadosEquipos {
                 if($d->estado == $_SERVER['PHP_AUTH_USER']){
                     throw new ForbiddenException("No se puede eliminar el estado del reporte actual.", 1);
                 }
-                    if($this->Bd->eliminar("estados_equipos", "estado = '$d->estado'")){
+                    if($this->Bd->eliminar("estados_equipos", "estado = :e", ['e' => $d->estado])){
                         return true;
                     }
                 

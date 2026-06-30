@@ -10,6 +10,6 @@ final class Marca {
     }
 
     public static function fromArray(array $data): Marca {
-        return new Marca($data['id'], $data['marca']);
+        return new Marca($data['id'] ?? null, $data['marca'] ?? null);
     }
 }

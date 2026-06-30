@@ -44,11 +44,11 @@ final class Equipo {
     }
 
     public static function fromArray(array $data): Equipo {
-        return new Equipo($data['id'], $data['id_local'], $data['local'], $data['no_inv'], $data['observaciones'], $data['id_marca'], $data['marca'], $data['id_tipo'], $data['tipo'], $data['id_estado'], $data['estado'], $data['sello'], $data['modelo'], $data['numero_serie'], $data['fecha_compra'], $data['garantia'], $data['responsable'], $data['codigo_qr']);
+        return new Equipo($data['id'] ?? null, $data['id_local'] ?? 0, $data['local'] ?? null, $data['no_inv'] ?? 0, $data['observaciones'] ?? null, $data['id_marca'] ?? 0, $data['marca'] ?? null, $data['id_tipo'] ?? 0, $data['tipo'] ?? null, $data['id_estado'] ?? 0, $data['estado'] ?? null, $data['sello'] ?? null, $data['modelo'] ?? null, $data['numero_serie'] ?? null, $data['fecha_compra'] ?? null, $data['garantia'] ?? null, $data['responsable'] ?? null, $data['codigo_qr'] ?? null);
     }
 
     public static function getLocal(int $id): int {
         $bd = new Bd(); 
-        return (int)$bd->seleccionar("equipos", "id = '$id'", "id_local")->fetch()['id_local'];
+        return (int)$bd->seleccionar("equipos", "id = :id", "id_local", ['id' => $id])->fetch()['id_local'];
     }
 }

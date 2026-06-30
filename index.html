@@ -127,7 +127,7 @@
 
         <div class="content">
             <script id="home-template" type="text/html">
-                <div class="row">
+                <div class="row g-3">
                     <div class="col-lg-3 col-sm-4">
                         <div class="stats-card">
                             <div class="content">
@@ -198,7 +198,7 @@
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-timer"></i> In the last hour
+                                        <i class="ti-timer"></i> En la &uacute;ltima hora
                                     </div>
                                 </div>
                             </div>
@@ -223,14 +223,14 @@
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-reload"></i> Updated now
+                                        <i class="ti-reload"></i> Actualizado ahora
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">                    
+                <div class="row g-3">                    
                     <div class="col-lg-3 col-sm-4">
                         <div class="stats-card">
                             <div class="content">
@@ -351,11 +351,13 @@
                             <div class="content table-full-width dt-table-wrap">
                                 <table id="tbl-usuarios" class="table table-striped">
                                     <thead>
-                                        <th></th>
-                                        <th>Usuario</th>
-                                    	<th>Nombre</th>
-                                        <th>Local</th>
-                                        <th>Acciones</th>
+                                        <tr>
+                                            <th></th>
+                                            <th>Usuario</th>
+                                            <th>Nombre</th>
+                                            <th>Local</th>
+                                            <th>Acciones</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: u.usuarios -->
@@ -365,10 +367,10 @@
                                         	<td data-bind="text: nombre"></td> 
                                         	<td data-bind="text: local"></td>
                                             <td>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.u.editar">
+                                                <button class="btn btn-action btn-action-edit" title="Editar" data-bind="click: $parent.u.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.u.eliminar">
+                                                <button class="btn btn-action btn-action-delete" title="Eliminar" data-bind="click: $parent.u.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
                                             </td>
@@ -385,7 +387,10 @@
             <script id="pg-editar-usuario" type="text/html">
                 <div class="row" data-bind="visible: ((!u.usuarios().length))">
                     <div class="col-md-9">
-                        <h3>El usuario solicitado no existe.</h3>
+                        <div class="card"><div class="content empty-state-inline">
+                            <i class="ti-user"></i>
+                            <h4>El usuario solicitado no existe.</h4>
+                        </div></div>
                     </div>
                 </div>
                 <div class="row" data-bind="visible: (u.usuarios().length), foreach: u.usuarios">
@@ -512,10 +517,12 @@
                             <div class="content table-full-width dt-table-wrap">
                                 <table id="tbl-locales" class="table table-striped">
                                     <thead>
-                                        <th>Id</th>
-                                        <th>Local</th>
-                                        <th>Local padre</th>
-                                        <th></th>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Local</th>
+                                            <th>Local padre</th>
+                                            <th></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: l.locales -->
@@ -524,10 +531,10 @@
                                             <td data-bind="text: local"></td> 
                                             <td data-bind="text: padre"></td>
                                             <td>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.l.editar">
+                                                <button class="btn btn-action btn-action-edit" title="Editar" data-bind="click: $parent.l.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.l.eliminar">
+                                                <button class="btn btn-action btn-action-delete" title="Eliminar" data-bind="click: $parent.l.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
                                             </td>
@@ -544,7 +551,10 @@
             <script id="pg-editar-local" type="text/html">
                 <div class="row" data-bind="visible: ((!l2.locales().length))">
                     <div class="col-md-9">
-                        <h3>El local solicitado no existe.</h3>
+                        <div class="card"><div class="content empty-state-inline">
+                            <i class="ti-layout"></i>
+                            <h4>El local solicitado no existe.</h4>
+                        </div></div>
                     </div>
                 </div>
                 <div class="row" data-bind="visible: (l2.locales().length), foreach: l2.locales">
@@ -629,9 +639,11 @@
                             <div class="content table-full-width dt-table-wrap">
                                 <table class="table table-striped">
                                     <thead>
-                                        <th>Id</th>
-                                        <th>Marca</th>
-                                        <th></th>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Marca</th>
+                                            <th></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: m.marcas -->
@@ -639,10 +651,10 @@
                                             <td data-bind="text: id"></td>
                                             <td data-bind="text: marca"></td>
                                             <td>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.m.editar">
+                                                <button class="btn btn-action btn-action-edit" title="Editar" data-bind="click: $parent.m.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.m.eliminar">
+                                                <button class="btn btn-action btn-action-delete" title="Eliminar" data-bind="click: $parent.m.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
                                             </td>
@@ -687,7 +699,10 @@
             <script id="pg-editar-marca" type="text/html">
                 <div class="row" data-bind="visible: ((!m2.marcas().length))">
                     <div class="col-md-9">
-                        <h3>La marca solicitada no existe.</h3>
+                        <div class="card"><div class="content empty-state-inline">
+                            <i class="ti-tag"></i>
+                            <h4>La marca solicitada no existe.</h4>
+                        </div></div>
                     </div>
                 </div>
                 <div class="row" data-bind="visible: (m2.marcas().length), foreach: m2.marcas">
@@ -730,10 +745,12 @@
                             <div class="content table-full-width dt-table-wrap">
                                 <table class="table table-striped">
                                     <thead>
-                                        <th>Id</th>
-                                        <th>Tipo</th>
-                                        <th>Descripci&oacute;n</th>
-                                        <th></th>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Tipo</th>
+                                            <th>Descripci&oacute;n</th>
+                                            <th></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: t_e.tipos -->
@@ -742,10 +759,10 @@
                                             <td data-bind="text: tipo"></td>
                                             <td data-bind="text: descripcion"></td>
                                             <td>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.t_e.editar">
+                                                <button class="btn btn-action btn-action-edit" title="Editar" data-bind="click: $parent.t_e.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.t_e.eliminar">
+                                                <button class="btn btn-action btn-action-delete" title="Eliminar" data-bind="click: $parent.t_e.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
                                             </td>
@@ -796,7 +813,10 @@
             <script id="pg-editar-tipo-equipo" type="text/html">
                 <div class="row" data-bind="visible: ((!t2.tipos().length))">
                     <div class="col-md-9">
-                        <h3>El tipo de equipo solicitado no existe.</h3>
+                        <div class="card"><div class="content empty-state-inline">
+                            <i class="ti-layers"></i>
+                            <h4>El tipo de equipo solicitado no existe.</h4>
+                        </div></div>
                     </div>
                 </div>
                 <div class="row" data-bind="visible: (t2.tipos().length), foreach: t2.tipos">
@@ -845,11 +865,13 @@
                             <div class="content table-full-width dt-table-wrap">
                                 <table id="tbl-equipos" class="table table-striped">
                                     <thead>
-                                        <th>Inv</th>
-                                        <th>Tipo</th>
-                                        <th>Estado</th>
-                                        <th>Local</th>
-                                        <th></th>
+                                        <tr>
+                                            <th>Inv</th>
+                                            <th>Tipo</th>
+                                            <th>Estado</th>
+                                            <th>Local</th>
+                                            <th></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: e.equipos -->
@@ -859,16 +881,16 @@
                                             <td data-bind="text: estado"></td>
                                             <td data-bind="text: local"></td>
                                             <td>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.e.editar">
+                                                <button class="btn btn-action btn-action-edit" title="Editar" data-bind="click: $parent.e.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.e.eliminar">
+                                                <button class="btn btn-action btn-action-delete" title="Eliminar" data-bind="click: $parent.e.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
-                                                <button title="Reportar" data-active-color="danger" class="btn btn-secondary" data-bind="click: $parent.e.reporte">
+                                                <button class="btn btn-action btn-action-report" title="Reportar" data-bind="click: $parent.e.reporte">
                                                     <i class="ti-alert"></i>
                                                 </button>
-                                                <button title="Solicitar pr&eacute;stamo" data-active-color="danger" class="btn btn-secondary" data-bind="click: $parent.e.prestamo">
+                                                <button class="btn btn-action btn-action-loan" title="Solicitar pr&eacute;stamo" data-bind="click: $parent.e.prestamo">
                                                     <i class="ti-exchange-vertical"></i>
                                                 </button>
                                             </td>
@@ -885,7 +907,10 @@
             <script id="pg-editar-equipo" type="text/html">
                 <div class="row" data-bind="visible: ((!e.equipos().length))">
                     <div class="col-md-9">
-                        <h3>El equipo solicitado no existe.</h3>
+                        <div class="card"><div class="content empty-state-inline">
+                            <i class="ti-layout-list-thumb"></i>
+                            <h4>El equipo solicitado no existe.</h4>
+                        </div></div>
                     </div>
                 </div>
                 <div class="row" data-bind="visible: (e.equipos().length&&l.locales().length&&e_e.estados().length&&t_e.tipos().length&&m.marcas().length), foreach: e.equipos">
@@ -1118,7 +1143,10 @@
             <script id="pg-reportar-equipo" type="text/html">
                 <div class="row" data-bind="visible: ((!e.equipos().length))">
                     <div class="col-md-9">
-                        <h3>El equipo solicitado no existe.</h3>
+                        <div class="card"><div class="content empty-state-inline">
+                            <i class="ti-layout-list-thumb"></i>
+                            <h4>El equipo solicitado no existe.</h4>
+                        </div></div>
                     </div>
                 </div>
                 <div class="row" data-bind="visible: (e.equipos().length), foreach: e.equipos">
@@ -1194,7 +1222,10 @@
             <script id="pg-prestar-equipo" type="text/html">
                 <div class="row" data-bind="visible: ((!e.equipos().length))">
                     <div class="col-md-9">
-                        <h3>El equipo solicitado no existe.</h3>
+                        <div class="card"><div class="content empty-state-inline">
+                            <i class="ti-layout-list-thumb"></i>
+                            <h4>El equipo solicitado no existe.</h4>
+                        </div></div>
                     </div>
                 </div>
                 <div class="row" data-bind="visible: (e.equipos().length), foreach: e.equipos">
@@ -1266,12 +1297,14 @@
                             <div class="content table-full-width dt-table-wrap">
                                 <table id="tbl-reportes" class="table table-striped" style="word-wrap: break-word">
                                     <thead>
-                                        <th>Fecha</th>
-                                        <th>Problema</th>
-                                        <th>Estado</th>
-                                        <th>T&eacute;cnico</th>
-                                        <th>Tiempo</th>
-                                        <th></th>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Problema</th>
+                                            <th>Estado</th>
+                                            <th>T&eacute;cnico</th>
+                                            <th>Tiempo</th>
+                                            <th></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: r.reportes -->
@@ -1282,10 +1315,10 @@
                                             <td data-bind="text: tecnico_asignado"></td>
                                             <td data-bind="text: tiempo_reparacion"></td>
                                             <td>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.r.editar">
+                                                <button class="btn btn-action btn-action-edit" title="Editar" data-bind="click: $parent.r.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.r.eliminar">
+                                                <button class="btn btn-action btn-action-delete" title="Eliminar" data-bind="click: $parent.r.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
                                             </td>
@@ -1302,7 +1335,10 @@
             <script id="pg-editar-reporte" type="text/html">
                 <div class="row" data-bind="visible: ((!r.reportes().length))">
                     <div class="col-md-9">
-                        <h3>El reporte solicitado no existe.</h3>
+                        <div class="card"><div class="content empty-state-inline">
+                            <i class="ti-alert"></i>
+                            <h4>El reporte solicitado no existe.</h4>
+                        </div></div>
                     </div>
                 </div>
                 <div class="row" data-bind="visible: (r.reportes().length), foreach: r.reportes">
@@ -1387,12 +1423,14 @@
                             <div class="content table-full-width dt-table-wrap">
                                 <table id="tbl-prestamos" class="table table-striped">
                                     <thead>
-                                        <th>Fecha</th>
-                                        <th>Fecha fin</th>
-                                        <th>Equipo</th>
-                                        <th>Solicitante</th>
-                                        <th>Estado</th>
-                                        <th></th>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Fecha fin</th>
+                                            <th>Equipo</th>
+                                            <th>Solicitante</th>
+                                            <th>Estado</th>
+                                            <th></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: p.prestamos -->
@@ -1403,16 +1441,16 @@
                                             <td data-bind="text: usuario_req"></td>
                                             <td data-bind="text: estado"></td>
                                             <td>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.p.editar">
+                                                <button class="btn btn-action btn-action-edit" title="Editar" data-bind="click: $parent.p.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.p.eliminar">
+                                                <button class="btn btn-action btn-action-delete" title="Eliminar" data-bind="click: $parent.p.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.p.aprobar">
+                                                <button class="btn btn-action btn-action-approve" title="Aprobar" data-bind="click: $parent.p.aprobar">
                                                     <i class="ti-check"></i>
                                                 </button>
-                                                <button class="btn btn-secondary" data-bind="click: $parent.p.denegar">
+                                                <button class="btn btn-action btn-action-deny" title="Denegar" data-bind="click: $parent.p.denegar">
                                                     <i class="ti-na"></i>
                                                 </button>
                                             </td>
@@ -1429,7 +1467,10 @@
             <script id="pg-editar-prestamo" type="text/html">
                 <div class="row" data-bind="visible: ((!p.prestamos().length))">
                     <div class="col-md-9">
-                        <h3>El pr&eacute;stamo solicitado no existe.</h3>
+                        <div class="card"><div class="content empty-state-inline">
+                            <i class="ti-exchange-vertical"></i>
+                            <h4>El pr&eacute;stamo solicitado no existe.</h4>
+                        </div></div>
                     </div>
                 </div>
                 <div class="row" data-bind="visible: (p.prestamos().length), foreach: p.prestamos">
@@ -1480,38 +1521,31 @@
                     <div class="col-md-9">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Configuración</h4>
+                                <h4 class="title"><i class="ti-settings"></i>&nbsp;Configuraci&oacute;n</h4>
+                                <p class="category">Informaci&oacute;n del sistema.</p>
                             </div>
                             <div class="content">
-                                <form data-bind="submit: $parent.e.reportar">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Usuario</label>
-                                                <input type="text" class="form-control border-input" placeholder="Equipo" data-bind="value: no_inv" required readonly>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Estado a reportar</label>
-                                                <select class="form-control border-input" data-bind='options: $parent.e_r.estados, optionsText: "estado", optionsValue: "id", value: $parent.e.d.id_estado' required></select>
-                                            </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Versi&oacute;n del sistema</label>
+                                            <input type="text" class="form-control border-input" value="SIGESAF 1.0" readonly>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label>Descripci&oacute;n del problema</label>
-                                                <textarea rows="5" class="form-control border-input" placeholder="Descripci&oacute;n detallada del problema" data-bind="value: $parent.e.d.problema" required></textarea>
-                                            </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Servidor API</label>
+                                            <input type="text" class="form-control border-input" value="sigesaf.ipi.cm.rimed.cu" readonly>
                                         </div>
                                     </div>
-                                                
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Guardar cambios</button>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-info" role="alert">
+                                            <i class="ti-info-alt"></i>&nbsp; Para modificar par&aacute;metros del sistema, contacte al administrador.
+                                        </div>
                                     </div>
-                                    <div class="clearfix"></div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1521,16 +1555,27 @@
             
               <!-- Templates used directly by the Router -->
               <script id="404-template" type="text/html">
-                <h4>404 - No se encuentra la página solicitada, intente usar los enlaces de la izquierda para encontrar lo que desea.</h4>
+                <div class="error-state">
+                  <i class="ti-na"></i>
+                  <h4>404 - P&aacute;gina no encontrada</h4>
+                  <p>No se encuentra la p&aacute;gina solicitada. Use los enlaces de la izquierda para navegar.</p>
+                </div>
               </script>
             
               <script id="error-template" type="text/html">
-                <h4>Error</h4>
-                <p data-bind="text: error"></p>
+                <div class="error-state">
+                  <i class="ti-alert"></i>
+                  <h4>Error</h4>
+                  <p data-bind="text: error"></p>
+                </div>
               </script>
             
               <script id="loading-template" type="text/html">
-                <h4><i class="ti-time"></i>&nbsp;&nbsp;Cargando...</h4>
+                <div class="loading-state">
+                  <i class="ti-time spin"></i>
+                  <h4>Cargando...</h4>
+                  <p>Espere un momento por favor.</p>
+                </div>
               </script>
             
             <div class="container-fluid" data-bind="template: { name: router.currentPage().view, data: router.currentPage().model }">
@@ -1538,27 +1583,25 @@
         </div>
 
         <footer class="footer">
-            <div class="container-fluid">
-                <nav class="float-start">
+            <div class="container-fluid d-flex justify-content-between align-items-center flex-wrap">
+                <div class="copyright">
+                    &copy; <span id="footerYear"></span>, SIGESAF
+                </div>
+                <nav>
                     <ul>
-
                         <li>
-                            <a href="https://www.facebook.com/KSD-Solutions">
-                                Contacto
-                            </a>
+                            <a href="#config">Configuraci&oacute;n</a>
                         </li>
                         <li>
-                            <a href="https://www.pagina.com/soporte">
-                               Soporte técnico
-                            </a>
+                            <a href="#logoff">Salir</a>
                         </li>
                     </ul>
                 </nav>
-                <div class="copyright float-end">
-                    &copy; 2022, creado por <a href="https://www.ksdsolutions.net">KSD Solutions</a>
-                </div>
             </div>
         </footer>
+        <script>
+            document.getElementById('footerYear').textContent = new Date().getFullYear();
+        </script>
     </div>
 </div>
 </body>
@@ -1587,7 +1630,7 @@
     <script src="assets/js/pdfmake/pdfmake.min.js"></script>
     <script src="assets/js/pdfmake/vfs_fonts.js"></script>
 
-	<!-- Mobile sidebar toggle -->
+	<!-- Mobile sidebar toggle + auto-close on nav click -->
 	<script>
 		$(function() {
 			$('#sidebarToggle').on('click', function() {
@@ -1599,6 +1642,12 @@
 						$('.sidebar').removeClass('open');
 						$(this).remove();
 					}).appendTo('body');
+				}
+			});
+			$('.sidebar .nav li a').on('click', function() {
+				if ($('.sidebar').hasClass('open')) {
+					$('.sidebar').removeClass('open');
+					$('.sidebar-backdrop').remove();
 				}
 			});
 		});

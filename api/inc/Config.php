@@ -10,8 +10,17 @@ class Config {
             return self::$datos;
         }
         
-        self::$datos = parse_ini_file(self::$archivo, true);
-        return self::$datos;
+        $paths = [
+            __DIR__ . '/' . self::$archivo,
+            self::$archivo,
+        ];
+        foreach ($paths as $path) {
+            if (file_exists($path)) {
+                self::$datos = parse_ini_file($path, true);
+                return self::$datos;
+            }
+        }
+        throw new Exception("CONFIG: No se encontró el archivo de configuración.");
     }
 
     public static function obtConfig($param = null) {

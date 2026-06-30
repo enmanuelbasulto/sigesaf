@@ -344,6 +344,7 @@ function modelo_locales(l) {
     }
 
     self.eliminar = function (l) {
+        if (!confirm('¿Está seguro de eliminar este local?')) return;
         request('locales/' + l.id(), 'DELETE').done(function () {
             self.cargar();
         });
@@ -449,6 +450,7 @@ function modelo_usuarios(u) {
     }
 
     self.eliminar = function (u) {
+        if (!confirm('¿Está seguro de eliminar este usuario?')) return;
         request('usuarios/' + u.usuario(), 'DELETE').done(function () {
             self.cargar();
         });
@@ -578,6 +580,7 @@ function modelo_equipos(e) {
     }
 
     self.eliminar = function (e) {
+        if (!confirm('¿Está seguro de eliminar este equipo?')) return;
         request('equipos/' + e.id(), 'DELETE').done(function () {
             self.cargar();
         });
@@ -675,6 +678,7 @@ function modelo_reportes(r) {
     }
 
     self.eliminar = function (r) {
+        if (!confirm('¿Está seguro de eliminar este reporte?')) return;
         request('reportes/' + r.id(), 'DELETE').done(function () {
             self.cargar();
         });
@@ -771,6 +775,7 @@ function modelo_prestamos(p) {
     }
 
     self.eliminar = function (p) {
+        if (!confirm('¿Está seguro de eliminar este préstamo?')) return;
         request('prestamos/' + p.id(), 'DELETE').done(function () {
             self.cargar();
         });
@@ -866,6 +871,7 @@ function modelo_estados_reportes(e_r) {
     }
 
     self.eliminar = function (e) {
+        if (!confirm('¿Está seguro de eliminar este estado de reporte?')) return;
         request('estadosReportes/' + e.id(), 'DELETE').done(function () {
             self.cargar();
         });
@@ -936,6 +942,7 @@ function modelo_estados_equipos(e_e) {
     }
 
     self.eliminar = function (e) {
+        if (!confirm('¿Está seguro de eliminar este estado de equipo?')) return;
         request('estadosEquipos/' + e.id(), 'DELETE').done(function () {
             self.cargar();
         });
@@ -1006,6 +1013,7 @@ function modelo_estados_prestamos(e_p) {
     }
 
     self.eliminar = function (e) {
+        if (!confirm('¿Está seguro de eliminar este estado de préstamo?')) return;
         request('estadosPrestamos/' + e.id(), 'DELETE').done(function () {
             self.cargar();
         });
@@ -1076,6 +1084,7 @@ function modelo_tipos_equipos(t_e) {
     }
 
     self.eliminar = function (e) {
+        if (!confirm('¿Está seguro de eliminar este tipo de equipo?')) return;
         request('tiposEquipos/' + e.id(), 'DELETE').done(function () {
             self.cargar();
         });
@@ -1144,6 +1153,7 @@ function modelo_marcas(m) {
     }
 
     self.eliminar = function (m) {
+        if (!confirm('¿Está seguro de eliminar esta marca?')) return;
         request('marcas/' + m.id(), 'DELETE').done(function () {
             self.cargar();
         });
@@ -1464,8 +1474,8 @@ function login() {
     if (aut !== "") {
         location.href = "/";
     }
-    $('body').empty();
-    $('body').append("<div class=\"content container\"><div class=\"row\"><div class=\"col-lg-12\"><div id=\"login-form\" class=\"d-block mx-auto col-lg-4 col-md-5\"><div class=\"card\"><div class=\"card-header\"><h4 class=\"title\">Autenticación</h4></div><div class=\"card-body\"><form id=\"frm-login\"><div class=\"mb-3\"><label class=\"form-label\">Usuario</label><input id=\"usr\" type=\"text\" class=\"form-control border-input\" placeholder=\"Usuario\" autocomplete=\"username\"></div><div class=\"mb-3\"><label class=\"form-label\">Clave</label><input id=\"pass\" type=\"password\" class=\"form-control border-input\" placeholder=\"Clave\" autocomplete=\"current-password\"></div><div class=\"text-center\"><button type=\"submit\" class=\"btn btn-info btn-fill btn-wd\">Entrar</button></div></form></div></div></div></div></div></div>");
+    $('body').empty().css({ background: 'var(--content-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' });
+    $('body').append("<div class=\"container\"><div class=\"row justify-content-center\"><div class=\"col-lg-4 col-md-6 col-sm-8\"><div class=\"card\" style=\"margin-bottom:0\"><div class=\"card-header text-center\"><h4 class=\"title\"><i class=\"ti-lock\"></i>&nbsp;Autenticación</h4><p class=\"category\">Sistema de Gestión de Activos Fijos</p></div><div class=\"card-body\"><form id=\"frm-login\"><div class=\"mb-3\"><label class=\"form-label\">Usuario</label><input id=\"usr\" type=\"text\" class=\"form-control border-input\" placeholder=\"Usuario\" autocomplete=\"username\"></div><div class=\"mb-3\"><label class=\"form-label\">Clave</label><input id=\"pass\" type=\"password\" class=\"form-control border-input\" placeholder=\"Clave\" autocomplete=\"current-password\"></div><div class=\"text-center\"><button type=\"submit\" class=\"btn btn-info btn-fill btn-wd\">Entrar</button></div></form></div></div></div></div></div>");
     $("#frm-login").submit(function () {
         var u = $('#usr').val();
         var p = $('#pass').val();
@@ -1581,6 +1591,7 @@ function initDataTable(tableId, opts) {
         $t.DataTable().destroy();
     }
     $t.DataTable($.extend({
+        processing: true,
         language: {
             url: 'assets/js/datatables/es-ES.json'
         },

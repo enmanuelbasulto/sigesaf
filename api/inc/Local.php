@@ -13,23 +13,22 @@ final class Local {
     }
 
     public static function fromArray(array $data): Local {
-        return new Local($data['id'], $data['local'], $data['id_padre']);
+        return new Local($data['id'] ?? null, $data['local'] ?? null, $data['id_padre'] ?? null);
     }
 
     public static function esHijoDe($local, $padre): bool {
         $bd = new Bd();
-        $consulta = "with recursive arbol as (select * from locales where id = $local union all select child.* from locales as child join arbol as parent on parent.id_padre = child.id) select count(id) as r from arbol where id = $padre";
-        $r = $bd->ejecutar($consulta)->fetch()['r'];
+        $r = $bd->ejecutar("with recursive arbol as (select * from locales where id = :local union all select child.* from locales as child join arbol as parent on parent.id_padre = child.id) select count(id) as r from arbol where id = :padre", ['local' => $local, 'padre' => $padre])->fetch()['r'];
         return $r;
     }
 
     public static function obtTodos($raiz, $params = null) {
-        if(empty($params)){
-            $params = 1;
-        }
         $bd = new Bd();
-        $consulta = "with recursive arbol as (select * from locales where id = $raiz union all select child.* from locales as child join arbol as parent on parent.id = child.id_padre) select * from arbol where $params";
-        $r = $bd->ejecutar($consulta)->fetchAll();
+        $sql = "with recursive arbol as (select * from locales where id = :raiz union all select child.* from locales as child join arbol as parent on parent.id = child.id_padre) select * from arbol";
+        if(!empty($params)){
+            $sql .= " where $params";
+        }
+        $r = $bd->ejecutar($sql, ['raiz' => $raiz])->fetchAll();
         $t = array();
         foreach ($r as $v) {
             $t[count($t)] = Local::fromArray($v);

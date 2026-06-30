@@ -49,44 +49,53 @@ class Bd{
         return $this->ejecutar("TRUNCATE TABLE $nombre;");
     }
     
-    public function seleccionar($tabla, $condicion = '1', $campos = '*') {
+    public function seleccionar($tabla, $condicion = '1', $campos = '*', array $params = null) {
         if(empty($tabla)) {
             throw new Exception("BD: Debe especificar el nombre de la tabla en la que buscarán los datos.");
         }
         
-        return $this->ejecutar("SELECT $campos FROM $tabla WHERE $condicion;");
+        return $this->ejecutar("SELECT $campos FROM $tabla WHERE $condicion;", $params);
     }
-    
-    public function insertar($tabla, $valores, $campos = '') {
-        if(empty($tabla) || empty($valores)) {
-            throw new Exception("BD: Debe especificar el nombre de la tabla y los valores a insertar.");
+
+    public function insertar($tabla, array $datos) {
+        if(empty($tabla) || empty($datos)) {
+            throw new Exception("BD: Debe especificar el nombre de la tabla y los datos a insertar.");
+        }
+
+        $campos = implode(', ', array_keys($datos));
+        $holders = ':' . implode(', :', array_keys($datos));
+        return $this->ejecutar("INSERT INTO $tabla ($campos) VALUES ($holders);", $datos);
+    }
+
+    public function actualizar($tabla, array $datos, $condicion = '1') {
+        if(empty($tabla) || empty($datos)) {
+            throw new Exception("BD: Debe especificar el nombre de la tabla y los datos a actualizar.");
         }
         
-        return $this->ejecutar("INSERT INTO $tabla ($campos) VALUES ($valores);");
-    }
-    
-    public function actualizar($tabla, $valores, $condicion = '1') {
-        if(empty($tabla) || empty($valores)) {
-            throw new Exception("BD: Debe especificar el nombre de la tabla y los valores a actualizar.");
+        $sets = [];
+        $params = [];
+        foreach ($datos as $campo => $valor) {
+            $ph = ":{$campo}";
+            $sets[] = "$campo = $ph";
+            $params[$campo] = $valor;
         }
-        
-        return $this->ejecutar("UPDATE $tabla SET $valores WHERE $condicion;");
+        return $this->ejecutar("UPDATE $tabla SET " . implode(', ', $sets) . " WHERE $condicion;", $params);
     }
     
-    public function eliminar($tabla, $condicion = '1') {
+    public function eliminar($tabla, $condicion = '1', array $params = null) {
         if(empty($tabla)) {
             throw new Exception("BD: Debe especificar el nombre de la tabla en la que se van a eliminar los valores.");
         }
         
-        return $this->ejecutar("DELETE FROM $tabla WHERE $condicion;");
+        return $this->ejecutar("DELETE FROM $tabla WHERE $condicion;", $params);
     }
     
-    public function contarRegistros($tabla, $condicion = '1') {
+    public function contarRegistros($tabla, $condicion = '1', array $params = null) {
         if(empty($tabla)) {
             throw new Exception("BD: Debe especificar el nombre de la tabla en la que se contarán los registros.");
         }
         
-        $datos = $this->seleccionar($tabla, $condicion, "count(id) as cant");
+        $datos = $this->seleccionar($tabla, $condicion, "count(id) as cant", $params);
         return $datos->fetch()['cant'];
     }
 

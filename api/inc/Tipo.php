@@ -12,6 +12,6 @@ final class Tipo {
     }
 
     public static function fromArray(array $data): Tipo {
-        return new Tipo($data['id'], $data['tipo'], $data['descripcion']);
+        return new Tipo($data['id'] ?? null, $data['tipo'] ?? null, $data['descripcion'] ?? null);
     }
 }
