@@ -12,19 +12,17 @@
     <meta name="viewport" content="width=device-width" />
 
 
-    <!-- Bootstrap 5 core CSS     -->
+    <!-- Bootstrap 5 core CSS -->
     <link href="assets/css/bootstrap5.min.css" rel="stylesheet" />
 
-    <!-- Animation library for notifications   -->
+    <!-- Animation library for notifications -->
     <link href="assets/css/animate.min.css" rel="stylesheet"/>
 
-    <!--  Custom styles    -->
-    <link href="assets/css/paper-dashboard.css" rel="stylesheet"/>
-    <link href="assets/css/demo.css" rel="stylesheet" />
+    <!-- SIGESAF Custom Theme -->
+    <link href="assets/css/sigesaf.css" rel="stylesheet"/>
 
     <!--  Fonts and icons     -->
-    <link href="assets/fonts/fontawesome/css/all.min.css" rel="stylesheet">
-    <link href='assets/fonts/muli/stylesheet.css' rel='stylesheet' type='text/css'>
+    <link href="assets/fonts/muli/stylesheet.css" rel='stylesheet' type='text/css'>
     <link href="assets/css/themify-icons.css" rel="stylesheet">
 
     <!-- DataTables with export -->
@@ -38,7 +36,7 @@
 </div>
 
 <div id="body" class="wrapper" style="display: none">
-    <div class="sidebar" data-background-color="white" data-active-color="danger">
+    <div class="sidebar">
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="#" class="simple-text">
@@ -46,7 +44,7 @@
                 </a>
             </div>
             <ul class="nav">
-                <li class="nav-dashboard" class="active">
+                <li class="nav-dashboard active">
                     <a href="#">
                         <i class="ti-panel"></i>
                         <p>Dashboard</p>
@@ -101,8 +99,11 @@
     <div class="main-panel">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
+                <button class="navbar-toggler d-md-none me-2" type="button" id="sidebarToggle">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 <span class="navbar-brand" data-bind="text: router.currentPage().title">Dashboard</span>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
@@ -128,15 +129,15 @@
             <script id="home-template" type="text/html">
                 <div class="row">
                     <div class="col-lg-3 col-sm-4">
-                        <div class="card">
+                        <div class="stats-card">
                             <div class="content">
                                 <div class="row">
-                                    <div class="col-xs-5">
+                                    <div class="col-5">
                                         <div class="icon-big icon-warning text-center">
                                             <i class="ti-desktop"></i>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-7">
                                         <div class="numbers">
                                             <p>Total de TV</p>
                                             <span data-bind="text: d.t_c_tv"></span>
@@ -154,15 +155,15 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-4">
-                        <div class="card">
+                        <div class="stats-card">
                             <div class="content">
                                 <div class="row">
-                                    <div class="col-xs-5">
+                                    <div class="col-5">
                                         <div class="icon-big icon-success text-center">
                                             <i class="ti-clipboard"></i>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-7">
                                         <div class="numbers">
                                             <p>Reportes recibidos</p>
                                             <span data-bind="text: d.c_r"></span>
@@ -179,15 +180,15 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-4">
-                        <div class="card">
+                        <div class="stats-card">
                             <div class="content">
                                 <div class="row">
-                                    <div class="col-xs-5">
+                                    <div class="col-5">
                                         <div class="icon-big icon-danger text-center">
                                             <i class="ti-exchange-vertical"></i>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-7">
                                         <div class="numbers">
                                             <p>Prestamos hechos</p>
                                             <span data-bind="text: d.c_p_h"></span>
@@ -204,15 +205,15 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-4">
-                        <div class="card">
+                        <div class="stats-card">
                             <div class="content">
                                 <div class="row">
-                                    <div class="col-xs-5">
+                                    <div class="col-5">
                                         <div class="icon-big icon-info text-center">
                                             <i class="ti-exchange-vertical"></i>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-7">
                                         <div class="numbers">
                                             <p>Prestamos recibidos</p>
                                             <span data-bind="text: d.c_p_r"></span>
@@ -231,15 +232,15 @@
                 </div>
                 <div class="row">                    
                     <div class="col-lg-3 col-sm-4">
-                        <div class="card">
+                        <div class="stats-card">
                             <div class="content">
                                 <div class="row">
-                                    <div class="col-xs-5">
+                                    <div class="col-5">
                                         <div class="icon-big icon-warning text-center">
                                             <i class="ti-write"></i>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-7">
                                         <div class="numbers">
                                             <p>Total Computadoras</p>
                                             <span data-bind="text: d.t_c_c"></span>
@@ -257,15 +258,15 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-4">
-                        <div class="card">
+                        <div class="stats-card">
                             <div class="content">
                                 <div class="row">
-                                    <div class="col-xs-5">
+                                    <div class="col-5">
                                         <div class="icon-big icon-success text-center">
                                             <i class="ti-harddrives"></i>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-7">
                                         <div class="numbers">
                                             <p>Total PC Terminales</p>
                                             <span data-bind="text: d.t_c_pc"></span>
@@ -283,15 +284,15 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-4">
-                        <div class="card">
+                        <div class="stats-card">
                             <div class="content">
                                 <div class="row">
-                                    <div class="col-xs-5">
+                                    <div class="col-5">
                                         <div class="icon-big icon-danger text-center">
                                             <i class="ti-harddrive"></i>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-7">
                                         <div class="numbers">
                                             <p>Total Clientes Ligeros</p>
                                             <span data-bind="text: d.t_c_c_l"></span>
@@ -309,15 +310,15 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-4">
-                        <div class="card">
+                        <div class="stats-card">
                             <div class="content">
                                 <div class="row">
-                                    <div class="col-xs-5">
+                                    <div class="col-5">
                                         <div class="icon-big icon-info text-center">
                                             <i class="ti-server"></i>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-7">
                                         <div class="numbers">
                                             <p>Total Servidores</p>
                                             <span data-bind="text: d.t_c_s"></span>
@@ -347,7 +348,7 @@
                                 <h4 class="title"><i class="ti-user"></i>&nbsp;Usuarios</h4>
                                 <p class="category">Lista de usuarios registrados bajo su dominio.</p>
                             </div>
-                            <div class="content table-responsive table-full-width">
+                            <div class="content table-full-width dt-table-wrap">
                                 <table id="tbl-usuarios" class="table table-striped">
                                     <thead>
                                         <th></th>
@@ -508,7 +509,7 @@
                                 <h4 class="title"><i class="ti-layout"></i>&nbsp;Locales</h4>
                                 <p class="category">Lista de locales registrados bajo su dominio.</p>
                             </div>
-                            <div class="content table-responsive table-full-width">
+                            <div class="content table-full-width dt-table-wrap">
                                 <table id="tbl-locales" class="table table-striped">
                                     <thead>
                                         <th>Id</th>
@@ -625,7 +626,7 @@
                                 <h4 class="title"><i class="ti-tag"></i>&nbsp;Marcas</h4>
                                 <p class="category">Lista de marcas registradas.</p>
                             </div>
-                            <div class="content table-responsive table-full-width">
+                            <div class="content table-full-width dt-table-wrap">
                                 <table class="table table-striped">
                                     <thead>
                                         <th>Id</th>
@@ -726,7 +727,7 @@
                                 <h4 class="title"><i class="ti-layers"></i>&nbsp;Tipos de Equipos</h4>
                                 <p class="category">Lista de tipos de equipos registrados.</p>
                             </div>
-                            <div class="content table-responsive table-full-width">
+                            <div class="content table-full-width dt-table-wrap">
                                 <table class="table table-striped">
                                     <thead>
                                         <th>Id</th>
@@ -841,7 +842,7 @@
                                 <h4 class="title"><i class="ti-layout-list-thumb"></i>&nbsp;Equipos</h4>
                                 <p class="category">Lista de equipos registrados bajo su dominio.</p>
                             </div>
-                            <div class="content table-responsive table-full-width">
+                            <div class="content table-full-width dt-table-wrap">
                                 <table id="tbl-equipos" class="table table-striped">
                                     <thead>
                                         <th>Inv</th>
@@ -974,7 +975,7 @@
                                                 <div class="input-group">
                                                     <input type="text" class="form-control border-input" placeholder="C&oacute;digo QR" data-bind="value: codigo_qr" id="qr-input-edit">
                                                     <button class="btn btn-secondary" type="button" data-bind="click: function(){ generarQR('qr-input-edit', 'qr-display-edit'); }">
-                                                        <i class="ti-qrcode"></i>
+                                                        <i class="ti-layout"></i>
                                                     </button>
                                                 </div>
                                                 <div id="qr-display-edit" class="mt-2"></div>
@@ -1088,7 +1089,7 @@
                                                 <div class="input-group">
                                                     <input type="text" class="form-control border-input" placeholder="C&oacute;digo QR" data-bind="value: e.d.codigo_qr" id="qr-input-new">
                                                     <button class="btn btn-secondary" type="button" data-bind="click: function(){ generarQR('qr-input-new', 'qr-display-new'); }">
-                                                        <i class="ti-qrcode"></i>
+                                                        <i class="ti-layout"></i>
                                                     </button>
                                                 </div>
                                                 <div id="qr-display-new" class="mt-2"></div>
@@ -1262,7 +1263,7 @@
                                 <h4 class="title"><i class="ti-alert"></i>&nbsp;Reportes</h4>
                                 <p class="category">Lista de reportes bajo su dominio.</p>
                             </div>
-                            <div class="content table-responsive table-full-width">
+                            <div class="content table-full-width dt-table-wrap">
                                 <table id="tbl-reportes" class="table table-striped" style="word-wrap: break-word">
                                     <thead>
                                         <th>Fecha</th>
@@ -1383,7 +1384,7 @@
                                 <h4 class="title"><i class="ti-exchange-vertical"></i>&nbsp;Pr&eacute;stamos</h4>
                                 <p class="category">Lista de pr&eacute;stamos bajo su dominio.</p>
                             </div>
-                            <div class="content table-responsive table-full-width">
+                            <div class="content table-full-width dt-table-wrap">
                                 <table id="tbl-prestamos" class="table table-striped">
                                     <thead>
                                         <th>Fecha</th>
@@ -1585,6 +1586,23 @@
     <script src="assets/js/jszip.min.js"></script>
     <script src="assets/js/pdfmake/pdfmake.min.js"></script>
     <script src="assets/js/pdfmake/vfs_fonts.js"></script>
+
+	<!-- Mobile sidebar toggle -->
+	<script>
+		$(function() {
+			$('#sidebarToggle').on('click', function() {
+				$('.sidebar').toggleClass('open');
+				if ($('.sidebar-backdrop').length) {
+					$('.sidebar-backdrop').remove();
+				} else {
+					$('<div class="sidebar-backdrop"></div>').on('click', function() {
+						$('.sidebar').removeClass('open');
+						$(this).remove();
+					}).appendTo('body');
+				}
+			});
+		});
+	</script>
 
 	<!-- Código -->
 	<script src="assets/js/app.js"></script>
