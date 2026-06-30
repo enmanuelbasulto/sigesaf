@@ -12,13 +12,13 @@
     <meta name="viewport" content="width=device-width" />
 
 
-    <!-- Bootstrap core CSS     -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap 5 core CSS     -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Animation library for notifications   -->
     <link href="assets/css/animate.min.css" rel="stylesheet"/>
 
-    <!--  Paper Dashboard core CSS    -->
+    <!--  Custom styles    -->
     <link href="assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="assets/css/demo.css" rel="stylesheet" />
 
@@ -26,6 +26,10 @@
     <link href="assets/fonts/fontawesome/css/all.min.css" rel="stylesheet">
     <link href='assets/fonts/muli/stylesheet.css' rel='stylesheet' type='text/css'>
     <link href="assets/css/themify-icons.css" rel="stylesheet">
+
+    <!-- DataTables with export -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.3/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.bootstrap5.min.css">
 </head>
 <body>
 <div id="dhtmltooltip"></div>
@@ -66,6 +70,18 @@
                         <p>Equipos</p>
                     </a>
                 </li>
+                <li class="nav-marcas">
+                    <a href="#marcas">
+                        <i class="ti-tag"></i>
+                        <p>Marcas</p>
+                    </a>
+                </li>
+                <li class="nav-tipos">
+                    <a href="#tiposEquipos">
+                        <i class="ti-layers"></i>
+                        <p>Tipos de Equipos</p>
+                    </a>
+                </li>
                 <li class="nav-reportes">
                     <a href="#reportes">
                         <i class="ti-alert"></i>
@@ -83,42 +99,22 @@
     </div>
 
     <div class="main-panel">
-        <nav class="navbar navbar-default">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle">
-                        <span class="sr-only">Alternar navegaci&oacute;n</span>
-                        <span class="icon-bar bar1"></span>
-                        <span class="icon-bar bar2"></span>
-                        <span class="icon-bar bar3"></span>
-                    </button>
-                    <span class="navbar-brand" data-bind="text: router.currentPage().title">Dashboard</span>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-						<li>
-                            <a href="#config" title="Configuraci&oacute;n">
+                <span class="navbar-brand" data-bind="text: router.currentPage().title">Dashboard</span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+						<li class="nav-item">
+                            <a class="nav-link" href="#config" title="Configuraci&oacute;n">
                                 <i class="ti-settings"></i>
                                 Configuraci&oacute;n
                             </a>
                         </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="ti-bell"></i>
-                                <p class="notification">5</p>
-                                <p>Notifications</p>
-                                <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                              <li><a href="#">Notification 1</a></li>
-                              <li><a href="#">Notification 2</a></li>
-                              <li><a href="#">Notification 3</a></li>
-                              <li><a href="#">Notification 4</a></li>
-                              <li><a href="#">Another notification</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#logoff" title="Cerrar sesión">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#logoff" title="Cerrar sesi&oacute;n">
                                 <i class="ti-export"></i>
                                 Salir
                             </a>
@@ -347,7 +343,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="header">
-                                <button class="btn btn-default pull-right" data-bind="click: u.nuevo">Agregar</button>
+                                <button class="btn btn-secondary float-end" data-bind="click: u.nuevo">Agregar</button>
                                 <h4 class="title"><i class="ti-user"></i>&nbsp;Usuarios</h4>
                                 <p class="category">Lista de usuarios registrados bajo su dominio.</p>
                             </div>
@@ -363,15 +359,15 @@
                                     <tbody>
                                         <!-- ko foreach: u.usuarios -->
                                         <tr>
-                                        	<td><span data-bind="visible: admin"><i class="ti-crown"></i></span></td>
+                                        	<td><span class="badge bg-info" data-bind="text: rol"></span></td>
                                             <td><span data-bind="text: usuario"></span></td>
                                         	<td data-bind="text: nombre"></td> 
                                         	<td data-bind="text: local"></td>
                                             <td>
-                                                <button class="btn btn-default" data-bind="click: $parent.u.editar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.u.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-default" data-bind="click: $parent.u.eliminar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.u.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
                                             </td>
@@ -417,13 +413,17 @@
                                         <div class="col-md-9">
                                             <div class="form-group">
                                                 <label>Local</label>
-                                                <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "local", optionsValue: "id", value: id_local' required></select>
+                                                <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "path", optionsValue: "id", value: id_local' required></select>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Administrador
-                                                <input type="checkbox" class="form-control border-input" placeholder="Administrador" data-bind="checked: admin"></label>
+                                                <label>Rol</label>
+                                                <select class="form-control border-input" data-bind="value: rol">
+                                                    <option value="administrador">Administrador</option>
+                                                    <option value="tecnico">T&eacute;cnico</option>
+                                                    <option value="consulta">Consulta</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -463,8 +463,12 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Administrador
-                                                <input type="checkbox" class="form-control border-input" placeholder="Administrador" data-bind="checked: u.d.admin"></label>
+                                                <label>Rol</label>
+                                                <select class="form-control border-input" data-bind="value: u.d.rol">
+                                                    <option value="administrador">Administrador</option>
+                                                    <option value="tecnico">T&eacute;cnico</option>
+                                                    <option value="consulta">Consulta</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -472,7 +476,7 @@
                                         <div class="col-md-7">
                                             <div class="form-group">
                                                 <label>Local</label>
-                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "local", optionsValue: "id", value: u.d.id_local' required></select>
+                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "path", optionsValue: "id", value: u.d.id_local' required></select>
                                             </div>
                                         </div>
                                         <div class="col-md-5">
@@ -500,7 +504,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="header">
-                                <button class="btn btn-default pull-right" data-bind="click: l.nuevo">Agregar</button>
+                                <button class="btn btn-secondary float-end" data-bind="click: l.nuevo">Agregar</button>
                                 <h4 class="title"><i class="ti-layout"></i>&nbsp;Locales</h4>
                                 <p class="category">Lista de locales registrados bajo su dominio.</p>
                             </div>
@@ -519,10 +523,10 @@
                                             <td data-bind="text: local"></td> 
                                             <td data-bind="text: padre"></td>
                                             <td>
-                                                <button class="btn btn-default" data-bind="click: $parent.l.editar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.l.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-default" data-bind="click: $parent.l.eliminar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.l.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
                                             </td>
@@ -560,7 +564,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Local padre</label>
-                                                <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "local", optionsValue: "id", value: id_padre' required></select>
+                                                <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "path", optionsValue: "id", value: id_padre' required></select>
                                             </div>
                                         </div>
                                     </div>
@@ -595,7 +599,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Local padre</label>
-                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "local", optionsValue: "id", value: l.d.id_padre' required></select>
+                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "path", optionsValue: "id", value: l.d.id_padre' required></select>
                                             </div>
                                         </div>
                                     </div>
@@ -611,13 +615,229 @@
                 </div>
             </script>
             <!--/locales-->
+            <!--marcas-->
+            <script id="pg-marcas" type="text/html">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="header">
+                                <button class="btn btn-secondary float-end" data-bind="click: m.nuevo">Agregar</button>
+                                <h4 class="title"><i class="ti-tag"></i>&nbsp;Marcas</h4>
+                                <p class="category">Lista de marcas registradas.</p>
+                            </div>
+                            <div class="content table-responsive table-full-width">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <th>Id</th>
+                                        <th>Marca</th>
+                                        <th></th>
+                                    </thead>
+                                    <tbody>
+                                        <!-- ko foreach: m.marcas -->
+                                        <tr>
+                                            <td data-bind="text: id"></td>
+                                            <td data-bind="text: marca"></td>
+                                            <td>
+                                                <button class="btn btn-secondary" data-bind="click: $parent.m.editar">
+                                                    <i class="ti-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-secondary" data-bind="click: $parent.m.eliminar">
+                                                    <i class="ti-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <!-- /ko -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+
+            <script id="pg-nuevo-marca" type="text/html">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title"><i class="ti-tag"></i>&nbsp;Agregar marca</h4>
+                            </div>
+                            <div class="content">
+                                <form data-bind="submit: m.guardar">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Marca</label>
+                                                <input type="text" class="form-control border-input" placeholder="Marca" data-bind="value: m.d.marca" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Agregar</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+
+            <script id="pg-editar-marca" type="text/html">
+                <div class="row" data-bind="visible: ((!m2.marcas().length))">
+                    <div class="col-md-9">
+                        <h3>La marca solicitada no existe.</h3>
+                    </div>
+                </div>
+                <div class="row" data-bind="visible: (m2.marcas().length), foreach: m2.marcas">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title"><i class="ti-tag"></i>&nbsp;Editar marca</h4>
+                            </div>
+                            <div class="content">
+                                <form data-bind="submit: $parent.m2.modificar">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Marca</label>
+                                                <input type="text" class="form-control border-input" placeholder="Marca" data-bind="value: marca" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Guardar cambios</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+            <!--/marcas-->
+            <!--tiposEquipos-->
+            <script id="pg-tipos-equipos" type="text/html">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="header">
+                                <button class="btn btn-secondary float-end" data-bind="click: t_e.nuevo">Agregar</button>
+                                <h4 class="title"><i class="ti-layers"></i>&nbsp;Tipos de Equipos</h4>
+                                <p class="category">Lista de tipos de equipos registrados.</p>
+                            </div>
+                            <div class="content table-responsive table-full-width">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <th>Id</th>
+                                        <th>Tipo</th>
+                                        <th>Descripci&oacute;n</th>
+                                        <th></th>
+                                    </thead>
+                                    <tbody>
+                                        <!-- ko foreach: t_e.tipos -->
+                                        <tr>
+                                            <td data-bind="text: id"></td>
+                                            <td data-bind="text: tipo"></td>
+                                            <td data-bind="text: descripcion"></td>
+                                            <td>
+                                                <button class="btn btn-secondary" data-bind="click: $parent.t_e.editar">
+                                                    <i class="ti-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-secondary" data-bind="click: $parent.t_e.eliminar">
+                                                    <i class="ti-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <!-- /ko -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+
+            <script id="pg-nuevo-tipo-equipo" type="text/html">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title"><i class="ti-layers"></i>&nbsp;Agregar tipo de equipo</h4>
+                            </div>
+                            <div class="content">
+                                <form data-bind="submit: t_e.guardar">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Tipo</label>
+                                                <input type="text" class="form-control border-input" placeholder="Tipo" data-bind="value: t_e.d.tipo" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Descripci&oacute;n</label>
+                                                <input type="text" class="form-control border-input" placeholder="Descripci&oacute;n" data-bind="value: t_e.d.descripcion">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Agregar</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+
+            <script id="pg-editar-tipo-equipo" type="text/html">
+                <div class="row" data-bind="visible: ((!t2.tipos().length))">
+                    <div class="col-md-9">
+                        <h3>El tipo de equipo solicitado no existe.</h3>
+                    </div>
+                </div>
+                <div class="row" data-bind="visible: (t2.tipos().length), foreach: t2.tipos">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title"><i class="ti-layers"></i>&nbsp;Editar tipo de equipo</h4>
+                            </div>
+                            <div class="content">
+                                <form data-bind="submit: $parent.t2.modificar">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Tipo</label>
+                                                <input type="text" class="form-control border-input" placeholder="Tipo" data-bind="value: tipo" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Descripci&oacute;n</label>
+                                                <input type="text" class="form-control border-input" placeholder="Descripci&oacute;n" data-bind="value: descripcion">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Guardar cambios</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </script>
+            <!--/tiposEquipos-->
             <!--equipos-->
             <script id="pg-equipos" type="text/html">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="header">
-                                <button class="btn btn-default pull-right" data-bind="click: e.nuevo">Agregar</button>
+                                <button class="btn btn-secondary float-end" data-bind="click: e.nuevo">Agregar</button>
                                 <h4 class="title"><i class="ti-layout-list-thumb"></i>&nbsp;Equipos</h4>
                                 <p class="category">Lista de equipos registrados bajo su dominio.</p>
                             </div>
@@ -632,23 +852,22 @@
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: e.equipos -->
-                                        <tr data-bind="event: { mouseover: ddrivetip('<strong>inventario:</strong> '+no_inv() +'<br/><strong>estado:</strong> '+estado()+'<br/><strong>local:</strong> '+local()+'<br/><strong>marca:</strong> '+marca()+'<br/><strong>tipo:</strong> '+tipo()+'<br/><strong>sello:</strong> '+sello()+'<br/><strong>observaciones:</strong> '+observaciones()) }";
-                                        onMouseout="hideddrivetip()">
+                                        <tr data-bind="event: { mouseover: function(){ddrivetip('<strong>inventario:</strong> '+no_inv() +'<br/><strong>estado:</strong> '+estado()+'<br/><strong>local:</strong> '+local()+'<br/><strong>marca:</strong> '+marca()+'<br/><strong>tipo:</strong> '+tipo()+'<br/><strong>modelo:</strong> '+modelo()+'<br/><strong>serie:</strong> '+numero_serie()+'<br/><strong>sello:</strong> '+sello()+'<br/><strong>fecha compra:</strong> '+fecha_compra()+'<br/><strong>garant&iacute;a:</strong> '+garantia()+' meses<br/><strong>responsable:</strong> '+responsable()+'<br/><strong>observaciones:</strong> '+observaciones())}, mouseout: hideddrivetip }">
                                             <td data-tooltip="sticky1" data-bind="text: no_inv"></td>
                                             <td data-bind="text: tipo"></td>
                                             <td data-bind="text: estado"></td>
                                             <td data-bind="text: local"></td>
                                             <td>
-                                                <button class="btn btn-default" data-bind="click: $parent.e.editar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.e.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-default" data-bind="click: $parent.e.eliminar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.e.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
-                                                <button title="Reportar" data-active-color="danger" class="btn btn-default" data-bind="click: $parent.e.reporte">
+                                                <button title="Reportar" data-active-color="danger" class="btn btn-secondary" data-bind="click: $parent.e.reporte">
                                                     <i class="ti-alert"></i>
                                                 </button>
-                                                <button title="Solicitar pr&eacute;stamo" data-active-color="danger" class="btn btn-default" data-bind="click: $parent.e.prestamo">
+                                                <button title="Solicitar pr&eacute;stamo" data-active-color="danger" class="btn btn-secondary" data-bind="click: $parent.e.prestamo">
                                                     <i class="ti-exchange-vertical"></i>
                                                 </button>
                                             </td>
@@ -686,7 +905,7 @@
                                         <div class="col-md-5">
                                             <div class="form-group">
                                                 <label>Local</label>
-                                                <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "local", optionsValue: "id", value: id_local' required></select>
+                                                <select class="form-control border-input" data-bind='options: $parent.l.locales, optionsText: "path", optionsValue: "id", value: id_local' required></select>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -717,10 +936,56 @@
                                         </div>
                                     </div>
                                     <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Modelo</label>
+                                                <input type="text" class="form-control border-input" placeholder="Modelo" data-bind="value: modelo">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>N&uacute;mero de serie</label>
+                                                <input type="text" class="form-control border-input" placeholder="N&uacute;mero de serie" data-bind="value: numero_serie">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Fecha de compra</label>
+                                                <input type="date" class="form-control border-input" data-bind="value: fecha_compra">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Garant&iacute;a (meses)</label>
+                                                <input type="number" class="form-control border-input" placeholder="Meses de garant&iacute;a" data-bind="value: garantia">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Responsable</label>
+                                                <input type="text" class="form-control border-input" placeholder="Responsable" data-bind="value: responsable">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>C&oacute;digo QR</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control border-input" placeholder="C&oacute;digo QR" data-bind="value: codigo_qr" id="qr-input-edit">
+                                                    <button class="btn btn-secondary" type="button" data-bind="click: function(){ generarQR('qr-input-edit', 'qr-display-edit'); }">
+                                                        <i class="ti-qrcode"></i>
+                                                    </button>
+                                                </div>
+                                                <div id="qr-display-edit" class="mt-2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Observaciones</label>
-                                                <textarea rows="5" class="form-control border-input" placeholder="Observaciones" data-bind="value: observaciones"></textarea>
+                                                <textarea rows="3" class="form-control border-input" placeholder="Observaciones" data-bind="value: observaciones"></textarea>
                                             </div>
                                         </div>
                                     </div>                                               
@@ -754,7 +1019,7 @@
                                         <div class="col-md-5">
                                             <div class="form-group">
                                                 <label>Local</label>
-                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "local", optionsValue: "id", value: e.d.id_local' required></select>
+                                                <select class="form-control border-input" data-bind='options: l.locales, optionsText: "path", optionsValue: "id", value: e.d.id_local' required></select>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -785,10 +1050,56 @@
                                         </div>
                                     </div>
                                     <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Modelo</label>
+                                                <input type="text" class="form-control border-input" placeholder="Modelo" data-bind="value: e.d.modelo">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>N&uacute;mero de serie</label>
+                                                <input type="text" class="form-control border-input" placeholder="N&uacute;mero de serie" data-bind="value: e.d.numero_serie">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Fecha de compra</label>
+                                                <input type="date" class="form-control border-input" data-bind="value: e.d.fecha_compra">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Garant&iacute;a (meses)</label>
+                                                <input type="number" class="form-control border-input" placeholder="Meses de garant&iacute;a" data-bind="value: e.d.garantia">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Responsable</label>
+                                                <input type="text" class="form-control border-input" placeholder="Responsable" data-bind="value: e.d.responsable">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>C&oacute;digo QR</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control border-input" placeholder="C&oacute;digo QR" data-bind="value: e.d.codigo_qr" id="qr-input-new">
+                                                    <button class="btn btn-secondary" type="button" data-bind="click: function(){ generarQR('qr-input-new', 'qr-display-new'); }">
+                                                        <i class="ti-qrcode"></i>
+                                                    </button>
+                                                </div>
+                                                <div id="qr-display-new" class="mt-2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Observaciones</label>
-                                                <textarea rows="5" class="form-control border-input" placeholder="Observaciones" data-bind="value: e.d.observaciones"></textarea>
+                                                <textarea rows="3" class="form-control border-input" placeholder="Observaciones" data-bind="value: e.d.observaciones"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -802,7 +1113,7 @@
                     </div>
                 </div>
             </script>
-
+            
             <script id="pg-reportar-equipo" type="text/html">
                 <div class="row" data-bind="visible: ((!e.equipos().length))">
                     <div class="col-md-9">
@@ -835,7 +1146,35 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Descripci&oacute;n del problema</label>
-                                                <textarea rows="5" class="form-control border-input" placeholder="Descripci&oacute;n detallada del problema" data-bind="value: $parent.e.d.problema" required></textarea>
+                                                <textarea rows="3" class="form-control border-input" placeholder="Descripci&oacute;n detallada del problema" data-bind="value: $parent.e.d.problema" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>T&eacute;cnico asignado</label>
+                                                <input type="text" class="form-control border-input" placeholder="T&eacute;cnico asignado" data-bind="value: $parent.e.d.tecnico_asignado">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Tiempo de reparaci&oacute;n (horas)</label>
+                                                <input type="number" step="0.5" class="form-control border-input" placeholder="Horas" data-bind="value: $parent.e.d.tiempo_reparacion">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Repuestos utilizados</label>
+                                                <input type="text" class="form-control border-input" placeholder="Repuestos" data-bind="value: $parent.e.d.repuestos_usados">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Acciones realizadas</label>
+                                                <textarea rows="3" class="form-control border-input" placeholder="Acciones realizadas" data-bind="value: $parent.e.d.acciones_realizadas"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -850,7 +1189,7 @@
                     </div>
                 </div>
             </script>
-
+            
             <script id="pg-prestar-equipo" type="text/html">
                 <div class="row" data-bind="visible: ((!e.equipos().length))">
                     <div class="col-md-9">
@@ -890,7 +1229,7 @@
                                         <div class="col-md-7">
                                             <div class="form-group">
                                                 <label>Destino</label>
-                                                <input type="text" list="listaLocales" class="form-control border-input" placeholder="Destino" data-bind='datalist: { options: $parent.l.locales, optionsText: "local", optionsValue: "id", value: $parent.e.destino }, value: $parent.e.d.local_req' required>
+                                                <input type="text" list="listaLocales" class="form-control border-input" placeholder="Destino" data-bind='datalist: { options: $parent.l.locales, optionsText: "path", optionsValue: "id", value: $parent.e.destino }, value: $parent.e.d.local_req' required>
                                             </div>
                                         </div>
                                     </div>
@@ -929,20 +1268,23 @@
                                         <th>Fecha</th>
                                         <th>Problema</th>
                                         <th>Estado</th>
+                                        <th>T&eacute;cnico</th>
+                                        <th>Tiempo</th>
                                         <th></th>
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: r.reportes -->
-                                        <tr data-bind="event: { mouseover: ddrivetip('<strong>reportado por:</strong> '+usuario() +'<br/><strong>local:</strong> '+local()+'<br/><strong>equipo:</strong> '+equipo()+'<br/><strong>tipo:</strong> '+tipo()+'<br/><strong>marca:</strong> '+marca()) }";
-                                        onMouseout="hideddrivetip()">
+                                        <tr data-bind="event: { mouseover: function(){ddrivetip('<strong>reportado por:</strong> '+usuario() +'<br/><strong>local:</strong> '+local()+'<br/><strong>equipo:</strong> '+equipo()+'<br/><strong>tipo:</strong> '+tipo()+'<br/><strong>marca:</strong> '+marca()+'<br/><strong>t&eacute;cnico:</strong> '+tecnico_asignado()+'<br/><strong>acciones:</strong> '+acciones_realizadas()+'<br/><strong>repuestos:</strong> '+repuestos_usados()+'<br/><strong>tiempo:</strong> '+tiempo_reparacion()+'h')}, mouseout: hideddrivetip }">
                                             <td data-bind="text: fecha"></td> 
                                             <td data-bind="text: problema"></td>
                                             <td data-bind="text: estado"></td>
+                                            <td data-bind="text: tecnico_asignado"></td>
+                                            <td data-bind="text: tiempo_reparacion"></td>
                                             <td>
-                                                <button class="btn btn-default" data-bind="click: $parent.r.editar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.r.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-default" data-bind="click: $parent.r.eliminar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.r.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
                                             </td>
@@ -988,7 +1330,35 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Descripci&oacute;n del problema</label>
-                                                <textarea rows="5" class="form-control border-input" placeholder="Descripci&oacute;n detallada del problema" data-bind="value: problema" required></textarea>
+                                                <textarea rows="3" class="form-control border-input" placeholder="Descripci&oacute;n detallada del problema" data-bind="value: problema" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>T&eacute;cnico asignado</label>
+                                                <input type="text" class="form-control border-input" placeholder="T&eacute;cnico asignado" data-bind="value: tecnico_asignado">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Tiempo de reparaci&oacute;n (horas)</label>
+                                                <input type="number" step="0.5" class="form-control border-input" placeholder="Horas" data-bind="value: tiempo_reparacion">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Repuestos utilizados</label>
+                                                <input type="text" class="form-control border-input" placeholder="Repuestos" data-bind="value: repuestos_usados">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Acciones realizadas</label>
+                                                <textarea rows="3" class="form-control border-input" placeholder="Acciones realizadas" data-bind="value: acciones_realizadas"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -1014,7 +1384,7 @@
                                 <p class="category">Lista de pr&eacute;stamos bajo su dominio.</p>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table id="tbl-reportes" class="table table-striped">
+                                <table id="tbl-prestamos" class="table table-striped">
                                     <thead>
                                         <th>Fecha</th>
                                         <th>Fecha fin</th>
@@ -1025,24 +1395,23 @@
                                     </thead>
                                     <tbody>
                                         <!-- ko foreach: p.prestamos -->
-                                        <tr data-bind="event: { mouseover: ddrivetip('<strong>recibe:</strong> '+recibe() +'<br/><strong>autorizado por:</strong> '+autoriza()+'<br/><strong>or&iacute;gen:</strong> '+local()+'<br/><strong>destino:</strong> '+local_destino()+'<br/><strong>equipo:</strong> '+equipo()+'<br/><strong>tipo:</strong> '+tipo()+'<br/><strong>marca:</strong> '+marca()+'<br/><strong>motivo:</strong> '+motivo()) }";
-                                        onmouseout="hideddrivetip()">
+                                        <tr data-bind="event: { mouseover: function(){ddrivetip('<strong>recibe:</strong> '+recibe() +'<br/><strong>autorizado por:</strong> '+autoriza()+'<br/><strong>or&iacute;gen:</strong> '+local()+'<br/><strong>destino:</strong> '+local_destino()+'<br/><strong>equipo:</strong> '+equipo()+'<br/><strong>tipo:</strong> '+tipo()+'<br/><strong>marca:</strong> '+marca()+'<br/><strong>motivo:</strong> '+motivo())}, mouseout: hideddrivetip }">
                                             <td data-bind="text: fecha"></td>
                                             <td data-bind="text: fecha_fin"></td>
                                             <td data-bind="text: equipo"></td>
                                             <td data-bind="text: usuario_req"></td>
                                             <td data-bind="text: estado"></td>
                                             <td>
-                                                <button class="btn btn-default" data-bind="click: $parent.p.editar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.p.editar">
                                                     <i class="ti-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-default" data-bind="click: $parent.p.eliminar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.p.eliminar">
                                                     <i class="ti-trash"></i>
                                                 </button>
-                                                <button class="btn btn-default" data-bind="click: $parent.p.aprobar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.p.aprobar">
                                                     <i class="ti-check"></i>
                                                 </button>
-                                                <button class="btn btn-default" data-bind="click: $parent.p.denegar">
+                                                <button class="btn btn-secondary" data-bind="click: $parent.p.denegar">
                                                     <i class="ti-na"></i>
                                                 </button>
                                             </td>
@@ -1169,7 +1538,7 @@
 
         <footer class="footer">
             <div class="container-fluid">
-                <nav class="pull-left">
+                <nav class="float-start">
                     <ul>
 
                         <li>
@@ -1184,7 +1553,7 @@
                         </li>
                     </ul>
                 </nav>
-                <div class="copyright pull-right">
+                <div class="copyright float-end">
                     &copy; 2022, creado por <a href="https://www.ksdsolutions.net">KSD Solutions</a>
                 </div>
             </div>
@@ -1198,16 +1567,26 @@
     <script src="assets/js/knockout-3.5.1.js" type="text/javascript"></script>
     <script src="assets/js/knockout.mapping-latest.js" type="text/javascript"></script>
     <script src="assets/js/router.js" type="text/javascript"></script>
-	<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
-
-	<!--  Checkbox, Radio & Switch Plugins -->
-	<script src="assets/js/bootstrap-checkbox-radio.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
 
     <!--  Notifications Plugin    -->
     <script src="assets/js/bootstrap-notify.js"></script>
 
-    <!-- Paper Dashboard Core javascript and methods for Demo purpose -->
-	<script src="assets/js/paper-dashboard.js"></script>
+    <!-- QR Code -->
+    <script src="assets/js/qrcode.min.js" type="text/javascript"></script>
+
+    <!-- DataTables with export -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.3/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/2.2.3/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.2.3/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.15/build/pdfmake.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.15/build/vfs_fonts.js"></script>
 
 	<!-- Código -->
 	<script src="assets/js/app.js"></script>

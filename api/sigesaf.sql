@@ -49,10 +49,16 @@ CREATE TABLE `equipos` (
   `id_local` int(11) NOT NULL,
   `no_inv` int(11) NOT NULL,
   `observaciones` varchar(255) DEFAULT NULL,
-  `sello` int(11) DEFAULT NULL,
+  `sello` varchar(50) DEFAULT NULL,
   `id_marca` int(11) NOT NULL,
   `id_tipo` int(11) NOT NULL,
-  `id_estado` int(11) NOT NULL
+  `id_estado` int(11) NOT NULL,
+  `modelo` varchar(100) DEFAULT NULL,
+  `numero_serie` varchar(100) DEFAULT NULL,
+  `fecha_compra` date DEFAULT NULL,
+  `garantia` int(11) DEFAULT NULL COMMENT 'meses de garantía',
+  `responsable` varchar(100) DEFAULT NULL,
+  `codigo_qr` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -138,9 +144,9 @@ TRUNCATE TABLE `estados_reportes`;
 --
 
 INSERT INTO `estados_reportes` (`id`, `estado`, `descripcion`) VALUES
-(1, 'Roto', 'Equipo roto'),
-(2, 'Con problemas', 'Equipo funcionando con problemas'),
-(3, 'Dictaminado', 'Equipo dictaminado por copextel');
+(1, 'Abierta', 'Avería reportada, pendiente de asignación'),
+(2, 'En proceso', 'Avería en proceso de reparación'),
+(3, 'Cerrada', 'Avería resuelta y cerrada');
 
 -- --------------------------------------------------------
 
@@ -333,10 +339,14 @@ DROP TABLE IF EXISTS `reportes`;
 CREATE TABLE `reportes` (
   `id` int(11) NOT NULL,
   `fecha` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `problema` varchar(255) NOT NULL,
+  `problema` text NOT NULL,
   `id_usuario` int(11) NOT NULL,
   `id_equipo` int(11) NOT NULL,
-  `id_estado` int(11) NOT NULL
+  `id_estado` int(11) NOT NULL,
+  `tecnico_asignado` varchar(100) DEFAULT NULL,
+  `acciones_realizadas` text DEFAULT NULL,
+  `repuestos_usados` text DEFAULT NULL,
+  `tiempo_reparacion` decimal(10,2) DEFAULT NULL COMMENT 'horas'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -397,7 +407,7 @@ CREATE TABLE `usuarios` (
   `usuario` varchar(20) NOT NULL,
   `nombre` varchar(50) NOT NULL,
   `clave` varchar(40) DEFAULT NULL,
-  `admin` tinyint(1) NOT NULL DEFAULT 30,
+  `rol` varchar(20) NOT NULL DEFAULT 'tecnico',
   `id_local` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -410,9 +420,9 @@ TRUNCATE TABLE `usuarios`;
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `usuario`, `nombre`, `clave`, `admin`, `id_local`) VALUES
-(1, 'admin', 'Administrador general', 'd033e22ae348aeb5660fc2140aec35850c4da997', 1, 1),
-(2, 'ebm', 'Enmanuel Basulto Martínez', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 1, 4);
+INSERT INTO `usuarios` (`id`, `usuario`, `nombre`, `clave`, `rol`, `id_local`) VALUES
+(1, 'admin', 'Administrador general', 'd033e22ae348aeb5660fc2140aec35850c4da997', 'administrador', 1),
+(2, 'ebm', 'Enmanuel Basulto Martínez', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'administrador', 4);
 
 --
 -- Índices para tablas volcadas

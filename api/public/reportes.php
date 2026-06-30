@@ -53,13 +53,17 @@ final class reportes {
             $r = Reporte::fromArray($data);
             if (Local::esHijoDe(Equipo::getLocal($r->id_equipo), $this->Raiz)) {
                 $id_usuario = Usuario::getId($_SERVER['PHP_AUTH_USER']);
+                $tecnico_asignado = !empty($r->tecnico_asignado) ? "'$r->tecnico_asignado'" : "NULL";
+                $acciones_realizadas = !empty($r->acciones_realizadas) ? "'$r->acciones_realizadas'" : "NULL";
+                $repuestos_usados = !empty($r->repuestos_usados) ? "'$r->repuestos_usados'" : "NULL";
+                $tiempo_reparacion = !empty($r->tiempo_reparacion) ? $r->tiempo_reparacion : "NULL";
                 
-                if($this->Bd->insertar("reportes", "'$r->problema', $id_usuario, $r->id_equipo, $r->id_estado", "problema, id_usuario, id_equipo, id_estado")){
+                if($this->Bd->insertar("reportes", "'$r->problema', $id_usuario, $r->id_equipo, $r->id_estado, $tecnico_asignado, $acciones_realizadas, $repuestos_usados, $tiempo_reparacion", "problema, id_usuario, id_equipo, id_estado, tecnico_asignado, acciones_realizadas, repuestos_usados, tiempo_reparacion")){
                     if ($r->id_estado == 1) {
                         $this->Bd->actualizar("equipos", "id_estado = 2", "id = $r->id_equipo");
+                    } elseif ($r->id_estado == 2) {
+                        $this->Bd->actualizar("equipos", "id_estado = 4", "id = $r->id_equipo");
                     } elseif ($r->id_estado == 3) {
-                        $this->Bd->actualizar("equipos", "id_estado = 3", "id = $r->id_equipo");
-                    } elseif ($r->id_estado == 4) {
                         $this->Bd->actualizar("equipos", "id_estado = 1", "id = $r->id_equipo");
                     }
                     $a = $this->Bd->seleccionar("reportes", "1 ORDER BY id DESC LIMIT 1", "id")->fetch()['id'];
@@ -78,7 +82,11 @@ final class reportes {
             if ($d != null) {
                 $r = Reporte::fromArray($data);
                 if (Local::esHijoDe(Reporte::getLocal($d->id), $this->Raiz)) {
-                    if($this->Bd->actualizar("reportes", "problema = '$r->problema', id_estado = $r->id_estado", "id = $d->id")){
+                    $tecnico_asignado = !empty($r->tecnico_asignado) ? "'$r->tecnico_asignado'" : "NULL";
+                    $acciones_realizadas = !empty($r->acciones_realizadas) ? "'$r->acciones_realizadas'" : "NULL";
+                    $repuestos_usados = !empty($r->repuestos_usados) ? "'$r->repuestos_usados'" : "NULL";
+                    $tiempo_reparacion = !empty($r->tiempo_reparacion) ? $r->tiempo_reparacion : "NULL";
+                    if($this->Bd->actualizar("reportes", "problema = '$r->problema', id_estado = $r->id_estado, tecnico_asignado = $tecnico_asignado, acciones_realizadas = $acciones_realizadas, repuestos_usados = $repuestos_usados, tiempo_reparacion = $tiempo_reparacion", "id = $d->id")){
                         $this->Bd->insertar("logs", "'reportes', '2', $this->u_actual, $d->id", "tabla, tipo_cambio, id_usuario, objeto");
                         return true;
                     }

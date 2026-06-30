@@ -332,7 +332,8 @@ function modelo_locales(l) {
                     id: ko.observable(d.id),
                     local: ko.observable(d.local),
                     id_padre: ko.observable(d.id_padre),
-                    padre: ko.observable("(-)")
+                    padre: ko.observable("(-)"),
+                    path: ko.observable(d.local)
                 });
             } else {
                 for (var i = 0; i < d.length; i++) {
@@ -340,14 +341,30 @@ function modelo_locales(l) {
                         id: ko.observable(d[i].id),
                         local: ko.observable(d[i].local),
                         id_padre: ko.observable(d[i].id_padre),
-                        padre: ko.observable("(-)")
+                        padre: ko.observable("(-)"),
+                        path: ko.observable(d[i].local)
                     });
                 }
             }
 
             if (self.locales().length > 2) {
-                self.locales().forEach(l => {
-                    self.locales().forEach(l_p => {
+                var map = {};
+                self.locales().forEach(function(l) {
+                    map[l.id()] = l;
+                });
+                var rootId = self.locales()[0].id();
+                self.locales().forEach(function(l) {
+                    var parts = [];
+                    var current = l;
+                    while (current && current.id() != rootId) {
+                        parts.unshift(current.local());
+                        current = map[current.id_padre()];
+                        if (current && current.id() == rootId) break;
+                    }
+                    l.path(parts.join(' - '));
+                });
+                self.locales().forEach(function(l) {
+                    self.locales().forEach(function(l_p) {
                         if (l.id_padre() == l_p.id()) {
                             l.padre(l_p.local());
                         }
@@ -377,7 +394,7 @@ function modelo_usuarios(u) {
             usuario: self.d.usuario || null,
             nombre: self.d.nombre || null,
             clave: self.d.clave || null,
-            admin: self.d.admin || false,
+            rol: self.d.rol || 'tecnico',
             id_local: self.d.id_local || null
         }).done(function () {
             location.href = '#usuarios';
@@ -389,7 +406,7 @@ function modelo_usuarios(u) {
         request('usuarios/'+self.usuarios()[0].id(), 'put', {
             usuario: self.usuarios()[0].usuario() || null,
             nombre: self.usuarios()[0].nombre() || null,
-            admin: self.usuarios()[0].admin() || false,
+            rol: self.usuarios()[0].rol() || 'tecnico',
             id_local: self.usuarios()[0].id_local() || null
         }).done(function () {
             location.href = '#usuarios';
@@ -420,7 +437,7 @@ function modelo_usuarios(u) {
                     id: ko.observable(d.id),
                     usuario: ko.observable(d.usuario),
                     nombre: ko.observable(d.nombre),
-                    admin: ko.observable(d.admin),
+                    rol: ko.observable(d.rol),
                     id_local: ko.observable(d.id_local),
                     local: ko.observable(d.local)
                 });
@@ -430,13 +447,14 @@ function modelo_usuarios(u) {
                         id: ko.observable(d[i].id),
                         usuario: ko.observable(d[i].usuario),
                         nombre: ko.observable(d[i].nombre),
-                        admin: ko.observable(d[i].admin),
+                        rol: ko.observable(d[i].rol),
                         id_local: ko.observable(d[i].id_local),
                         local: ko.observable(d[i].local)
                     });
                 }
             }
             self.loading(false);
+            initDataTable('#tbl-usuarios');
         });
     }
     self.cargar(u);
@@ -462,7 +480,13 @@ function modelo_equipos(e) {
             id_tipo: self.d.id_tipo || null,
             no_inv: self.d.no_inv || null,
             observaciones: self.d.observaciones || null,
-            sello: self.d.sello || null
+            sello: self.d.sello || null,
+            modelo: self.d.modelo || null,
+            numero_serie: self.d.numero_serie || null,
+            fecha_compra: self.d.fecha_compra || null,
+            garantia: self.d.garantia || null,
+            responsable: self.d.responsable || null,
+            codigo_qr: self.d.codigo_qr || null
         }).done(function () {
             location.href = '#equipos';
         });
@@ -473,7 +497,11 @@ function modelo_equipos(e) {
         request('reportes', 'post', {
             id_equipo: self.equipos()[0].id() || null,
             id_estado: self.d.id_estado || null,
-            problema: self.d.problema || null
+            problema: self.d.problema || null,
+            tecnico_asignado: self.d.tecnico_asignado || null,
+            acciones_realizadas: self.d.acciones_realizadas || null,
+            repuestos_usados: self.d.repuestos_usados || null,
+            tiempo_reparacion: self.d.tiempo_reparacion || null
         }).done(function () {
             location.href = '#equipos';
         });
@@ -502,7 +530,13 @@ function modelo_equipos(e) {
             id_tipo: self.equipos()[0].id_tipo() || null,
             no_inv: self.equipos()[0].no_inv() || null,
             observaciones: self.equipos()[0].observaciones() || null,
-            sello: self.equipos()[0].sello() || null
+            sello: self.equipos()[0].sello() || null,
+            modelo: self.equipos()[0].modelo() || null,
+            numero_serie: self.equipos()[0].numero_serie() || null,
+            fecha_compra: self.equipos()[0].fecha_compra() || null,
+            garantia: self.equipos()[0].garantia() || null,
+            responsable: self.equipos()[0].responsable() || null,
+            codigo_qr: self.equipos()[0].codigo_qr() || null
         }).done(function () {
             location.href = '#equipos';
         });
@@ -544,7 +578,13 @@ function modelo_equipos(e) {
                     id_tipo: ko.observable(d.id_tipo),
                     no_inv: ko.observable(d.no_inv),
                     observaciones: ko.observable(d.observaciones),
-                    sello: ko.observable(d.sello)
+                    sello: ko.observable(d.sello),
+                    modelo: ko.observable(d.modelo),
+                    numero_serie: ko.observable(d.numero_serie),
+                    fecha_compra: ko.observable(d.fecha_compra),
+                    garantia: ko.observable(d.garantia),
+                    responsable: ko.observable(d.responsable),
+                    codigo_qr: ko.observable(d.codigo_qr)
                 });
             } else {
                 for (var i = 0; i < d.length; i++) {
@@ -560,11 +600,20 @@ function modelo_equipos(e) {
                         tipo: ko.observable(d[i].tipo),
                         no_inv: ko.observable(d[i].no_inv),
                         observaciones: ko.observable((d[i].observaciones == null) ? '(-)' : d[i].observaciones),
-                        sello: ko.observable((d[i].sello == null) ? '(-)' : d[i].sello)
+                        sello: ko.observable((d[i].sello == null) ? '(-)' : d[i].sello),
+                        modelo: ko.observable((d[i].modelo == null) ? '(-)' : d[i].modelo),
+                        numero_serie: ko.observable((d[i].numero_serie == null) ? '(-)' : d[i].numero_serie),
+                        fecha_compra: ko.observable((d[i].fecha_compra == null) ? '(-)' : d[i].fecha_compra),
+                        garantia: ko.observable((d[i].garantia == null) ? '(-)' : d[i].garantia),
+                        responsable: ko.observable((d[i].responsable == null) ? '(-)' : d[i].responsable),
+                        codigo_qr: ko.observable((d[i].codigo_qr == null) ? '(-)' : d[i].codigo_qr)
                     });
                 }
             }
             self.loading(false);
+            initDataTable('#tbl-equipos', {
+                order: [[0, 'asc']]
+            });
         });
     }
 
@@ -580,7 +629,11 @@ function modelo_reportes(r) {
     self.modificar = function () {
         request('reportes/'+self.reportes()[0].id(), 'put', {
             problema: self.reportes()[0].problema() || null,
-            id_estado: self.reportes()[0].id_estado()
+            id_estado: self.reportes()[0].id_estado(),
+            tecnico_asignado: self.reportes()[0].tecnico_asignado() || null,
+            acciones_realizadas: self.reportes()[0].acciones_realizadas() || null,
+            repuestos_usados: self.reportes()[0].repuestos_usados() || null,
+            tiempo_reparacion: self.reportes()[0].tiempo_reparacion() || null
         }).done(function () {
             location.href = '#reportes';
         });
@@ -613,7 +666,11 @@ function modelo_reportes(r) {
                     equipo: ko.observable(d.equipo),
                     id_usuario: ko.observable(d.id_usuario),
                     id_equipo: ko.observable(d.id_equipo),
-                    id_estado: ko.observable(d.id_estado)
+                    id_estado: ko.observable(d.id_estado),
+                    tecnico_asignado: ko.observable(d.tecnico_asignado),
+                    acciones_realizadas: ko.observable(d.acciones_realizadas),
+                    repuestos_usados: ko.observable(d.repuestos_usados),
+                    tiempo_reparacion: ko.observable(d.tiempo_reparacion)
                 });
             } else {
                 for (var i = 0; i < d.length; i++) {
@@ -629,11 +686,16 @@ function modelo_reportes(r) {
                         local: ko.observable(d[i].local),
                         marca: ko.observable(d[i].marca),
                         tipo: ko.observable(d[i].tipo),
-                        estado: ko.observable(d[i].estado)
+                        estado: ko.observable(d[i].estado),
+                        tecnico_asignado: ko.observable(d[i].tecnico_asignado),
+                        acciones_realizadas: ko.observable(d[i].acciones_realizadas),
+                        repuestos_usados: ko.observable(d[i].repuestos_usados),
+                        tiempo_reparacion: ko.observable(d[i].tiempo_reparacion)
                     });
                 }
             }
             self.loading(false);
+            initDataTable('#tbl-reportes');
         });
     }
 
@@ -732,6 +794,7 @@ function modelo_prestamos(p) {
                 }
             }
             self.loading(false);
+            initDataTable('#tbl-prestamos');
         });
     }
 
@@ -971,7 +1034,7 @@ function modelo_tipos_equipos(t_e) {
     self.modificar = function () {
         request('tiposEquipos/'+self.tipos()[0].id(), 'put', {
             tipo: self.tipos()[0].tipo() || null,
-            descripcion: self.tipo()[0].descripcion() || null
+            descripcion: self.tipos()[0].descripcion() || null
         }).done(function () {
             location.href = '#tiposEquipos';
         });
@@ -1096,6 +1159,10 @@ var urlMapping = {
     equipos_p: { match: /^equipos\/(.+)$/, page: equipos },
     reportes: { match: /^reportes$/, page: reportes },
     reportes_p: { match: /^reportes\/(.+)$/, page: reportes },
+    marcas: { match: /^marcas$/, page: marcasPage },
+    marcas_p: { match: /^marcas\/(.+)$/, page: marcasPage },
+    tiposEquipos: { match: /^tiposEquipos$/, page: tiposEquiposPage },
+    tiposEquipos_p: { match: /^tiposEquipos\/(.+)$/, page: tiposEquiposPage },
     prestamos: { match: /^prestamos$/, page: prestamos },
     prestamos_p: { match: /^prestamos\/(.+)$/, page: prestamos },
     login: { match: /^login$/, page: login },
@@ -1112,6 +1179,7 @@ function dashboard() {
     $('.nav-equipos').removeClass('active');
     $('.nav-reportes').removeClass('active');
     $('.nav-prestamos').removeClass('active');
+    $('.nav-marcas, .nav-tipos').removeClass('active');
 
     return new Router.Page('Dashboard', 'home-template', { d: new modelo_dashboard });
 }
@@ -1124,6 +1192,7 @@ function usuarios(param = "") {
     $('.nav-equipos').removeClass('active');
     $('.nav-reportes').removeClass('active');
     $('.nav-prestamos').removeClass('active');
+    $('.nav-marcas, .nav-tipos').removeClass('active');
 
     if (param === "nuevo") {
         return new Router.Page('Usuarios', 'pg-nuevo-usuario', { u: new modelo_usuarios(), l: new modelo_locales() });
@@ -1157,6 +1226,7 @@ function locales(param = "") {
     $('.nav-equipos').removeClass('active');
     $('.nav-reportes').removeClass('active');
     $('.nav-prestamos').removeClass('active');
+    $('.nav-marcas, .nav-tipos').removeClass('active');
 
     var l = new modelo_locales();
 
@@ -1189,6 +1259,7 @@ function equipos(param = "") {
     $('.nav-equipos').addClass('active');
     $('.nav-reportes').removeClass('active');
     $('.nav-prestamos').removeClass('active');
+    $('.nav-marcas, .nav-tipos').removeClass('active');
 
     if (param === "nuevo") {
         return new Router.Page('Equipos', 'pg-nuevo-equipo', { e: new modelo_equipos(), l: new modelo_locales(), e_e : new modelo_estados_equipos(), t_e: new modelo_tipos_equipos(), m: new modelo_marcas()});
@@ -1247,6 +1318,7 @@ function reportes(param = "") {
     $('.nav-equipos').removeClass('active');
     $('.nav-reportes').addClass('active');
     $('.nav-prestamos').removeClass('active');
+    $('.nav-marcas, .nav-tipos').removeClass('active');
 
     if (param !== "") {
         loading(true);
@@ -1301,13 +1373,69 @@ function prestamos(param = "") {
     }
 }
 
+function marcasPage(param = "") {
+    window.clearInterval(int);
+    $('.nav-marcas').addClass('active');
+    $('.nav-dashboard, .nav-usuarios, .nav-locales, .nav-equipos, .nav-reportes, .nav-prestamos, .nav-tipos').removeClass('active');
+
+    var m = new modelo_marcas();
+
+    if (param === "nuevo") {
+        return new Router.Page('Marcas', 'pg-nuevo-marca', { m: m });
+    } else if (param !== "" && !isNaN(param)) {
+        loading(true);
+        var m2 = new modelo_marcas(param);
+
+        ko.when(function () {
+            return m.loading() == false && m2.loading() == false;
+        }, function (result) {
+            m2.marcas(m2.marcas());
+            loading(false);
+        });
+        return new Router.Page('Marcas', 'pg-editar-marca', { loading: loading, m: m, m2: m2 });
+    } else {
+        int = window.setInterval(() => {
+            m.cargar();
+        }, 180000);
+        return new Router.Page('Marcas', 'pg-marcas', { m: m });
+    }
+}
+
+function tiposEquiposPage(param = "") {
+    window.clearInterval(int);
+    $('.nav-tipos').addClass('active');
+    $('.nav-dashboard, .nav-usuarios, .nav-locales, .nav-equipos, .nav-reportes, .nav-prestamos, .nav-marcas').removeClass('active');
+
+    var t_e = new modelo_tipos_equipos();
+
+    if (param === "nuevo") {
+        return new Router.Page('Tipos de Equipos', 'pg-nuevo-tipo-equipo', { t_e: t_e });
+    } else if (param !== "" && !isNaN(param)) {
+        loading(true);
+        var t2 = new modelo_tipos_equipos(param);
+
+        ko.when(function () {
+            return t_e.loading() == false && t2.loading() == false;
+        }, function (result) {
+            t2.tipos(t2.tipos());
+            loading(false);
+        });
+        return new Router.Page('Tipos de Equipos', 'pg-editar-tipo-equipo', { loading: loading, t_e: t_e, t2: t2 });
+    } else {
+        int = window.setInterval(() => {
+            t_e.cargar();
+        }, 180000);
+        return new Router.Page('Tipos de Equipos', 'pg-tipos-equipos', { t_e: t_e });
+    }
+}
+
 function login() {
     var aut = getCookie("_aut");
     if (aut !== "") {
         location.href = "/";
     }
     $('body').empty();
-    $('body').append("<div class=\"content container\"><div class=\"row\"><div class=\"col-lg-12\"><div id=\"login-form\" class=\"center-block d-block mx-auto col-lg-4 col-md-5\"><div class=\"card\"><div class=\"header\"><h4 class=\"title\">Autenticación</h4></div><div class=\"content\"><form id=\"frm-login\"><div class=\"row\"><div class=\"form-group\"><label>Usuario</label><input id=\"usr\" type=\"text\" class=\"form-control border-input\" placeholder=\"Usuario\" autocomplete=\"username\"></div></div><div class=\"row\"><div class=\"form-group\"><label>Clave</label><input id=\"pass\" type=\"password\" class=\"form-control border-input\" placeholder=\"Clave\" autocomplete=\"current-password\"></div></div><div class=\"text-center\"><button type=\"submit\" class=\"btn btn-info btn-fill btn-wd\">Entrar</button></div><div class=\"clearfix\"></div></form></div></div></div></div></div></div>");
+    $('body').append("<div class=\"content container\"><div class=\"row\"><div class=\"col-lg-12\"><div id=\"login-form\" class=\"d-block mx-auto col-lg-4 col-md-5\"><div class=\"card\"><div class=\"card-header\"><h4 class=\"title\">Autenticación</h4></div><div class=\"card-body\"><form id=\"frm-login\"><div class=\"mb-3\"><label class=\"form-label\">Usuario</label><input id=\"usr\" type=\"text\" class=\"form-control border-input\" placeholder=\"Usuario\" autocomplete=\"username\"></div><div class=\"mb-3\"><label class=\"form-label\">Clave</label><input id=\"pass\" type=\"password\" class=\"form-control border-input\" placeholder=\"Clave\" autocomplete=\"current-password\"></div><div class=\"text-center\"><button type=\"submit\" class=\"btn btn-info btn-fill btn-wd\">Entrar</button></div></form></div></div></div></div></div></div>");
     $("#frm-login").submit(function () {
         var u = $('#usr').val();
         var p = $('#pass').val();
@@ -1414,3 +1542,32 @@ tipobj.style.width=''
 }
 
 document.onmousemove=positiontip
+
+// Global helper: init or destroy/re-init a DataTable
+function initDataTable(tableId, opts) {
+    var $t = $(tableId);
+    if (!$t.length) return;
+    if ($.fn.DataTable.isDataTable(tableId)) {
+        $t.DataTable().destroy();
+    }
+    $t.DataTable($.extend({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/2.2.3/i18n/es-ES.json'
+        },
+        dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>rtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+    }, opts));
+}
+
+// QR code generator
+function generarQR(inputId, displayId) {
+    var val = $('#' + inputId).val();
+    var $display = $('#' + displayId);
+    $display.empty();
+    if (!val) return;
+    new QRCode($display[0], {
+        text: val,
+        width: 128,
+        height: 128
+    });
+}

@@ -55,10 +55,10 @@ final class usuarios {
         if($data !== null){
             $u = Usuario::fromArray($data);
             if (Local::esHijoDe($u->id_local, $this->Raiz)) {
-                $admin = (int) $u->admin;
+                $rol = !empty($u->rol) ? "'$u->rol'" : "'tecnico'";
                 $clave = sha1($u->clave);
 
-                if($this->Bd->insertar("usuarios", "'$u->usuario', '$u->nombre', '$clave', $admin, $u->id_local", "usuario, nombre, clave, admin, id_local")){
+                if($this->Bd->insertar("usuarios", "'$u->usuario', '$u->nombre', '$clave', $rol, $u->id_local", "usuario, nombre, clave, rol, id_local")){
                     
                     $this->Bd->insertar("logs", "'usuarios', '0', $this->u_actual, '$u->usuario'", "tabla, tipo_cambio, id_usuario, objeto");
                     return $this->Bd->seleccionar("usuarios", "1 ORDER BY id DESC LIMIT 1", "id")->fetch()['id'];
@@ -74,16 +74,16 @@ final class usuarios {
             if ($d != null) {
                 $u = Usuario::fromArray($data);
                 if (Local::esHijoDe($u->id_local, $this->Raiz)) {
-                    $admin = (int) $u->admin;
+                    $rol = !empty($u->rol) ? "'$u->rol'" : "'tecnico'";
                     $usuario_u = $u->usuario;
                     $id_local = $u->id_local;
 
                     if ($this->u_actual == $d->id || !Usuario::isAdmin($_SERVER['PHP_AUTH_USER'])) {
-                        $admin = (int) $d->admin;
+                        $rol = "'$d->rol'";
                         $usuario_u = $d->usuario;
                         $id_local = $d->id_local;
                     }
-                    if($this->Bd->actualizar("usuarios", "usuario = '$usuario_u', nombre = '$u->nombre', admin = $admin, id_local = $id_local", "id = $d->id")){
+                    if($this->Bd->actualizar("usuarios", "usuario = '$usuario_u', nombre = '$u->nombre', rol = $rol, id_local = $id_local", "id = $d->id")){
                         $this->Bd->insertar("logs", "'usuarios', '2', $this->u_actual, '$u->usuario'", "tabla, tipo_cambio, id_usuario, objeto");
                         return true;
                     }

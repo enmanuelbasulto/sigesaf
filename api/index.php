@@ -92,7 +92,10 @@ final class index {
                     $this->Response->Body = $d;
                     $this->Response->StatusCode = HTTPCodes::OK;
                 } else if ($request->Verb === "POST") {
-                    if(Usuario::isAdmin($_SERVER['PHP_AUTH_USER']) || $request->URL[0]=="prestamos" || $request->URL[0]=="reportes"){
+                    $rol = Usuario::getRol($_SERVER['PHP_AUTH_USER']);
+                    $puedePost = ($rol === 'administrador') || 
+                        (($rol === 'tecnico') && in_array($request->URL[0], ["prestamos", "reportes"]));
+                    if($puedePost){
                         $d = $class->post((array) json_decode($request->Body));
                         if($d < 1){
                             throw new Exception("Could NOT insert the requested object.", 1);
@@ -100,16 +103,24 @@ final class index {
                         $this->Response->Body = array('url' => "/".$request->URL[0]."/".$d);
                         $this->Response->Location = $this->Response->Body['url'];
                         $this->Response->StatusCode = HTTPCodes::CREATED;
+                    } else {
+                        throw new ForbiddenException("No tienes permisos para realizar esta acción.", 1);
                     }
                 } else if ($request->Verb === "PUT") {
-                    $d = $class->put($request->URL[1], (array) json_decode($request->Body));
-                    if(empty($d)){
-                        throw new NotFoundException("Could NOT find the requested object.", 1);
+                    $rol = Usuario::getRol($_SERVER['PHP_AUTH_USER']);
+                    if($rol !== 'consulta'){
+                        $d = $class->put($request->URL[1], (array) json_decode($request->Body));
+                        if(empty($d)){
+                            throw new NotFoundException("Could NOT find the requested object.", 1);
+                        }
+                        $this->Response->Body = null;
+                        $this->Response->StatusCode = HTTPCodes::NO_CONTENT;
+                    } else {
+                        throw new ForbiddenException("No tienes permisos para modificar datos.", 1);
                     }
-                    $this->Response->Body = null;
-                    $this->Response->StatusCode = HTTPCodes::NO_CONTENT;
                 }else {
-                    if(Usuario::isAdmin($_SERVER['PHP_AUTH_USER'])){
+                    $rol = Usuario::getRol($_SERVER['PHP_AUTH_USER']);
+                    if($rol === 'administrador'){
                         switch ($request->Verb) {
                             case 'DELETE':
                                 if(!$class->delete($request->URL[1])){
